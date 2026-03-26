@@ -1,0 +1,325 @@
+/* ========================================
+   PRICING SECTION - PREMIUM SAAS STYLE (IMPROVED UX)
+   ======================================== */
+
+.pricing-section {
+    /* slightly tighter vertical rhythm and consistent with other sections */
+    padding: clamp(32px, 6vw, 72px) 0;
+    background-color: var(--white);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Section Header */
+.pricing-header {
+    text-align: center;
+    max-width: 900px; /* slightly wider to accommodate subtitle */
+    margin: 0 auto 48px;
+    padding: 0 20px;
+}
+
+.pricing-top-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(255, 106, 0, 0.08);
+    color: var(--primary-orange);
+    border-radius: 100px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+
+.pricing-title {
+    /* reduced heavy headline size to better match other sections */
+    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+    font-weight: 800;
+    color: var(--secondary-dark);
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+}
+
+.pricing-subtitle {
+    font-size: clamp(0.98rem, 1.4vw, 1.12rem);
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0 auto;
+    max-width: 780px;
+}
+
+/* Pricing Wrapper: center card and avoid 3D perspective that can cause layout issues */
+.pricing-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+/* Main Pricing Card */
+.pricing-card {
+    background: var(--white);
+    width: 100%;
+    max-width: 640px; /* slightly larger for content balance */
+    border-radius: 20px;
+    position: relative;
+    padding: clamp(28px, 3.6vw, 48px); /* slightly tighter padding */
+    border: 1px solid var(--border-color);
+    box-shadow: 0 12px 30px rgba(9, 11, 14, 0.035); /* softened shadow */
+    transition: var(--transition-smooth);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.pricing-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 30px 80px rgba(255, 106, 0, 0.08);
+    border-color: rgba(255, 106, 0, 0.16);
+}
+
+/* Center card content while keeping feature list readable */
+.pricing-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 4px; /* Even tighter gap for header area */
+}
+
+/* Content Styles */
+.pricing-plan-name {
+    font-size: 1.6rem; /* Slightly larger for emphasis */
+    font-weight: 800;
+    color: var(--secondary-dark);
+    margin-bottom: 0px;
+}
+
+.pricing-plan-tagline {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+.pricing-amount-wrapper {
+    margin-bottom: 4px;
+}
+
+.pricing-new-price {
+    font-size: clamp(2.2rem, 5vw, 3.2rem); /* Slightly more prominent */
+    font-weight: 800;
+    color: var(--secondary-dark);
+    letter-spacing: -1.5px;
+}
+
+/* Old Price - clearly visible strike-through */
+.pricing-old-price {
+    font-size: 1.05rem;
+    text-decoration: line-through solid #ff6a00 !important; /* Visible orange strike-through */
+    color: #999;
+    margin-right: 8px;
+    display: inline-block;
+}
+
+/* Price block centered */
+.price-container {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* Make sure CTA and footer are centered visually */
+.pricing-actions { justify-content: center; }
+.pricing-trust-footer { justify-content: center; }
+
+/* Popular Badge */
+.pricing-badge {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: var(--primary-gradient);
+    color: var(--white);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    box-shadow: 0 8px 22px rgba(255, 106, 0, 0.12);
+}
+
+/* Price Divider - very subtle */
+.pricing-divider {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0,0,0,0.06), transparent);
+    margin: 8px 0 12px;
+}
+
+/* Features List - Even more compact and polished */
+.pricing-features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto 16px;
+    max-width: 480px; /* Narrower for better centering look */
+    display: flex;
+    flex-direction: column;
+    gap: 6px; /* Tighter gap between items */
+    text-align: left;
+}
+
+.pricing-features-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95rem; /* Slightly smaller for compactness */
+    color: var(--text-main);
+    padding: 2px 0;
+}
+
+/* Remove default markers/dots explicitly */
+.pricing-features-list li::before {
+    display: none;
+}
+
+.pricing-features-list i {
+    color: var(--primary-orange);
+    font-size: 1rem;
+    flex-shrink: 0;
+    background: rgba(255, 106, 0, 0.06);
+    padding: 6px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+}
+
+/* Action Buttons */
+.pricing-actions {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-top: 4px;
+}
+
+/* Primary CTA - animated, lively gradient */
+.pricing-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: linear-gradient(90deg, #ff6a00 0%, #ff8c3a 50%, #ff6a00 100%);
+    background-size: 200% 100%;
+    color: var(--white);
+    padding: 12px 32px; /* Slightly more balanced padding */
+    border-radius: 12px;
+    font-weight: 800;
+    text-decoration: none;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(255,106,0,0.14);
+    transform: translateZ(0);
+    transition: transform .22s cubic-bezier(.2,.9,.3,1), box-shadow .22s ease;
+}
+
+/* gentle gradient shift animation */
+@keyframes pricingGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* pulse glow on load */
+.pricing-btn-primary.animate { animation: pricingGradient 5s ease-in-out infinite; }
+
+/* arrow micro interaction */
+.pricing-btn-primary .btn-arrow { display:inline-block; transition: transform .28s ease; }
+.pricing-btn-primary:hover .btn-arrow { transform: translateX(6px); }
+
+.pricing-btn-primary:active { transform: translateY(1px) scale(0.998); }
+.pricing-btn-primary:focus-visible { outline: 3px solid rgba(255,140,50,0.18); outline-offset: 4px; }
+
+/* make secondary pill more tactile */
+.pricing-btn-secondary {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.02);
+}
+.pricing-btn-secondary:hover { background: #fafafa; transform: translateY(-2px); }
+
+/* subtle animation for "Most Popular" badge to draw attention */
+.pricing-badge {
+    animation: popBadge 2.8s ease-in-out infinite;
+}
+@keyframes popBadge {
+    0% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-4px) scale(1.02); }
+    100% { transform: translateY(0) scale(1); }
+}
+
+/* ensure pricing-actions uses proper alignment on wide screens */
+.pricing-actions { align-items: center; }
+
+/* Pricing trust footer: center aligned and visually balanced */
+.pricing-trust-footer {
+    display: inline-flex; /* keep it intrinsic-sized on wide screens */
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--text-muted);
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-top: 16px; /* Reduced from 20px */
+    width: 100%;
+    text-align: center;
+}
+
+.pricing-trust-footer i {
+    color: var(--primary-orange);
+    background: rgba(255, 106, 0, 0.08);
+    padding: 6px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    flex-shrink: 0;
+}
+
+/* Small screens: ensure footer remains readable and spaced */
+@media (max-width: 480px) {
+    .pricing-trust-footer {
+        font-size: 0.92rem;
+        gap: 8px;
+        margin-top: 16px;
+        padding: 0 12px;
+    }
+    .pricing-trust-footer i { padding: 5px; font-size: 1rem; }
+}
+
+/* On mobile keep primary CTA first and full-width */
+@media (max-width: 768px) {
+    .pricing-actions { flex-direction: column; align-items: stretch; }
+    .pricing-btn_primary, .pricing-btn_secondary { width: 100%; }
+    .pricing-section { padding: clamp(20px, 6vw, 40px) 0; }
+    .pricing-card { padding: 20px; max-width: 720px; border-radius: 14px; }
+    .pricing-title { margin-bottom: 8px; }
+    .pricing-subtitle { padding: 0 6px; }
+    .pricing-features-list { max-width: 100%; padding: 0 4px; }
+    .pricing-card-content { gap: 10px; }
+}
+
+/* Very small screens: reduce gaps and font sizes slightly to avoid wrap and overflow */
+@media (max-width: 420px) {
+    .pricing-section { padding: 18px 0; }
+    .pricing-card { padding: 16px; }
+    .pricing-title { font-size: 1.5rem; }
+    .pricing-new-price { font-size: 2.2rem; }
+    .pricing-features-list li { font-size: 0.95rem; }
+}
+
+/* accessibility: high contrast focus if user uses keyboard */
+.pricing-btn-primary:focus { box-shadow: 0 0 0 4px rgba(255,140,50,0.14); }

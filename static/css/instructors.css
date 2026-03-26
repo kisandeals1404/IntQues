@@ -1,0 +1,424 @@
+/* SCOPED TO INSTRUCTORS SECTION - UPDATED FOR CONSISTENT UX */
+.instructors-section {
+    /* section background + gradient for premium feel */
+    padding: clamp(60px, 8vw, 100px) 0;
+    background: linear-gradient(180deg, #ffffff 0%, #fffaf6 50%, #ffffff 100%);
+    position: relative;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+}
+
+/* Background Mesh Gradient (Stripe-style) */
+.instructors-bg-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(255, 106, 0, 0.05) 0%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.instructors-section .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    box-sizing: border-box;
+}
+
+/* FORCE CENTER HEADER (keeps parity with other sections) */
+.instructors-header {
+    text-align: center !important; /* explicit to override any global left alignment */
+    max-width: 960px;
+    margin: 0 auto 12px;
+    position: relative;
+    z-index: 3; /* ensure header sits above decorative background */
+    padding-top: 6px;
+}
+.instructors-header h2 {
+    margin-top: 0;
+    font-weight: 800;
+    font-size: clamp(1.8rem, 4.5vw, 2.8rem); /* Slightly larger for better hierarchy */
+    line-height: 1.2;
+    max-width: 1000px;
+    margin-left:auto;
+    margin-right:auto;
+    color: #071022;
+    display: block;
+}
+
+/* Ensure the gradient text looks premium within the heading */
+.instructors-header h2 .text-gradient {
+    display: inline;
+    white-space: normal;
+}
+
+.instructors-header p { max-width:780px; margin: 8px auto 0; color: #475569; font-size: 1rem; line-height:1.6; }
+
+/* Typography: gradient text with robust fallback */
+.text-gradient {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff6a00 0%, #ff7a1a 40%, #ffb347 100%);
+    background-size: 200% 200%;
+    color: #071022; /* high-contrast fallback color when background-clip:text isn't available */
+    -webkit-background-clip: text;
+    background-clip: text;
+    transition: background-position 1.4s ease;
+    will-change: background-position;
+    text-shadow: 0 4px 18px rgba(7,16,34,0.06); /* subtle lift for legibility */
+    font-weight: 800; /* stronger weight for small sizes */
+    white-space: nowrap; /* keep phrase together so it isn't lost on its own line */
+}
+@supports (-webkit-background-clip: text) {
+    .text-gradient {
+        -webkit-text-fill-color: transparent; /* only applied when supported */
+        animation: gradientShift 4s ease-in-out infinite;
+    }
+}
+
+@media (max-width: 768px) {
+    /* allow wrapping on small screens so the heading doesn't overflow */
+    .text-gradient { white-space: normal; display:inline; font-weight:700; text-shadow: 0 2px 10px rgba(7,16,34,0.04); }
+    .instructors-header h2 { font-size: 1.45rem; }
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.instructors-badge-v2 {
+    background: rgba(255, 106, 0, 0.08);
+    color: #ff6a00;
+    padding: 8px 18px;
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+/* Subtle entrance animation; keep scoped */
+.instructors-badge-v2, .instructors-section h2, .instructors-section p { animation: fadeUp 520ms cubic-bezier(0.2,0.9,0.2,1) both; }
+.instructors-bg-glow { animation: floatSlow 10s ease-in-out infinite; }
+
+/* Grid System: single card centred */
+.instructors-grid-v2 {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 28px;
+}
+
+/* Card layout: single instructor, centred */
+.instructors-card-v2 {
+    position: relative;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 48px 56px;
+    border: 1px solid rgba(255, 106, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 520px;
+    box-sizing: border-box;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+}
+
+.instructors-card-v2:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(255, 106, 0, 0.12);
+    border-color: rgba(255, 106, 0, 0.3);
+}
+
+/* Image Wrapper */
+.instructors-image-wrapper-v2 {
+    margin-bottom: 24px;
+    position: relative;
+    /* enforce a square container so border-radius:50% yields a perfect circle */
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.img-border-gradient {
+    padding: 4px;
+    background: linear-gradient(135deg, #ff6a00, #ffb347);
+    border-radius: 50%; /* Circular container */
+    display: inline-flex;
+    box-shadow: 0 8px 20px rgba(255, 106, 0, 0.2);
+    overflow: hidden; /* hide overflow so image stays circular */
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.instructors-img-v2 {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover; /* ensures image covers square without distortion */
+    transition: transform 0.32s ease;
+    display: block;
+}
+
+/* make sure image and content sit above overlay */
+.instructors-image-wrapper-v2,
+.instructors-content-v2 {
+    position: relative;
+    z-index: 1;
+}
+
+/* Responsive sizes */
+@media (max-width: 992px) {
+    .instructors-image-wrapper-v2 { width: 120px; height: 120px; }
+}
+@media (max-width: 768px) {
+    .instructors-image-wrapper-v2 { width: 112px; height: 112px; margin-bottom: 18px; }
+}
+@media (max-width: 576px) {
+    .instructors-image-wrapper-v2 { width: 96px; height: 96px; margin-bottom: 14px; }
+    .img-border-gradient { padding: 3px; }
+}
+
+/* Company tag positioned inside image wrapper near bottom-right to avoid overlapping content */
+.instructors-company-tag-v2 {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    left: auto;
+    transform: none;
+    background: #fff;
+    padding: 4px 6px; /* compacted so it never overflows */
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    z-index: 3;
+    transform: translateZ(0); /* ensure proper stacking and crisp rendering */
+}
+
+/* Ensure micro logos keep aspect ratio and never stretch */
+.instructors-company-tag-v2 img,
+.company-logo-micro {
+    width: auto;
+    height: 14px; /* slightly smaller to avoid overlap */
+    max-width: 60px; /* ensure large SVGs do not overflow */
+    object-fit: contain;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1;
+}
+
+.company-name { display: inline-block; margin-left:4px; font-size:0.76rem; color:#111827; }
+
+/* ensure any leftover company tags are hidden since logos removed */
+.instructors-company-tag-v2 { display: none !important; }
+
+/* For safety: hide any partner images that might still appear in cards */
+.instructors-card-v2 img[src*="amazon"], .instructors-card-v2 img[src*="microsoft"],
+.instructors-card-v2 img[src*="google"], .instructors-card-v2 img[src*="dell"],
+.instructors-card-v2 img[src*="paypal"], .instructors-card-v2 img[src*="ibm"] {
+    display: none !important;
+}
+
+/* Content & Verification */
+.instructors-content-v2 {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    text-align: center;
+}
+
+.verified-badge {
+    font-size: 0.8rem;
+    color: #16a34a;
+    background: rgba(22, 163, 74, 0.1);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.instructors-content-v2 h3 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+
+.instructors-role-v2 {
+    color: #ff6a00;
+    font-weight: 700;
+    font-size: 1rem;
+    background: rgba(255, 106, 0, 0.05);
+    padding: 4px 16px;
+    border-radius: 8px;
+}
+
+.instructors-content-v2 p {
+    color: #475569;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Socials */
+.instructors-social-v2 {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.social-link {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #f8f9fa;
+    color: #1a1d23;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.22s ease, background 0.22s ease, color 0.22s ease;
+    text-decoration: none;
+}
+
+.social-link:hover,
+.social-link:focus {
+    background: #ff6a00;
+    color: #fff;
+    transform: translateY(-3px) scale(1.02);
+}
+
+.social-link:focus-visible { outline: 3px solid rgba(255,106,0,0.18); outline-offset: 2px; }
+
+/* HIGH CONVERSION CTA SECTION */
+.instructors-footer-cta-v2 {
+    background: #0f172a;
+    border-radius: 28px;
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #fff;
+}
+
+.cta-glow {
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255, 106, 0, 0.15) 0%, transparent 70%);
+}
+
+.btn-premium-primary {
+    background: linear-gradient(135deg, #ff6a00, #ff9500);
+    padding: 16px 30px;
+    border-radius: 14px;
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 10px 25px rgba(255, 106, 0, 0.2);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-premium-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(255, 106, 0, 0.4); }
+
+/* Pulse Animation */
+.pulse-dot-v2 { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; box-shadow: 0 0 0 rgba(74, 222, 128, 0.4); animation: pulse-green 2s infinite; }
+
+@keyframes pulse-green {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(74, 222, 128, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+}
+
+/* RESPONSIVE */
+.instructors-footer-cta-v2 { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+@media (max-width: 992px) {
+    .instructors-footer-cta-v2 { flex-direction: column; text-align: center; gap: 24px; padding: 28px; }
+}
+
+@media (max-width: 768px) {
+    .instructors-section { padding: 60px 0; }
+    .instructors-card-v2 { padding: 28px 20px; max-width: 100%; }
+}
+
+@media (max-width: 576px) {
+    .instructors-section { padding: 12px 0; }
+    .instructors-header { margin-bottom: 12px; }
+    .instructors-grid-v2 { gap: 12px; }
+    .instructors-badge-v2 { padding: 6px 14px; font-size: 0.75rem; }
+    .company-name { display: none; }
+    .instructors-card-v2 { padding: 24px 16px; }
+}
+
+/* utility to ensure no unexpected horizontal overflow from big images */
+.instructors-section img { max-width: 100%; height: auto; display: block; }
+
+/* Highlight style for 'Top Tech Giants' visibility */
+.highlight {
+    color: #071022 !important;
+    font-weight: 900;
+    background: linear-gradient(90deg, rgba(255,106,0,0.06), rgba(255,140,50,0.06));
+    padding: 2px 6px;
+    border-radius: 6px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    text-decoration: none;
+}
+
+.instructors-highlight {
+    text-align: center;
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+.instructors-highlight .highlight {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(255,106,0,0.08), rgba(255,140,50,0.06));
+    color: #071022 !important;
+    font-weight: 800;
+    box-shadow: 0 10px 30px rgba(11,18,32,0.03);
+}
+@media (max-width: 768px) {
+    .instructors-highlight .highlight { padding: 4px 10px; font-size: 0.95rem; }
+}
+
+/* Make highlight larger on desktop so it's unmistakable */
+.instructors-highlight .highlight { font-size: clamp(1rem, 1.6vw, 1.5rem); }
+/* tighten spacing so highlight sits visually connected to heading */
+.instructors-header h2 { margin-bottom: 6px; }
+.instructors-highlight { margin-top: 0; margin-bottom: 12px; }

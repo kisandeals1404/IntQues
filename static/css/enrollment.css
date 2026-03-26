@@ -1,0 +1,566 @@
+/* Enrollment page */
+.enrollment-page-main {
+    padding-top: 36px;
+    padding-bottom: 72px;
+    background: linear-gradient(180deg, var(--site-gradient-start, #fffbf7) 0%, var(--site-gradient-end, #ffffff) 100%);
+}
+
+.signup-step {
+    animation: fadeIn 300ms ease;
+}
+
+.login-step {
+    animation: fadeIn 300ms ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Loader Spinners */
+.btn-loader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.btn-loader-small {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+}
+
+.btn-loader-inline {
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-loader[hidden],
+.btn-loader-small[hidden],
+.btn-loader-inline[hidden] {
+    display: none !important;
+}
+
+.action-slot {
+    position: relative;
+    width: min(100%, 260px);
+    min-height: 48px;
+}
+
+.action-slot .enroll-btn-primary {
+    width: 100%;
+    min-width: 0;
+}
+
+.btn-loader-overlay {
+    position: absolute;
+    inset: 0;
+    justify-content: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ff6a00, #ff7a1a);
+    box-shadow: 0 10px 24px rgba(255, 106, 0, 0.22);
+    padding: 12px 18px;
+}
+
+.login-step-actions .form-actions-row {
+    max-width: 520px;
+    margin: 0 auto;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.login-step-actions .action-slot {
+    flex: 1 1 260px;
+    width: auto;
+    max-width: 320px;
+}
+
+.login-step-actions #verifyLoginOtpBtn {
+    background: linear-gradient(135deg, #ff6a00, #ff7a1a);
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(255, 106, 0, 0.22);
+}
+
+.login-step-actions #backToLoginEmailBtn {
+    min-width: 160px;
+}
+
+.enroll-btn-primary,
+.enroll-btn-secondary,
+.enroll-btn-ghost,
+.link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 600ms linear infinite;
+}
+
+.spinner-small {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-top-color: #0f172a;
+    border-radius: 50%;
+    animation: spin 600ms linear infinite;
+}
+
+.spinner-tiny {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 1.5px solid rgba(255, 106, 0, 0.2);
+    border-top-color: #ff6a00;
+    border-radius: 50%;
+    animation: spin 600ms linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.enroll-section {
+    padding: 36px 0 64px;
+    background:
+        radial-gradient(circle at 10% 5%, rgba(255, 106, 0, 0.06), transparent 42%),
+        linear-gradient(180deg, var(--site-gradient-start, #fffbf7) 0%, var(--site-gradient-end, #ffffff) 100%);
+}
+
+.enroll-shell {
+    max-width: 860px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 22px;
+    padding: clamp(20px, 3vw, 34px);
+    box-shadow: 0 18px 48px rgba(15, 23, 42, 0.10);
+}
+
+.enroll-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.enroll-badge {
+    display: inline-block;
+    background: rgba(255, 106, 0, 0.1);
+    color: #ff6a00;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+}
+
+.enroll-header h1 {
+    margin: 0;
+    color: #0f172a;
+    font-size: clamp(1.5rem, 3.4vw, 2.3rem);
+    letter-spacing: -0.02em;
+}
+
+.enroll-header p {
+    margin: 10px auto 0;
+    max-width: 660px;
+    color: #64748b;
+    line-height: 1.65;
+}
+
+.theme-link,
+.theme-link:visited {
+    color: #ff6a00;
+    font-weight: 700;
+    text-decoration-color: rgba(255, 106, 0, 0.45);
+}
+
+.theme-link:hover {
+    color: #e95f00;
+    text-decoration-color: rgba(233, 95, 0, 0.65);
+}
+
+.step-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.step-header h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #0f172a;
+}
+
+.step-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 5px 10px;
+    background: #f1f5f9;
+    color: #334155;
+}
+
+.step-pill.active {
+    background: rgba(255, 106, 0, 0.14);
+    color: #d94808;
+}
+
+.enroll-grid {
+    display: grid;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.enroll-grid.two-col {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-field label {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.form-field input,
+.form-field select {
+    border: 1px solid #dbe2ea;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 0.95rem;
+    color: #0f172a;
+    background: #fff;
+}
+
+.form-field input[readonly] {
+    background: #f8fafc;
+    color: #475569;
+    cursor: not-allowed;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+    border-color: #ff6a00;
+    outline: 3px solid rgba(255, 106, 0, 0.15);
+    outline-offset: 1px;
+}
+
+.form-field input.is-invalid,
+.form-field select.is-invalid,
+.otp-row input.is-invalid {
+    border-color: #dc2626 !important;
+    background: #fff5f5;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+}
+
+.form-field input.is-invalid:focus,
+.form-field select.is-invalid:focus,
+.otp-row input.is-invalid:focus {
+    outline: none;
+}
+
+.form-actions {
+    margin-top: 6px;
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+.form-actions-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.form-actions-row .enroll-btn-primary,
+.form-actions-row .enroll-btn-ghost {
+    min-width: 210px;
+    justify-content: center;
+    text-align: center;
+}
+
+.form-hint {
+    margin: 10px auto 0;
+    color: #64748b;
+    font-size: 0.88rem;
+    text-align: center;
+}
+
+.form-hint a,
+.form-hint a:visited {
+    color: #ff6a00;
+    font-weight: 700;
+    text-decoration-color: rgba(255, 106, 0, 0.45);
+}
+
+.form-hint a:hover {
+    color: #e95f00;
+    text-decoration-color: rgba(233, 95, 0, 0.65);
+}
+
+.enroll-btn-primary,
+.enroll-btn-secondary {
+    border: 0;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 800;
+    transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.enroll-btn-primary {
+    background: linear-gradient(135deg, #ff6a00, #ff7a1a);
+    color: #fff;
+    padding: 12px 18px;
+    box-shadow: 0 10px 24px rgba(255, 106, 0, 0.22);
+}
+
+.enroll-btn-ghost {
+    border: 1px solid #dbe2ea;
+    background: #fff;
+    color: #334155;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    padding: 12px 16px;
+    transition: all 220ms ease;
+}
+
+.enroll-btn-ghost:hover {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+}
+
+.enroll-btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+.enroll-btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.enroll-btn-secondary {
+    background: #0f172a;
+    color: #fff;
+    padding: 10px 14px;
+    min-width: 92px;
+}
+
+.link-btn {
+    border: 0;
+    background: transparent;
+    color: #0f172a;
+    padding: 0;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+
+.otp-panel {
+    border-top: 1px solid #edf1f5;
+    margin-top: 14px;
+    padding-top: 24px;
+}
+
+.otp-verification-form {
+    padding: 0;
+}
+
+.otp-step {
+    margin-bottom: 8px;
+}
+
+.otp-intro {
+    margin: 0 0 14px;
+    color: #64748b;
+    font-size: 0.92rem;
+}
+
+.otp-grid {
+    display: grid;
+    gap: 16px;
+}
+
+.otp-grid.two-col {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.otp-card {
+    border: 1px solid #e5ebf2;
+    border-radius: 14px;
+    padding: 14px;
+    background: linear-gradient(180deg, #fafcff 0%, #f8fbff 100%);
+}
+
+.otp-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.otp-card-head h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.verify-badge {
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #334155;
+}
+
+.verify-badge.verified {
+    background: rgba(16, 185, 129, 0.14);
+    color: #047857;
+}
+
+.otp-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.otp-row input {
+    flex: 1;
+    border: 1px solid #d5dde8;
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+.otp-note {
+    margin: 8px 0 0;
+    color: #64748b;
+    font-size: 0.82rem;
+}
+
+.submit-wrap {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+}
+
+.enroll-message {
+    position: fixed;
+    top: 92px;
+    right: 20px;
+    z-index: 1100;
+    min-width: min(360px, calc(100vw - 32px));
+    max-width: 420px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    color: #fff;
+    font-weight: 700;
+    line-height: 1.45;
+    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.20);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 220ms ease, transform 220ms ease, visibility 220ms ease;
+    pointer-events: none;
+    background: #0f172a;
+}
+
+.enroll-message.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.enroll-message.error {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: #fff;
+}
+
+.enroll-message.success {
+    background: linear-gradient(135deg, #047857, #10b981);
+}
+
+.enroll-message.info {
+    background: linear-gradient(135deg, #1e293b, #334155);
+}
+
+@media (max-width: 768px) {
+    .enroll-grid.two-col,
+    .otp-grid.two-col {
+        grid-template-columns: 1fr;
+    }
+
+    .enrollment-page-main {
+        padding-bottom: 24px;
+    }
+
+    .form-actions-row {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-actions-row .enroll-btn-primary,
+    .form-actions-row .enroll-btn-ghost {
+        width: min(100%, 320px);
+    }
+
+    .action-slot {
+        width: min(100%, 320px);
+    }
+
+    .login-step-actions .form-actions-row {
+        flex-wrap: wrap;
+    }
+
+    .login-step-actions #backToLoginEmailBtn {
+        width: min(100%, 320px);
+    }
+
+    .submit-wrap {
+        align-items: center;
+    }
+
+    .enroll-message {
+        top: 80px;
+        right: 12px;
+        left: 12px;
+        min-width: auto;
+        max-width: none;
+    }
+}
+

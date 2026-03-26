@@ -1,0 +1,224 @@
+/* ========================================
+CERTIFICATE SECTION - PREMIUM SAAS THEME
+======================================== */
+
+.certificate-section {
+    /* tighter, consistent vertical spacing with other sections */
+    padding: clamp(28px, 6vw, 64px) 0;
+    background: linear-gradient(180deg, #fffaf7 0%, #fff 100%); /* subtle warm background to separate section */
+    position: relative;
+    overflow: hidden;
+}
+
+/* GRID LAYOUT */
+.certificate-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: clamp(20px, 4vw, 48px);
+    width: 100%;
+    max-width: 1100px; /* match other sections' container width */
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+    margin-top: 12px;
+}
+
+/* TOP HEADER */
+.certificate-top {
+    text-align: center;
+    max-width: 1100px;
+    margin: 0 auto 18px;
+    padding: 0 20px;
+}
+
+/* LEFT CONTENT */
+.certificate-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: rgba(255, 106, 0, 0.08);
+    color: var(--primary-orange);
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 16px;
+}
+
+.certificate-content h2 {
+    font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+    font-weight: 800;
+    color: var(--secondary-dark);
+    line-height: 1.08;
+    margin-bottom: 14px;
+    letter-spacing: -0.02em;
+}
+
+.certificate-desc {
+    font-size: 1rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 28px;
+    max-width: 58ch; /* readable measure */
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+/* Make the top paragraph span the full row (override the 58ch constraint) */
+.certificate-top .certificate-desc {
+    max-width: 100% !important;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+}
+
+/* but keep very long lines readable on very large viewports by capping at container width */
+@media (min-width: 1400px) {
+    .certificate-top .certificate-desc { max-width: 1100px; }
+}
+
+/* BENEFITS LIST */
+.certificate-benefits-box { margin-bottom: 28px; }
+
+.certificate-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.certificate-benefits li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+    font-size: 1rem;
+    color: var(--text-main);
+}
+
+.benefit-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--primary-gradient);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 3px;
+    box-shadow: 0 6px 18px rgba(255, 106, 0, 0.12);
+}
+
+.certificate-benefits li strong { color: var(--secondary-dark); font-weight: 700; }
+
+/* ACTIONS */
+.certificate-actions { display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; }
+
+.certificate-btn-primary {
+    display: inline-block;
+    background: var(--primary-gradient);
+    color: white;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: transform .22s ease, box-shadow .22s ease;
+    text-align: center;
+    box-shadow: 0 12px 30px rgba(255, 106, 0, 0.18);
+}
+.certificate-btn-primary:hover,
+.certificate-btn-primary:focus {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px rgba(255,106,0,0.22);
+    outline: none;
+}
+
+.certificate-live-tag { display:flex; align-items:center; gap:10px; color:var(--text-muted); }
+
+/* RIGHT VISUAL AREA */
+.certificate-visual {
+    position: relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow: hidden;
+}
+.certificate-image-container {
+    position: relative;
+    z-index: 2;
+    transition: transform .36s ease;
+    max-width: 520px;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 18px;
+}
+
+.certificate-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 14px;
+}
+
+/* FLOATING CARDS */
+.certificate-floating-card {
+    position: absolute;
+    background: #fff;
+    padding: 10px 14px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 10px 30px rgba(11,18,34,0.06);
+    border: 1px solid var(--border-color);
+    font-weight: 700;
+    font-size: 0.85rem;
+    z-index: 3;
+    animation: float 5s ease-in-out infinite;
+    transform: none;
+}
+.certificate-floating-card i { color: var(--primary-orange); }
+.top-right {
+    top: 14px;
+    right: 14px;
+}
+.bottom-left {
+    bottom: 14px;
+    left: 14px;
+    animation-delay: 1.6s;
+}
+
+/* Accessibility: focusable floating cards (if interactive) */
+.certificate-floating-card:focus { outline: 3px solid rgba(255,106,0,0.12); outline-offset: 4px; }
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 1200px) {
+    .certificate-grid { gap: 32px; max-width: 980px; }
+}
+
+@media (max-width: 992px) {
+    .certificate-grid { grid-template-columns: 1fr; text-align: center; }
+    .certificate-content { order: 2; }
+    .certificate-visual { order: 1; margin-bottom: 28px; }
+    .certificate-benefits li { text-align: left; }
+    .certificate-btn-primary { margin: 0 auto; }
+    .certificate-live-tag { justify-content:center; }
+    .certificate-image-container { max-width: 420px; }
+}
+
+@media (max-width: 768px) {
+    .certificate-section { padding: 20px 0; }
+    .certificate-grid { padding: 0 16px; }
+    .certificate-image-container { max-width: 320px; }
+    .certificate-btn-primary { width: 100%; padding: 12px 16px; display:block; }
+    .certificate-actions { flex-direction: column; align-items: stretch; }
+    .certificate-floating-card { display: none; }
+    .certificate-desc { margin-left: auto; margin-right: auto; }
+}
+
+/* Ensure no horizontal overflow from images or floats */
+.certificate-section, .certificate-grid, .certificate-visual { overflow-x: hidden; }

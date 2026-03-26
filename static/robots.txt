@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+Allow: /paymentSuccess
+Allow: /privacy-policy
+Allow: /terms-of-service
+Allow: /cookie-policy
+Allow: /signup
+Allow: /login
+Allow: /my-account
+Allow: /my-enrollments
+Allow: /enrollment-success
+Allow: /static/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /logout
+
+Sitemap: https://intques.com/sitemap.xml
+
+# Crawl delay for better server resource management
+Crawl-delay: 1
+
