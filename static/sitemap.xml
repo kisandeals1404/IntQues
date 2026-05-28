@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    <!-- ── Homepage ──────────────────────────────────────────── -->
+    <url>
+        <loc>https://intques.com/</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- ── Live coding course (₹10K flagship) ────────────────── -->
+    <url>
+        <loc>https://intques.com/live-coding-course</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.95</priority>
+    </url>
+
+    <!-- ── Workshops ─────────────────────────────────────────── -->
+    <url>
+        <loc>https://intques.com/sql-workshop</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.90</priority>
+    </url>
+
+    <url>
+        <loc>https://intques.com/java-workshop</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.90</priority>
+    </url>
+
+    <url>
+        <loc>https://intques.com/kafka-workshop</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.90</priority>
+    </url>
+
+    <url>
+        <loc>https://intques.com/springboot-workshop</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.90</priority>
+    </url>
+
+    <!-- ── Registration ──────────────────────────────────────── -->
+    <url>
+        <loc>https://intques.com/signup</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.70</priority>
+    </url>
+
+    <!-- ── Legal / policy pages ──────────────────────────────── -->
+    <url>
+        <loc>https://intques.com/privacy-policy</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.50</priority>
+    </url>
+
+    <url>
+        <loc>https://intques.com/terms-of-service</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.50</priority>
+    </url>
+
+    <url>
+        <loc>https://intques.com/cookie-policy</loc>
+        <lastmod>2026-05-28</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.40</priority>
+    </url>
+
+</urlset>

@@ -1,0 +1,391 @@
+/* SCOPED WRAPPER */
+.cp-premium-wrapper {
+    --brand-orange: #ff6a00;
+    --brand-orange-soft: rgba(255, 106, 0, 0.08);
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --glass-border: rgba(15, 23, 42, 0.08);
+
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, #ffffff 0%, #fffaf6 100%);
+    padding: clamp(24px, 5.6vw, 64px) 0; /* reduced top padding for tighter hero overlap */
+    font-family: 'Inter', -apple-system, sans-serif;
+    box-sizing: border-box;
+}
+
+/* subtle top separator to visually separate from previous section */
+.cp-premium-wrapper:before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+    width: 100%;
+    height: 44px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.0) 0%, rgba(255,250,245,0.9) 100%);
+    pointer-events: none;
+}
+
+/* container to match other sections */
+.cp-container {
+    width: 100%;
+    max-width: 1100px; /* slightly narrower to avoid full-bleed look */
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+    box-sizing: border-box;
+}
+
+/* BACKGROUND DECOR */
+.cp-bg-glow {
+    position: absolute;
+    top: -6%;
+    right: -6%;
+    width: 520px;
+    height: 520px;
+    background: radial-gradient(circle, rgba(255,106,0,0.06) 0%, transparent 68%);
+    pointer-events: none;
+}
+
+/* small keyframes used locally for this section only */
+@keyframes cp-pulse {
+    0% { transform: scale(0.9); opacity: 0.9; }
+    70% { transform: scale(1.35); opacity: 0.18; }
+    100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes cp-bob {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+    100% { transform: translateY(0); }
+}
+
+/* HEADER STYLES */
+.cp-badge {
+    background: linear-gradient(180deg, #fff 0%, #fff 100%);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 6px 18px rgba(12, 15, 20, 0.04);
+    padding: 8px 18px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px; /* reduced to tighten spacing */
+    transition: transform 0.28s cubic-bezier(.2,.9,.2,1), box-shadow 0.28s;
+}
+
+/* small animated pulse icon inside badge */
+.cp-pulse {
+    position: relative;
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    border-radius: 999px;
+    background: var(--brand-orange);
+    box-shadow: 0 6px 20px rgba(255,106,0,0.16);
+    flex: 0 0 auto;
+}
+.cp-pulse::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: var(--brand-orange-soft);
+    animation: cp-pulse 1.6s ease-out infinite;
+}
+.cp-pulse-icon {
+    width:10px; height:10px; border-radius:50%; background: #fff; position:absolute; left:1px; top:1px;
+}
+
+.cp-badge-text {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.72rem;
+    color: var(--text-main);
+    font-weight: 700;
+}
+
+.cp-title {
+    font-size: clamp(1.8rem, 4.2vw, 2.8rem);
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    margin-bottom: 12px; /* reduced */
+    text-align: center;
+}
+
+.cp-subtitle {
+    max-width: 720px;
+    margin: 0 auto;
+    font-size: 1rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+/* LOGO GRID ARCHITECTURE */
+.cp-logos-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px 22px; /* row-gap column-gap */
+    margin-top: 28px;
+    align-items: center;
+}
+
+.cp-logo-card {
+    position: relative;
+    background: transparent;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.35s;
+    border: 1px solid transparent;
+    padding: 10px 10px;
+    min-height: 72px; /* keeps cards consistent without huge empty areas */
+    box-sizing: border-box;
+}
+
+.cp-logo-inner img {
+    max-height: 44px;
+    max-width: 160px;
+    width: auto;
+    height: auto;
+    filter: none !important; /* ensure original colors */
+    opacity: 1;
+    transition: transform 0.35s ease, opacity 0.3s ease;
+    position: relative;
+    z-index: 2;
+    display:block;
+    margin:0 auto;
+    object-fit: contain;
+}
+
+.cp-logo-inner {
+    position: relative;
+    width: 100%;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cp-logo-fallback {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(255, 106, 0, 0.1);
+    color: #ff6a00;
+    font-size: 1rem;
+    transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+.cp-logo-inner img.company-logo {
+    opacity: 0;
+    transform: translateY(3px);
+}
+
+.cp-logo-card.logo-loaded .cp-logo-inner img.company-logo {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.cp-logo-card.logo-loaded .cp-logo-fallback {
+    opacity: 0;
+    transform: scale(0.92);
+}
+
+.cp-logo-inner img.company-logo {
+    background-color: transparent;
+}
+
+.cp-logo-inner img.company-logo[aria-busy="true"] {
+    opacity: 0.6;
+}
+
+.cp-logo-inner img.company-logo.img-error {
+    opacity: 0.4;
+}
+
+/* PREMIUM HOVER STATE */
+.cp-logo-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 36px rgba(12,15,20,0.06);
+}
+
+.cp-logo-card:hover .cp-logo-inner img {
+    transform: scale(1.05);
+}
+
+.cp-logo-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, var(--brand-orange-soft) 0%, transparent 68%);
+    opacity: 0;
+    transition: opacity 0.36s ease;
+    border-radius: 18px;
+}
+
+.cp-logo-card:hover .cp-logo-glow { opacity: 1; }
+
+/* CONVERSION FOOTER */
+.cp-footer-cta {
+    margin-top: 48px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+.cp-main-button {
+    background: linear-gradient(135deg, #ff6a00 0%, #ff8c3a 100%);
+    color: white;
+    padding: 16px 36px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 10px 30px rgba(255, 106, 0, 0.24);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cp-main-button:hover { transform: translateY(-3px); box-shadow: 0 18px 40px rgba(255,106,0,0.35); }
+
+.cp-main-button svg { width: 18px; height: 18px; transition: transform 0.28s ease; }
+.cp-main-button:hover svg { transform: translateX(4px); }
+
+/* HIDE native scrollbar but keep scroll for accessibility */
+.cp-logos-scroll {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+.cp-logos-scroll::-webkit-scrollbar { display: none; }
+
+/* RESPONSIVE REFINEMENTS */
+@media (max-width: 992px) {
+    .cp-logos-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-top: 26px; }
+}
+
+@media (max-width: 768px) {
+    .cp-premium-wrapper {
+        padding: 40px 0; /* consistent vertical spacing */
+    }
+    .cp-title {
+        font-size: 1.8rem; /* larger, better hierarchy */
+        line-height: 1.2;
+        margin-bottom: 12px;
+        padding: 0 10px;
+    }
+    .cp-subtitle {
+        font-size: 1rem;
+        padding: 0 15px;
+        line-height: 1.6;
+        margin-bottom: 12px;
+    }
+
+    /* MOBILE: compact grid of small logos (no swiping) */
+    .cp-logos-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 columns on small screens */
+        gap: 12px;
+        margin-top: 20px;
+        overflow: visible; /* disable horizontal scroll */
+        padding: 0 20px; /* align with container padding */
+        scroll-snap-type: none;
+        -webkit-overflow-scrolling: auto;
+        justify-items: center;
+        align-items: center;
+    }
+
+    .cp-logos-grid .cp-logo-card {
+        flex: 0 0 auto;
+        width: auto;
+        min-width: 0;
+        padding: 6px 8px;
+        border-radius: 8px;
+        background: transparent; /* keep logos flat */
+        border: none;
+        box-shadow: none;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cp-logo-inner img {
+        max-height: 28px; /* smaller icons */
+        max-width: 100px;
+        width: auto;
+        object-fit: contain;
+        filter: none !important;
+    }
+
+    .cp-logo-inner img.company-logo {
+        opacity: 0;
+    }
+
+    .cp-logo-card.logo-loaded .cp-logo-inner img.company-logo {
+        opacity: 1;
+    }
+
+    .cp-footer-cta {
+        margin-top: 24px;
+        padding: 0 20px;
+    }
+
+    .cp-main-button {
+        width: 100%;
+        max-width: 100%;
+        padding: 16px 24px;
+        justify-content: center;
+        border-radius: 14px;
+        font-size: 1.05rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .cp-premium-wrapper {
+        padding: 32px 0;
+    }
+    .cp-container { padding-left: 0; padding-right: 0; } /* container edges flush */
+    .cp-title { font-size: 1.5rem; }
+    .cp-subtitle { font-size: 0.95rem; }
+
+    /* ensure small icons with tighter grid on very small devices */
+    .cp-logos-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    .cp-logos-grid .cp-logo-card {
+        width: auto;
+        min-width: 0;
+        padding: 6px;
+        min-height: 44px;
+        border-radius: 8px;
+    }
+    .cp-logo-inner img {
+        max-height: 24px;
+    }
+
+    .cp-logo-inner img.company-logo {
+        opacity: 0;
+    }
+
+    .cp-logo-card.logo-loaded .cp-logo-inner img.company-logo {
+        opacity: 1;
+    }
+}

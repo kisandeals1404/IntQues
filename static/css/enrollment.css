@@ -1,0 +1,1128 @@
+/* =========================================
+   ENROLLMENT PAGE v2 — Full Redesign
+   ========================================= */
+
+/* ── Page shell ─────────────────────────── */
+.enrollment-page-main {
+    min-height: calc(100vh - 68px);
+    background: #f4f6fb;
+    padding-bottom: 80px;
+}
+
+/* ── Two-column layout ──────────────────── */
+.enroll-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 28px;
+    align-items: start;
+    padding-top: 32px;
+    padding-bottom: 32px;
+}
+
+/* ── Left column header ─────────────────── */
+.enroll-col-hdr {
+    margin-bottom: 22px;
+}
+
+.enroll-col-hdr h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.025em;
+    margin-bottom: 4px;
+}
+
+.enroll-col-hdr p {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0;
+}
+
+/* ── Course cards list ──────────────────── */
+.offering-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+/* ── Individual course card ─────────────── */
+.offering-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    background: #ffffff;
+    border: 1.5px solid rgba(15, 23, 42, 0.08);
+    border-left: 4px solid transparent;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: border-color 200ms ease, box-shadow 200ms ease, background 200ms ease;
+    outline: none;
+    user-select: none;
+}
+
+.offering-row:hover {
+    border-color: rgba(255, 106, 0, 0.25);
+    border-left-color: rgba(255, 106, 0, 0.25);
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08);
+}
+
+.offering-row:focus-visible {
+    box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.25);
+}
+
+.offering-row.selected {
+    border-color: rgba(255, 106, 0, 0.35);
+    border-left-color: #ff6a00;
+    background: #fffcf9;
+    box-shadow: 0 6px 24px rgba(255, 106, 0, 0.12);
+}
+
+/* Radio circle */
+.ec-radio { flex-shrink: 0; }
+
+.ec-radio-inner {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #cbd5e1;
+    border-radius: 50%;
+    background: #fff;
+    transition: border-color 180ms ease, border-width 180ms ease;
+    box-sizing: border-box;
+}
+
+.offering-row.selected .ec-radio-inner {
+    border-color: #ff6a00;
+    border-width: 6px;
+}
+
+/* Card body */
+.ec-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.ec-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+}
+
+.ec-name {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.ec-badge {
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    flex-shrink: 0;
+}
+
+.ec-badge.workshop   { background: rgba(14, 165, 233, 0.10); color: #0284c7; }
+.ec-badge.live       { background: rgba(255, 106, 0, 0.12);  color: #ea580c; }
+
+.ec-desc {
+    font-size: 0.84rem;
+    color: #64748b;
+    margin: 0 0 8px;
+    line-height: 1.55;
+}
+
+.ec-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.ec-meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748b;
+    background: #f4f6fb;
+    padding: 3px 9px;
+    border-radius: 6px;
+}
+
+.ec-meta-chip i { font-size: 10px; color: #94a3b8; }
+
+/* Price + check */
+.ec-right {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.ec-price {
+    font-size: 1.18rem;
+    font-weight: 900;
+    color: #ff6a00;
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+}
+
+.ec-check-icon {
+    font-size: 20px;
+    color: #e2e8f0;
+    transition: color 200ms ease, transform 200ms ease;
+    line-height: 1;
+}
+
+.offering-row.selected .ec-check-icon {
+    color: #ff6a00;
+    transform: scale(1.1);
+}
+
+/* ── Email confirmation note ────────────── */
+.enroll-email-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.83rem;
+    color: #94a3b8;
+    padding: 11px 16px;
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.07);
+    border-radius: 10px;
+    margin-top: 4px;
+}
+
+.enroll-email-note i { color: #cbd5e1; font-size: 13px; flex-shrink: 0; }
+.enroll-email-note strong { color: #64748b; }
+
+/* ── No results ─────────────────────────── */
+.offering-no-results {
+    text-align: center;
+    padding: 56px 24px;
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1.5px dashed rgba(15, 23, 42, 0.10);
+}
+
+.offering-no-results i {
+    font-size: 2.4rem;
+    color: #cbd5e1;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.offering-no-results p { font-size: 0.95rem; color: #64748b; margin: 0; }
+.offering-no-results p + p { margin-top: 6px; }
+
+/* ── Sidebar ────────────────────────────── */
+.enroll-sidebar {
+    position: sticky;
+    top: 88px; /* below fixed navbar */
+}
+
+.enroll-sidebar-card {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.09);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 28px rgba(15, 23, 42, 0.09);
+}
+
+/* Sidebar sections */
+.esb-block {
+    padding: 20px 22px;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.esb-block:last-child { border-bottom: none; }
+
+/* User row */
+.esb-user-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.esb-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff6a00, #ff8c3a);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.esb-user-info { flex: 1; min-width: 0; }
+
+.esb-user-name {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.esb-user-email {
+    font-size: 0.76rem;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+}
+
+.esb-edit-btn {
+    color: #cbd5e1;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 180ms ease;
+    flex-shrink: 0;
+    padding: 4px;
+}
+
+.esb-edit-btn:hover { color: #ff6a00; }
+
+/* Order block */
+.esb-block-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: #94a3b8;
+    margin-bottom: 14px;
+}
+
+/* Empty state */
+.esb-empty {
+    text-align: center;
+    padding: 14px 0 6px;
+}
+
+.esb-empty i {
+    font-size: 22px;
+    color: #e2e8f0;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.esb-empty p {
+    font-size: 0.84rem;
+    color: #94a3b8;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Selected state */
+.esb-selected { display: flex; flex-direction: column; gap: 12px; }
+.esb-selected[hidden] { display: none !important; }
+
+.esb-selected-name {
+    font-size: 0.96rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.35;
+}
+
+.esb-price-pill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 106, 0, 0.06);
+    border: 1px solid rgba(255, 106, 0, 0.12);
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+.esb-price-lbl {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.esb-price-val {
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: #ff6a00;
+    letter-spacing: -0.02em;
+}
+
+/* CTA block */
+.esb-cta-block { padding: 18px 22px; }
+
+.esb-action-slot {
+    position: relative;
+    min-height: 48px;
+    margin-bottom: 2px;
+}
+
+.esb-pay-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 13px 20px;
+    font-size: 0.96rem;
+    font-weight: 800;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ff6a00, #ff7a1a);
+    color: #ffffff;
+    box-shadow: 0 10px 28px rgba(255, 106, 0, 0.24);
+    transition: transform 220ms ease, box-shadow 220ms ease, opacity 180ms ease;
+}
+
+.esb-pay-btn:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 36px rgba(255, 106, 0, 0.32);
+}
+
+.esb-pay-btn:disabled {
+    opacity: 0.40;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.esb-loader {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ff6a00, #ff7a1a);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    box-shadow: 0 10px 28px rgba(255, 106, 0, 0.24);
+}
+
+.esb-loader[hidden] { display: none !important; }
+
+.esb-cancel-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    margin-top: 8px;
+    padding: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #94a3b8;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 180ms ease;
+}
+
+.esb-cancel-btn:hover { color: #475569; }
+.esb-cancel-btn[hidden] { display: none !important; }
+
+/* Trust badges */
+.esb-trust {
+    padding: 14px 22px 18px;
+    background: #f9fafc;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.esb-trust-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.esb-trust-item i { font-size: 12px; color: #94a3b8; width: 14px; flex-shrink: 0; }
+.esb-trust-item .fa-whatsapp { color: #25d366; }
+
+/* ── Mobile confirm bar (hidden on desktop) ── */
+.enroll-confirm-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    background: #ffffff;
+    border-top: 1px solid rgba(15, 23, 42, 0.10);
+    box-shadow: 0 -6px 32px rgba(15, 23, 42, 0.12);
+    padding: 12px 16px 16px;
+    display: none; /* hidden on desktop, shown on mobile via media query */
+}
+
+.enroll-confirm-bar[hidden] { display: none !important; }
+
+.enroll-confirm-inner {
+    max-width: 560px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.enroll-confirm-info { flex: 1; min-width: 0; }
+
+.enroll-confirm-label {
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #94a3b8;
+    margin-bottom: 1px;
+}
+
+.enroll-confirm-name {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.enroll-confirm-price {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #ff6a00;
+}
+
+.enroll-confirm-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.mobile-action-slot {
+    position: relative;
+    min-height: 44px;
+}
+
+.mobile-pay-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 18px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ff6a00, #ff7a1a);
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(255, 106, 0, 0.24);
+    white-space: nowrap;
+    transition: transform 200ms ease;
+}
+
+.mobile-pay-btn:active { transform: scale(0.98); }
+
+.mobile-pay-loader {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ff6a00, #ff7a1a);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.88rem;
+}
+
+.mobile-pay-loader[hidden] { display: none !important; }
+
+.mobile-change-btn {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: 1px solid #dbe2ea;
+    background: #ffffff;
+    color: #475569;
+    border-radius: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 180ms ease;
+}
+
+.mobile-change-btn:hover { background: #f8fafc; }
+
+.enrollment-page-main.has-confirm-bar { padding-bottom: 110px; }
+
+/* ── Spinner ─────────────────────────────── */
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: enroll-spin 600ms linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes enroll-spin { to { transform: rotate(360deg); } }
+
+/* ── Toast notification ─────────────────── */
+.enroll-message {
+    position: fixed;
+    top: 82px;
+    right: 20px;
+    z-index: 1200;
+    min-width: min(360px, calc(100vw - 32px));
+    max-width: 420px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.22);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 220ms ease, transform 220ms ease, visibility 220ms ease;
+    pointer-events: none;
+    background: #0f172a;
+}
+
+.enroll-message.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.enroll-message.error   { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+.enroll-message.success { background: linear-gradient(135deg, #047857, #10b981); }
+.enroll-message.info    { background: linear-gradient(135deg, #1e293b, #334155); }
+
+/* ── Theme link ─────────────────────────── */
+.theme-link, .theme-link:visited {
+    color: #ff6a00;
+    font-weight: 700;
+    text-decoration-color: rgba(255, 106, 0, 0.40);
+}
+
+.theme-link:hover { color: #e05800; }
+
+/* ── Responsive ─────────────────────────── */
+
+/* Collapse to single column at tablet */
+@media (max-width: 900px) {
+    .enroll-layout {
+        grid-template-columns: 1fr;
+        padding-top: 24px;
+    }
+
+    /* Sidebar hidden on mobile — mobile bar takes over */
+    .enroll-sidebar { display: none !important; }
+
+    /* Show mobile confirm bar when triggered by JS */
+    .enroll-confirm-bar:not([hidden]) { display: block; }
+}
+
+@media (max-width: 768px) {
+    .enroll-confirm-inner {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .enroll-confirm-actions {
+        width: 100%;
+    }
+
+    .mobile-action-slot { flex: 1; }
+    .mobile-pay-btn { width: 100%; justify-content: center; }
+
+    .enroll-message {
+        top: 76px;
+        right: 12px;
+        left: 12px;
+        min-width: auto;
+        max-width: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .enroll-col-hdr h1 { font-size: 1.3rem; }
+
+    .offering-row {
+        padding: 14px 16px;
+        gap: 12px;
+    }
+
+    .ec-icon { width: 40px; height: 40px; font-size: 16px; border-radius: 11px; }
+    .ec-name { font-size: 0.95rem; }
+    .ec-desc { font-size: 0.82rem; }
+    .ec-price { font-size: 1.08rem; }
+    .ec-meta-chip { font-size: 0.75rem; }
+}
+
+/* iOS safe area */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .enroll-confirm-bar:not([hidden]) {
+        padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+    .enrollment-page-main.has-confirm-bar {
+        padding-bottom: calc(110px + env(safe-area-inset-bottom));
+    }
+}
+
+/* =========================================
+   AUTH FORMS — Login & Signup
+   (loaded via pageStyles = ["enrollment"])
+========================================= */
+
+/* Page wrapper reuse */
+.enroll-section {
+    padding: clamp(28px, 5vw, 64px) 0 clamp(40px, 6vw, 80px);
+}
+
+/* Centered card shell */
+.enroll-shell {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 24px;
+    padding: clamp(28px, 4vw, 48px);
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.09);
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Form header block */
+.enroll-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.enroll-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    background: rgba(255, 106, 0, 0.10);
+    color: #ff6a00;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 12px;
+}
+
+.enroll-header h1 {
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.025em;
+    margin-bottom: 6px;
+}
+
+.enroll-header p {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.55;
+}
+
+.enroll-form { width: 100%; }
+
+/* ── Grid layout for form fields ── */
+.enroll-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.enroll-grid.two-col {
+    grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 600px) {
+    .enroll-grid.two-col { grid-template-columns: 1fr; }
+}
+
+/* ── Individual field ── */
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-field label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: 0.01em;
+}
+
+.form-field input {
+    width: 100%;
+    padding: 11px 14px;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    color: #0f172a;
+    font-family: inherit;
+    transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    min-height: 46px;
+    box-sizing: border-box;
+}
+
+.form-field input::placeholder { color: #94a3b8; }
+
+.form-field input:focus {
+    outline: none;
+    background: #ffffff;
+    border-color: #ff6a00;
+    box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.12);
+}
+
+.form-field input:valid:not(:placeholder-shown) {
+    border-color: #10b981;
+    background: #f0fdf4;
+}
+
+/* ── OTP grid (2-column for email + mobile) ── */
+.otp-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.otp-grid.two-col { grid-template-columns: 1fr 1fr; }
+
+@media (max-width: 640px) {
+    .otp-grid.two-col { grid-template-columns: 1fr; }
+}
+
+/* OTP card */
+.otp-card {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 18px;
+}
+
+.otp-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.otp-card-head h3 {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+/* OTP verified state */
+.otp-card.verified {
+    border-color: rgba(16, 185, 129, 0.4);
+    background: #f0fdf4;
+}
+
+/* OTP input + verify button row */
+.otp-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.otp-row input {
+    flex: 1;
+    padding: 11px 14px;
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: 0.1em;
+    font-family: inherit;
+    min-height: 46px;
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.otp-row input::placeholder {
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #94a3b8;
+}
+
+.otp-row input:focus {
+    outline: none;
+    border-color: #ff6a00;
+    box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.12);
+}
+
+/* Verify badge (Pending / Verified) */
+.verify-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: rgba(148, 163, 184, 0.15);
+    color: #64748b;
+}
+
+.verify-badge.verified {
+    background: rgba(16, 185, 129, 0.14);
+    color: #047857;
+}
+
+/* ── Form actions ── */
+.form-actions {
+    margin-top: 20px;
+}
+
+.form-actions-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.action-slot {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Submit wrap (OTP step) */
+.submit-wrap {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.submit-wrap .enroll-btn-primary { min-width: 200px; }
+
+/* ── Primary button ── */
+.enroll-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    padding: 13px 24px;
+    background: linear-gradient(135deg, #ff6a00, #ff7a1a);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+    min-height: 48px;
+    box-shadow: 0 10px 28px rgba(255, 106, 0, 0.20);
+    transition: transform 220ms ease, box-shadow 220ms ease;
+    text-decoration: none;
+}
+
+.enroll-btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 36px rgba(255, 106, 0, 0.28);
+    color: #ffffff;
+}
+
+.enroll-btn-primary:active { transform: translateY(0); }
+
+.enroll-btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ── Secondary verify button (inside OTP row) ── */
+.enroll-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 10px 16px;
+    background: #0f172a;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    min-height: 44px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background 180ms ease, transform 180ms ease;
+}
+
+.enroll-btn-secondary:hover:not(:disabled) {
+    background: #1e293b;
+    transform: translateY(-1px);
+}
+
+.enroll-btn-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ── Ghost back button ── */
+.enroll-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 20px;
+    background: transparent;
+    color: #64748b;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    min-height: 44px;
+    transition: border-color 180ms ease, color 180ms ease, background 180ms ease;
+}
+
+.enroll-btn-ghost:hover {
+    color: #0f172a;
+    border-color: #94a3b8;
+    background: #f8fafc;
+}
+
+/* ── Link button (resend OTP) ── */
+.link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    color: #ff6a00;
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 0;
+    transition: color 180ms ease;
+    text-decoration: none;
+}
+
+.link-btn:hover { color: #e65f00; text-decoration: underline; }
+
+.link-btn:disabled {
+    color: #94a3b8;
+    cursor: not-allowed;
+    text-decoration: none;
+}
+
+/* ── Button loading states ── */
+.btn-loader,
+.btn-loader-overlay {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.btn-loader-small {
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-loader-inline {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Small spinner variants */
+.spinner-small {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(15, 23, 42, 0.15);
+    border-top-color: #0f172a;
+    border-radius: 50%;
+    animation: spinnerSpin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+.spinner-tiny {
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(255, 106, 0, 0.2);
+    border-top-color: #ff6a00;
+    border-radius: 50%;
+    animation: spinnerSpin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spinnerSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Hint text ── */
+.form-hint {
+    font-size: 0.84rem;
+    color: #64748b;
+    line-height: 1.55;
+    margin: 0;
+}
+
+.form-hint a {
+    color: #ff6a00;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.form-hint a:hover { text-decoration: underline; }
+
+/* ── Login/signup step containers ── */
+.login-step,
+.signup-step {
+    width: 100%;
+}
+
+.login-step-actions { margin-top: 20px; }
+
+/* OTP verification form layout */
+.otp-verification-form { width: 100%; }
