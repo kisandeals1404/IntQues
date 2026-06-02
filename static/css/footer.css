@@ -133,7 +133,7 @@
 
 .footer-price-tag {
     display: inline-block;
-    font-size: 0.72rem;
+    font-size: 0.8rem;
     font-weight: 700;
     color: #ff6a00;
     background: rgba(255, 106, 0, 0.12);
@@ -238,7 +238,7 @@
     font-size: 28px;
     text-decoration: none;
     box-shadow: 0 12px 26px rgba(37, 211, 102, 0.35);
-    z-index: 1200;
+    z-index: 1400;
     transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 

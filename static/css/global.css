@@ -79,7 +79,7 @@
     --section-padding-sm: 32px;
 
     /* ── Typography Scale ──────────────── */
-    --text-xs:   0.75rem;   /* 12px */
+    --text-xs:   0.8rem;    /* ~13px */
     --text-sm:   0.875rem;  /* 14px */
     --text-base: 1rem;      /* 16px */
     --text-lg:   1.125rem;  /* 18px */

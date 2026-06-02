@@ -79,7 +79,7 @@
 .od-hero-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
     transition: transform 500ms cubic-bezier(0.2,0.9,0.2,1);
 }
@@ -648,6 +648,71 @@
     font-weight: 600;
     line-height: 1.5;
     padding-top: 4px;
+}
+
+/* ── Why Different ───────────────────────────────────── */
+.od-diff {
+    padding: clamp(48px, 6vw, 80px) 0;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    position: relative;
+}
+.od-diff::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,106,0,0.20), transparent);
+}
+
+.od-diff-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.od-diff-card {
+    background: #ffffff;
+    border: 1px solid rgba(15,23,42,0.07);
+    border-top: 3px solid rgba(255,106,0,0.22);
+    border-radius: 18px;
+    padding: 28px 26px;
+    box-shadow: 0 2px 8px rgba(15,23,42,0.05), 0 8px 24px rgba(15,23,42,0.06);
+    transition: transform 260ms cubic-bezier(0.2,0.9,0.2,1), box-shadow 260ms ease, border-top-color 200ms ease;
+}
+.od-diff-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 16px rgba(15,23,42,0.08), 0 20px 48px rgba(255,106,0,0.09);
+    border-top-color: #ff6a00;
+}
+
+.od-diff-icon {
+    font-size: 1.9rem;
+    line-height: 1;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.od-diff-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    margin: 0 0 10px;
+    line-height: 1.3;
+}
+
+.od-diff-body {
+    font-size: 0.875rem;
+    color: #64748b;
+    line-height: 1.68;
+    margin: 0;
+}
+
+@media (max-width: 900px) {
+    .od-diff-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+    .od-diff-grid { grid-template-columns: 1fr; }
 }
 
 /* ── Instructor ───────────────────────────────────── */

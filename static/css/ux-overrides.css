@@ -469,20 +469,23 @@ h2 { font-size: clamp(1.35rem, 2.6vw, 2.2rem); line-height:1.08; }
    home indicator on iPhone X and newer devices.
    ──────────────────────────────────────────────────────────── */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
-    /* Mobile sticky CTA bar */
-    .mobile-bottom-cta {
-        padding-bottom: calc(10px + env(safe-area-inset-bottom));
-    }
-    /* Body offset to clear the sticky bar */
-    body.has-mobile-bottom-cta {
-        padding-bottom: calc(96px + env(safe-area-inset-bottom));
-    }
-    /* Enrollment confirm bar */
-    .enroll-confirm-bar {
-        padding-bottom: calc(14px + env(safe-area-inset-bottom));
-    }
-    body.has-mobile-bottom-cta .whatsapp-float {
-        bottom: calc(106px + env(safe-area-inset-bottom));
+    @media (max-width: 768px) {
+        /* Mobile sticky CTA bar */
+        .mobile-bottom-cta {
+            padding-bottom: calc(10px + env(safe-area-inset-bottom));
+        }
+        /* Body offset to clear the sticky bar */
+        body.has-mobile-bottom-cta {
+            padding-bottom: calc(96px + env(safe-area-inset-bottom));
+        }
+        /* Enrollment confirm bar */
+        .enroll-confirm-bar {
+            padding-bottom: calc(14px + env(safe-area-inset-bottom));
+        }
+        /* Push WhatsApp button above the mobile CTA bar + iOS home indicator */
+        body.has-mobile-bottom-cta .whatsapp-float {
+            bottom: calc(106px + env(safe-area-inset-bottom));
+        }
     }
 }
 
@@ -1137,6 +1140,420 @@ footer::before {
     .stats-panel::before       { animation: none; }
     footer::before             { animation: none; }
     #main-content              { animation: none; }
+}
+
+/* =============================================
+   PROFESSIONAL POLISH — Depth, Texture,
+   Refined Shadows & Interaction Quality
+============================================= */
+
+/* ── 1. Hero: subtle dot-grid texture ───────
+   Adds professional depth without clutter.   */
+.hero-v3 {
+    background-image:
+        radial-gradient(ellipse at 72% 14%, rgba(255,106,0,0.09) 0%, transparent 46%),
+        radial-gradient(ellipse at  5% 82%, rgba(99,102,241,0.05) 0%, transparent 38%),
+        radial-gradient(rgba(15,23,42,0.048) 1px, transparent 1px),
+        linear-gradient(180deg, #fffdf9 0%, #ffffff 100%) !important;
+    background-size: auto, auto, 26px 26px, auto !important;
+}
+
+/* ── 2. Hero h1 highlight — animated shimmer */
+.h1-highlight {
+    background: linear-gradient(110deg, #e85500 0%, #ff9f1c 35%, #ff6a00 55%, #ff9f1c 80%, #e85500 100%);
+    background-size: 240% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmerSlide 5s linear infinite;
+}
+
+/* ── 3. Hero live badge — elevated glow ──────── */
+.hero-v3-live-badge {
+    background: linear-gradient(135deg, #ffffff 0%, #fffbf5 100%) !important;
+    border: 1px solid rgba(255,106,0,0.18) !important;
+    box-shadow:
+        0 2px 14px rgba(255,106,0,0.12),
+        0 1px 4px rgba(15,23,42,0.06),
+        inset 0 1px 0 rgba(255,255,255,1) !important;
+}
+
+/* ── 4. Hero float cards — premium glass ──────── */
+.hero-float-card {
+    background: rgba(255,255,255,0.94) !important;
+    backdrop-filter: blur(24px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
+    border: 1px solid rgba(255,255,255,0.88) !important;
+    box-shadow:
+        0 8px 32px rgba(15,23,42,0.11),
+        0 2px 8px rgba(15,23,42,0.06),
+        inset 0 1px 0 rgba(255,255,255,0.98) !important;
+}
+
+/* ── 5. Hero outline button — glass look ─────── */
+.hero-v3-btn-outline {
+    background: rgba(255,255,255,0.88) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(15,23,42,0.12) !important;
+}
+.hero-v3-btn-outline:hover {
+    background: rgba(255,251,247,0.96) !important;
+    border-color: rgba(255,106,0,0.38) !important;
+    box-shadow: 0 0 0 3px rgba(255,106,0,0.07) !important;
+}
+
+/* ── 6. Stats panel — layered gradient + depth ── */
+.stats-panel {
+    background: linear-gradient(160deg, #101828 0%, #162038 50%, #0d1526 100%) !important;
+    box-shadow:
+        0 4px 24px rgba(15,23,42,0.22),
+        0 1px 4px rgba(15,23,42,0.14),
+        inset 0 1px 0 rgba(255,255,255,0.04) !important;
+}
+.stat-item:not(:last-child) {
+    border-right: 1px solid rgba(255,255,255,0.055) !important;
+}
+
+/* ── 7. Why section — richer layered dark bg ──── */
+.why-section {
+    background:
+        radial-gradient(ellipse at 18% 50%, rgba(255,106,0,0.13) 0%, transparent 50%),
+        radial-gradient(ellipse at 86% 12%, rgba(99,102,241,0.08) 0%, transparent 40%),
+        radial-gradient(ellipse at 50% 100%, rgba(255,179,71,0.05) 0%, transparent 38%),
+        #0c1526 !important;
+}
+
+/* ── 8. Why cards — better contrast ─────────── */
+.why-card {
+    background: rgba(255,255,255,0.035) !important;
+    border: 1px solid rgba(255,255,255,0.065) !important;
+}
+.why-card:hover {
+    background: rgba(255,255,255,0.065) !important;
+    border-color: rgba(255,106,0,0.28) !important;
+}
+
+/* ── 9. Live course banner — richer bg ───────── */
+.live-course-banner {
+    background:
+        radial-gradient(ellipse at 92% 50%, rgba(255,106,0,0.20) 0%, transparent 52%),
+        radial-gradient(ellipse at 8% 20%, rgba(99,102,241,0.07) 0%, transparent 40%),
+        linear-gradient(135deg, #0f172a 0%, #131f30 50%, #0c1320 100%) !important;
+}
+
+/* ── 10. WIQ section — subtle warm texture ───── */
+.wiq-section {
+    background:
+        radial-gradient(ellipse at 4% 50%, rgba(255,106,0,0.04) 0%, transparent 40%),
+        radial-gradient(ellipse at 96% 30%, rgba(99,102,241,0.025) 0%, transparent 36%),
+        #f8fafc !important;
+}
+
+/* ── 11. Offering detail hero — deeper dark ───── */
+.od-hero {
+    background: linear-gradient(160deg, #0a1020 0%, #111d2e 45%, #0a1020 100%) !important;
+}
+
+/* ── 12. Navbar scrolled — enhanced glass ─────── */
+.navbar.scrolled {
+    background: rgba(255,255,255,0.97) !important;
+    backdrop-filter: blur(28px) saturate(220%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(220%) !important;
+    box-shadow:
+        0 1px 0 rgba(15,23,42,0.05),
+        0 4px 24px rgba(15,23,42,0.07) !important;
+}
+
+/* ── 13. Navbar brand — tighter tracking ─────── */
+.nav-brand-text { letter-spacing: -0.03em; }
+
+/* ── 14. Dropdown shadow — deeper, crisper ───── */
+.nav-dropdown-menu {
+    box-shadow:
+        0 4px 8px rgba(15,23,42,0.06),
+        0 20px 56px rgba(15,23,42,0.16),
+        0 0 0 1px rgba(15,23,42,0.06) !important;
+}
+
+/* ── 15. Cards — unified layered shadow system ── */
+.workshop-card-home {
+    box-shadow:
+        0 1px 2px rgba(15,23,42,0.04),
+        0 3px 12px rgba(15,23,42,0.05) !important;
+}
+.workshop-card-home:hover {
+    box-shadow:
+        0 6px 24px rgba(15,23,42,0.09),
+        0 2px 8px rgba(255,106,0,0.07) !important;
+    transform: translateY(-5px) !important;
+}
+
+.pop-card {
+    box-shadow:
+        0 1px 2px rgba(15,23,42,0.04),
+        0 3px 12px rgba(15,23,42,0.04) !important;
+}
+.pop-card:hover {
+    box-shadow:
+        0 6px 24px rgba(15,23,42,0.08),
+        0 14px 40px rgba(255,106,0,0.09) !important;
+    transform: translateY(-5px) !important;
+}
+
+.of-card {
+    box-shadow:
+        0 1px 2px rgba(15,23,42,0.04),
+        0 3px 12px rgba(15,23,42,0.04) !important;
+}
+.of-card:hover {
+    box-shadow:
+        0 6px 24px rgba(15,23,42,0.09),
+        0 14px 40px rgba(255,106,0,0.08),
+        0 0 0 1px rgba(255,106,0,0.10) !important;
+}
+
+.wiq-card {
+    box-shadow:
+        0 1px 2px rgba(15,23,42,0.04),
+        0 3px 12px rgba(15,23,42,0.04) !important;
+}
+.wiq-card:hover {
+    box-shadow:
+        0 6px 24px rgba(15,23,42,0.08),
+        0 2px 6px rgba(255,106,0,0.06) !important;
+}
+
+/* ── 16. Thumbnail placeholder bg — polished ─── */
+.of-thumb,
+.pop-thumb {
+    background: linear-gradient(135deg, #e8ecf5 0%, #eef1f9 100%) !important;
+}
+
+/* ── 17. Card transition consistency ────────── */
+.workshop-card-home,
+.pop-card,
+.of-card,
+.wiq-card,
+.od-exp-card,
+.testimonials-card {
+    transition:
+        transform 260ms cubic-bezier(0.2,0.9,0.2,1),
+        box-shadow 260ms cubic-bezier(0.2,0.9,0.2,1),
+        border-color 220ms ease !important;
+}
+
+/* ── 18. Testimonials — refined shadow ───────── */
+.testimonials-card {
+    box-shadow:
+        0 1px 3px rgba(15,23,42,0.04),
+        0 4px 16px rgba(15,23,42,0.05) !important;
+}
+.testimonials-card:hover {
+    box-shadow:
+        0 8px 28px rgba(15,23,42,0.10),
+        0 2px 6px rgba(15,23,42,0.05) !important;
+    transform: translateY(-6px) !important;
+}
+
+/* ── 19. CTA / live course banner button ─────── */
+.lcb-btn {
+    transition:
+        transform 200ms cubic-bezier(0.2,0.9,0.2,1),
+        box-shadow 200ms ease !important;
+}
+
+/* ── 20. Section heading badge — unified size ─── */
+.wiq-badge,
+.section-badge,
+.why-badge,
+.pop-label-badge,
+.od-section-badge {
+    font-size: 0.72rem !important;
+    letter-spacing: 0.08em !important;
+}
+
+/* ── 21. Offering detail exp cards — depth ───── */
+.od-exp-card {
+    box-shadow:
+        0 2px 8px rgba(15,23,42,0.05),
+        0 8px 32px rgba(15,23,42,0.07) !important;
+}
+.od-exp-card:hover {
+    box-shadow:
+        0 4px 16px rgba(15,23,42,0.08),
+        0 20px 56px rgba(15,23,42,0.10) !important;
+}
+
+/* ── 22. Reduced dot-grid & shimmer on mobile ─── */
+@media (max-width: 768px) {
+    .hero-v3 {
+        background-image:
+            radial-gradient(ellipse at 72% 14%, rgba(255,106,0,0.08) 0%, transparent 46%),
+            linear-gradient(180deg, #fffdf9 0%, #ffffff 100%) !important;
+        background-size: auto, auto !important;
+    }
+    .h1-highlight { animation: none; }
+}
+
+/* =============================================
+   PRICE UX — Premium Visual Treatment
+   Gradient text, context labels, emphasis
+============================================= */
+
+/* ── Listing cards (.of-price-val) ──────────
+   Plain dark #0f172a → striking orange gradient */
+.of-price-val {
+    background: linear-gradient(135deg, #d94f00 0%, #ff7a00 45%, #ffaa2b 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.8rem !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.045em !important;
+    line-height: 1 !important;
+    display: inline-block;
+}
+
+/* ── Popular offerings cards — price row ────
+   Price was missing entirely; now shows above
+   the enroll button with consistent styling    */
+.pop-price-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 14px;
+    margin-top: auto;
+    border-top: 1px solid rgba(15,23,42,0.07);
+    margin-bottom: 10px;
+}
+.pop-price-val {
+    font-size: 1.65rem;
+    font-weight: 900;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    background: linear-gradient(135deg, #d94f00 0%, #ff7a00 45%, #ffaa2b 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+.pop-price-note {
+    font-size: 0.67rem;
+    font-weight: 700;
+    color: #64748b;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    padding: 4px 10px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ── Offering detail hero (.od-price) ────────
+   White flat → warm white-to-amber gradient
+   with a soft orange glow                      */
+.od-price {
+    background: linear-gradient(135deg, #ffffff 0%, #ffe0a0 55%, #ffb347 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.5rem !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.05em !important;
+    line-height: 1 !important;
+    display: inline-block;
+    filter: drop-shadow(0 2px 8px rgba(255,140,50,0.28));
+}
+
+/* ── Home workshop cards (.wch-price) ────────
+   Basic orange → richer gradient + larger     */
+.wch-price {
+    font-size: 1.25rem !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.03em !important;
+    background: linear-gradient(135deg, #d94f00 0%, #ff7a00 50%, #ffaa2b 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+/* "per session" sub-label — force its own color */
+.wch-price span {
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    -webkit-text-fill-color: #94a3b8 !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+}
+
+/* ── Live course banner (.lcb-price) ─────────
+   Flat white → warm white-to-amber gradient   */
+.lcb-price {
+    background: linear-gradient(135deg, #ffffff 10%, #ffd98a 65%, #ffb347 100%) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    font-size: 2.3rem !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.04em !important;
+    display: inline-block;
+    filter: drop-shadow(0 2px 10px rgba(255,140,50,0.25));
+}
+
+/* ── Live course pricing card (.price-amount) */
+.price-amount {
+    background: linear-gradient(135deg, #ffffff 0%, #ffd98a 60%, #ffb347 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    filter: drop-shadow(0 2px 14px rgba(255,140,50,0.30));
+}
+.price-currency {
+    background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,210,130,0.95) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+
+/* ── Enrollment listing page (.ep-price) ─────
+   Plain dark → orange gradient                */
+.ep-price {
+    background: linear-gradient(135deg, #d94f00 0%, #ff7a00 50%, #ffaa2b 100%) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    font-size: 1.55rem !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.04em !important;
+    display: inline-block !important;
+    line-height: 1 !important;
+}
+
+/* ── Enroll modal (.em-price-val) ───────────── */
+.em-price-val {
+    background: linear-gradient(135deg, #d94f00 0%, #ff7a00 50%, #ffaa2b 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.1rem !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.045em !important;
+    display: inline-block;
+}
+
+/* ── Mobile: keep gradients, clip text size ── */
+@media (max-width: 580px) {
+    .of-price-val   { font-size: 1.55rem !important; }
+    .pop-price-val  { font-size: 1.45rem !important; }
+    .od-price       { font-size: 2rem !important; }
+    .lcb-price      { font-size: 1.9rem !important; }
+    .ep-price       { font-size: 1.35rem !important; }
+    .em-price-val   { font-size: 1.75rem !important; }
 }
 
 /* End overrides */

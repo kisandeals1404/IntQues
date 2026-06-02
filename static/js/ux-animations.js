@@ -20,32 +20,16 @@
         circle.style.left   = (e.clientX - rect.left - radius) + 'px';
         circle.style.top    = (e.clientY - rect.top  - radius) + 'px';
 
-        // remove any old ripple
         var existing = btn.querySelector('.ripple-circle');
         if (existing) existing.remove();
 
         btn.appendChild(circle);
     }
 
-    function isNavigationAnchor(el) {
-        if (!el || el.tagName !== 'A') {
-            return false;
-        }
-
-        var href = (el.getAttribute('href') || '').trim();
-        return Boolean(href) && href !== '#' && href.charAt(0) !== '#';
-    }
-
     function attachRipples() {
         document.querySelectorAll('.ripple-btn').forEach(function (btn) {
-            btn.removeEventListener('click', createRipple);
-
-            if (isNavigationAnchor(btn)) {
-                btn.classList.remove('ripple-btn');
-                return;
-            }
-
-            btn.addEventListener('click', createRipple);
+            btn.removeEventListener('mousedown', createRipple);
+            btn.addEventListener('mousedown', createRipple);
         });
     }
 
@@ -61,19 +45,19 @@
         '.mobile-bottom-cta__button',
         '.demo-cta-btn',
         '[href="/enroll"]',
+        '.of-btn-enroll',
+        '.of-btn-o',
+        '.od-btn-enroll',
+        '.od-btn-enroll-lg',
+        '.hero-v3-btn-primary',
+        '.course-btn-primary',
+        '.lcb-btn',
     ];
 
     function upgradeCTAs() {
         CTA_SELECTORS.forEach(function (sel) {
             document.querySelectorAll(sel).forEach(function (el) {
-                el.classList.add('btn-glow');
-
-                if (isNavigationAnchor(el)) {
-                    el.classList.remove('ripple-btn');
-                    return;
-                }
-
-                el.classList.add('ripple-btn');
+                el.classList.add('btn-glow', 'ripple-btn');
             });
         });
     }
