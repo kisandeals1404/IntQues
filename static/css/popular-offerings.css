@@ -1,0 +1,393 @@
+/* ================================================
+   POPULAR OFFERINGS — Homepage Section (Premium)
+   ================================================ */
+
+.pop-section {
+    padding: clamp(60px, 8vw, 100px) 0;
+    background: #fff;
+    position: relative;
+}
+
+.pop-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ff6a00 0%, #ffb347 55%, transparent 100%);
+}
+
+/* ── Groups ──────────────────────────────────── */
+.pop-group { margin-bottom: 0; }
+.pop-group:last-child { margin-bottom: 0; }
+
+.pop-group-mt {
+    margin-top: 0;
+    padding-top: 64px;
+    border-top: 1px solid rgba(15, 23, 42, 0.07);
+}
+
+.pop-group-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+/* ── Badge ───────────────────────────────────── */
+.pop-label-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 15px;
+    background: rgba(255, 106, 0, 0.07);
+    color: var(--primary-orange);
+    border: 1px solid rgba(255, 106, 0, 0.18);
+    border-radius: 100px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+}
+
+.pop-label-course {
+    background: rgba(255, 106, 0, 0.07);
+    color: var(--primary-orange);
+    border-color: rgba(255, 106, 0, 0.18);
+}
+
+/* ── Group heading ───────────────────────────── */
+.pop-group-title {
+    font-size: clamp(1.6rem, 2.8vw, 2.1rem);
+    font-weight: 900;
+    color: var(--secondary-dark);
+    letter-spacing: -0.03em;
+    margin: 0 0 6px;
+    line-height: 1.15;
+}
+
+.pop-group-sub {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.55;
+}
+
+/* ── View all ────────────────────────────────── */
+.pop-view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--primary-orange);
+    text-decoration: none;
+    white-space: nowrap;
+    padding: 8px 18px;
+    border: 1.5px solid rgba(255, 106, 0, 0.25);
+    border-radius: 100px;
+    transition: background 0.18s ease, border-color 0.18s ease, gap 0.18s ease;
+}
+.pop-view-all:hover {
+    background: rgba(255, 106, 0, 0.05);
+    border-color: rgba(255, 106, 0, 0.45);
+    gap: 11px;
+}
+
+/* ── Cards grid ──────────────────────────────── */
+.pop-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* ── Card ────────────────────────────────────── */
+.pop-card {
+    background: #fff;
+    border: 1.5px solid rgba(15, 23, 42, 0.08);
+    border-radius: 20px;
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.22s ease, box-shadow 0.25s ease, transform 0.22s ease;
+}
+
+/* Invisible full-card overlay link */
+.pop-card-link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+}
+
+/* Orange top accent — revealed on hover */
+.pop-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ff6a00, #ff8c3a);
+    opacity: 0;
+    transition: opacity 0.22s ease;
+}
+
+.pop-card:hover {
+    border-color: rgba(255, 106, 0, 0.22);
+    box-shadow:
+        0 4px 16px rgba(15, 23, 42, 0.06),
+        0 16px 48px rgba(255, 106, 0, 0.1);
+    transform: translateY(-4px);
+}
+.pop-card:hover::before { opacity: 1; }
+
+/* Courses — unified orange, no more blue */
+.pop-card-course:hover {
+    border-color: rgba(255, 106, 0, 0.22);
+    box-shadow:
+        0 4px 16px rgba(15, 23, 42, 0.06),
+        0 16px 48px rgba(255, 106, 0, 0.1);
+}
+
+/* ── Card thumbnail ──────────────────────────── */
+.pop-thumb {
+    width: calc(100% + 52px);
+    margin: -26px -26px 18px;
+    height: 160px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #eef1f9;
+    border-radius: 18px 18px 0 0;
+}
+.pop-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 420ms cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+.pop-card:hover .pop-thumb img { transform: scale(1.05); }
+
+/* ── Card top row ────────────────────────────── */
+.pop-card-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+/* ── Type badges — both orange ───────────────── */
+.pop-type-badge {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    padding: 4px 12px;
+    border-radius: 100px;
+}
+.pop-type-badge.workshop {
+    background: rgba(255, 106, 0, 0.1);
+    color: var(--primary-orange);
+    border: 1px solid rgba(255, 106, 0, 0.18);
+}
+.pop-type-badge.live-course {
+    background: rgba(255, 106, 0, 0.1);
+    color: var(--primary-orange);
+    border: 1px solid rgba(255, 106, 0, 0.18);
+}
+
+/* ── Name ────────────────────────────────────── */
+.pop-name {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--secondary-dark);
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+}
+
+/* ── Subtitle ────────────────────────────────── */
+.pop-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin: 0 0 14px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex-grow: 1;
+}
+
+/* ── Meta chips ──────────────────────────────── */
+.pop-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+.pop-meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: #475569;
+    background: #f1f5f9;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    padding: 4px 11px;
+    border-radius: 100px;
+}
+
+/* ── Actions — stacked, Enroll dominant ──────── */
+.pop-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: auto;
+}
+
+/* z-index: 2 keeps Enroll clickable above the .pop-card-link overlay */
+.pop-btn-enroll {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    text-align: center;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-decoration: none;
+    background: linear-gradient(90deg, #ff6a00, #ff8c3a);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 20px rgba(255, 106, 0, 0.28);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.pop-btn-enroll:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(255, 106, 0, 0.38);
+    color: #fff;
+}
+.pop-btn-enroll.btn-session-ended {
+    background: #e2e8f0;
+    background-image: none;
+    color: #94a3b8;
+    box-shadow: none;
+    cursor: not-allowed;
+    pointer-events: none;
+    border: 1px solid #d1d9ec;
+    transform: none;
+}
+
+/* ── Countdown digit boxes — homepage popular section ─────────── */
+/* offerings.css is not loaded on the homepage so these styles
+   must live here alongside the pop-card styles.                   */
+.of-countdown {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    padding: 5px 8px;
+    border-radius: 8px;
+    transition: background 200ms ease, border-color 200ms ease;
+}
+.of-countdown[hidden] { display: none !important; }
+
+.of-countdown .cd-blocks {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+.of-countdown .cd-seg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3px 6px;
+    border-radius: 5px;
+    min-width: 30px;
+}
+.of-countdown .cd-num {
+    font-size: 0.88rem;
+    font-weight: 800;
+    line-height: 1.1;
+    font-style: normal;
+    font-variant-numeric: tabular-nums;
+}
+.of-countdown .cd-lbl {
+    font-size: 0.36rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+    opacity: 0.75;
+}
+.of-countdown .cd-sep {
+    font-size: 0.78rem;
+    font-weight: 800;
+    opacity: 0.45;
+    line-height: 1;
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin-top: 4px;
+}
+
+/* > 24 h */
+.of-countdown[data-urgency="normal"] {
+    background: rgba(255,106,0,0.07);
+    border: 1px solid rgba(255,106,0,0.18);
+}
+.of-countdown[data-urgency="normal"] .cd-seg { background: rgba(255,106,0,0.11); }
+.of-countdown[data-urgency="normal"] .cd-num,
+.of-countdown[data-urgency="normal"] .cd-sep { color: #c2410c; }
+.of-countdown[data-urgency="normal"] .cd-lbl { color: #ff6a00; }
+
+/* 1–24 h */
+.of-countdown[data-urgency="soon"] {
+    background: rgba(255,106,0,0.11);
+    border: 1px solid rgba(255,106,0,0.26);
+}
+.of-countdown[data-urgency="soon"] .cd-seg { background: rgba(255,106,0,0.16); }
+.of-countdown[data-urgency="soon"] .cd-num,
+.of-countdown[data-urgency="soon"] .cd-sep { color: #c2410c; }
+.of-countdown[data-urgency="soon"] .cd-lbl { color: #ff6a00; }
+
+/* < 1 h — red + pulse */
+.of-countdown[data-urgency="urgent"] {
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.22);
+    animation: pulseBadge 2s ease-in-out infinite;
+}
+.of-countdown[data-urgency="urgent"] .cd-seg { background: rgba(239,68,68,0.13); }
+.of-countdown[data-urgency="urgent"] .cd-num,
+.of-countdown[data-urgency="urgent"] .cd-sep { color: #b91c1c; }
+.of-countdown[data-urgency="urgent"] .cd-lbl { color: #dc2626; }
+
+/* ended */
+.of-countdown[data-urgency="ended"] {
+    background: rgba(100,116,139,0.09);
+    border: 1px solid rgba(100,116,139,0.18);
+    color: #64748b;
+    font-size: 0.63rem;
+    font-weight: 700;
+    font-style: italic;
+    letter-spacing: 0.01em;
+    padding: 3px 10px;
+    border-radius: 100px;
+}
+
+/* ── Responsive ──────────────────────────────── */
+@media (max-width: 600px) {
+    .pop-group-header { flex-direction: column; align-items: flex-start; }
+    .pop-view-all { align-self: flex-start; }
+    .pop-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 960px) and (min-width: 601px) {
+    .pop-grid { grid-template-columns: repeat(2, 1fr); }
+}

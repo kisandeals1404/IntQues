@@ -12,7 +12,10 @@
     var messageEl     = document.getElementById('enrollMessage');
     var mainEl        = document.getElementById('main-content');
     var metaEl        = document.getElementById('enrollmentMeta');
-    var toastTimer    = null;
+    var toastTimer      = null;
+    var isFiltered      = false;   // true when showing a single pre-selected offering
+    var subtitleEl      = document.getElementById('enrollSubtitle');
+    var subtitleDefault = subtitleEl ? subtitleEl.textContent : '';
 
     // ── Desktop sidebar (new IDs) ──────────────────────────────
     var esbPayBtn    = document.getElementById('esbPayBtn');
@@ -81,8 +84,12 @@
         rows.forEach(function (r) {
             r.classList.remove('selected');
             r.setAttribute('aria-checked', 'false');
+            // If we were showing only one offering, reveal all on clear
+            if (isFiltered) r.style.display = '';
         });
         selectedId = null;
+        isFiltered = false;
+        if (subtitleEl) subtitleEl.textContent = subtitleDefault;
 
         // Reset mobile bar
         if (confirmBar) confirmBar.hidden = true;
@@ -97,6 +104,23 @@
 
     if (cancelBtn)    cancelBtn.addEventListener('click',    clearSelection);
     if (esbCancelBtn) esbCancelBtn.addEventListener('click', clearSelection);
+
+    // ── Preselect offering from URL param ──────────────────────
+    var preselectedId = metaEl ? metaEl.dataset.preselected : '';
+    if (preselectedId) {
+        var preRow = document.querySelector('.offering-row[data-id="' + preselectedId + '"]');
+        if (preRow) {
+            // Hide every other row — only show the selected one
+            rows.forEach(function (r) {
+                if (r.dataset.id !== preselectedId) {
+                    r.style.display = 'none';
+                }
+            });
+            isFiltered = true;
+            if (subtitleEl) subtitleEl.textContent = 'Clear selection to browse all sessions';
+            selectRow(preRow);
+        }
+    }
 
     // ── Pay button (both desktop and mobile) ───────────────────
     function handlePay() {

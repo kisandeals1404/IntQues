@@ -82,9 +82,10 @@
        3. SCROLL-REVEAL via IntersectionObserver
     ───────────────────────────────────────── */
     function initScrollReveal() {
+        var REVEAL_SELECTOR = '.section-reveal, .stagger-children, .reveal-left, .reveal-right, .reveal-scale';
+
         if (!('IntersectionObserver' in window)) {
-            // fallback: just make everything visible
-            document.querySelectorAll('.section-reveal, .stagger-children').forEach(function (el) {
+            document.querySelectorAll(REVEAL_SELECTOR).forEach(function (el) {
                 el.classList.add('is-visible');
             });
             return;
@@ -99,7 +100,7 @@
             });
         }, { threshold: 0.10, rootMargin: '0px 0px -40px 0px' });
 
-        document.querySelectorAll('.section-reveal, .stagger-children').forEach(function (el) {
+        document.querySelectorAll(REVEAL_SELECTOR).forEach(function (el) {
             observer.observe(el);
         });
     }
@@ -115,6 +116,12 @@
         '.instructors-header',
         '.certificate-header',
         '.companies-header',
+        '.wiq-header',
+        '.why-heading',
+        '.workshops-heading',
+        '.diff-section .section-heading',
+        '.stats-strip',
+        '.pop-group-header',
     ];
 
     var GRID_SELECTORS = [
@@ -124,6 +131,11 @@
         '.ta-grid',
         '.companies-logos',
         '.pricing-wrapper',
+        '.wiq-grid',
+        '.why-grid',
+        '.workshops-grid',
+        '.diff-grid',
+        '.pop-grid',
     ];
 
     function autoMarkReveal() {
@@ -161,37 +173,79 @@
     }
 
     /* ─────────────────────────────────────────
-       6. HERO COUNTER — animated number roll-up
+       6. COUNTER ANIMATION — animated number roll-up
+          Covers hero metrics + stats strip numbers
     ───────────────────────────────────────── */
     function animateCounters() {
-        var counters = document.querySelectorAll('.hp-metric-number');
-        counters.forEach(function (el) {
+        /* .hp-metric-number — plain text like "120", "98%", safe to replace */
+        document.querySelectorAll('.hp-metric-number').forEach(function (el) {
             var text = el.textContent.trim();
             var match = text.match(/^(\d+)/);
             if (!match) return;
             var target = parseInt(match[1], 10);
-            var suffix = text.slice(match[0].length); // e.g. "%" or "★"
-            var start = 0;
-            var duration = 1200;
+            var suffix = text.slice(match[0].length);
+            var duration = 1400;
             var startTime = null;
+            var started = false;
 
             function step(timestamp) {
                 if (!startTime) startTime = timestamp;
                 var progress = Math.min((timestamp - startTime) / duration, 1);
-                var ease = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+                var ease = 1 - Math.pow(1 - progress, 3);
                 el.textContent = Math.round(ease * target) + suffix;
                 if (progress < 1) requestAnimationFrame(step);
             }
 
-            // Only run once hero is in view
             var obs = new IntersectionObserver(function (entries) {
-                if (entries[0].isIntersecting) {
+                if (entries[0].isIntersecting && !started) {
+                    started = true;
                     requestAnimationFrame(step);
                     obs.disconnect();
                 }
-            }, { threshold: 0.5 });
+            }, { threshold: 0.4 });
             obs.observe(el.closest('section') || el);
         });
+
+        /* .stat-number — contains child <span> elements, use CSS-class entrance only.
+           Observe the panel so all 4 numbers trigger together (staggered via CSS delay). */
+        var statsPanel = document.querySelector('.stats-panel');
+        if (statsPanel) {
+            if ('IntersectionObserver' in window) {
+                var statObs = new IntersectionObserver(function (entries) {
+                    if (entries[0].isIntersecting) {
+                        statsPanel.querySelectorAll('.stat-number').forEach(function (el) {
+                            el.classList.add('stat-counted');
+                        });
+                        statObs.disconnect();
+                    }
+                }, { threshold: 0.3 });
+                statObs.observe(statsPanel);
+            } else {
+                /* Fallback: show immediately if IntersectionObserver unsupported */
+                statsPanel.querySelectorAll('.stat-number').forEach(function (el) {
+                    el.classList.add('stat-counted');
+                });
+            }
+        }
+    }
+
+    /* ─────────────────────────────────────────
+       7. NAVBAR — glass morphism on scroll
+    ───────────────────────────────────────── */
+    function initNavbarScroll() {
+        var navbar = document.querySelector('.navbar');
+        if (!navbar) return;
+
+        function onScroll() {
+            if (window.scrollY > 12) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        }
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
     }
 
     /* ─────────────────────────────────────────
@@ -204,6 +258,7 @@
         attachRipples();
         initScrollReveal();
         animateCounters();
+        initNavbarScroll();
     });
 })();
 

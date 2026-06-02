@@ -380,6 +380,15 @@ html { scroll-padding-top: 80px; }
         line-height: 1.25;
     }
 
+    /* Price context shown above the CTA text */
+    .mobile-bottom-cta__eyebrow {
+        font-size: 0.68rem;
+        font-weight: 600;
+        opacity: 0.78;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+
     .mobile-bottom-cta__text {
         font-size: 1rem;
         font-weight: 800;
@@ -801,6 +810,333 @@ textarea:focus-visible {
     .otp-row { flex-direction: column; }
     .otp-row input { width: 100%; }
     .enroll-btn-secondary { width: 100%; }
+}
+
+/* =============================================
+   UX PHASE 2 — Enhanced Gradients, Animations
+   & Transitions
+============================================= */
+
+/* ─ New keyframes ─────────────────────────── */
+@keyframes gradientRotate {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+@keyframes borderGlowPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,106,0,0.18); }
+    50%       { box-shadow: 0 0 0 4px rgba(255,106,0,0.08); }
+}
+@keyframes iconBounceIn {
+    0%   { transform: scale(1) rotate(0deg); }
+    40%  { transform: scale(1.18) rotate(-6deg); }
+    70%  { transform: scale(0.96) rotate(2deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+/* ─ Reveal variants: slide from sides ─────── */
+.reveal-left {
+    opacity: 0;
+    transform: translateX(-28px);
+    transition: opacity 560ms ease, transform 560ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+.reveal-right {
+    opacity: 0;
+    transform: translateX(28px);
+    transition: opacity 560ms ease, transform 560ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+.reveal-scale {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 480ms ease, transform 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.reveal-left.is-visible,
+.reveal-right.is-visible,
+.reveal-scale.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* ─ Stagger — extended to 9 items ────────── */
+.stagger-children.is-visible > *:nth-child(7) { opacity:1; transform:translateY(0); transition-delay:540ms; }
+.stagger-children.is-visible > *:nth-child(8) { opacity:1; transform:translateY(0); transition-delay:630ms; }
+.stagger-children.is-visible > *:nth-child(9) { opacity:1; transform:translateY(0); transition-delay:720ms; }
+
+/* ─ Main content entrance ─────────────────── */
+#main-content {
+    animation: fadeUp 400ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+/* ─ Stats panel — animated top accent ──────── */
+.stats-panel {
+    border: 1px solid rgba(255,106,0,0.14) !important;
+    position: relative;
+    overflow: hidden;
+}
+.stats-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ff6a00 25%, #ffbc00 60%, #ff6a00 85%, transparent);
+    background-size: 200% auto;
+    animation: shimmerSlide 3s linear infinite;
+    border-radius: 20px 20px 0 0;
+    pointer-events: none;
+}
+
+/* ─ Stat numbers — gradient text + entrance ─ */
+.stat-number {
+    background: linear-gradient(135deg, #ff6a00 0%, #ffcb47 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0;
+    transform: translateY(14px) scale(0.92);
+    transition: opacity 480ms cubic-bezier(0.2, 0.9, 0.2, 1),
+                transform 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.stat-number.stat-counted {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+/* Stagger each stat item's number */
+.stat-item:nth-child(1) .stat-number { transition-delay: 0ms; }
+.stat-item:nth-child(2) .stat-number { transition-delay: 100ms; }
+.stat-item:nth-child(3) .stat-number { transition-delay: 200ms; }
+.stat-item:nth-child(4) .stat-number { transition-delay: 300ms; }
+
+/* ─ Hero — richer layered background ─────── */
+.hero-v3 {
+    background:
+        radial-gradient(circle at 75% 15%, rgba(255,106,0,0.10), transparent 46%),
+        radial-gradient(circle at 10% 85%, rgba(255,179,71,0.06), transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(255,106,0,0.02), transparent 70%),
+        linear-gradient(180deg, #fffbf7 0%, #ffffff 100%) !important;
+}
+
+/* ─ Hero live badge — pulsing dot glow ───── */
+.hero-v3-live-dot {
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.22);
+}
+.hero-float-card.bottom-right {
+    animation-direction: reverse;
+    animation-delay: 2.5s;
+}
+
+/* ─ Hero CTA arrow — bounce on hover ─────── */
+.hero-v3-btn-primary i,
+.lcb-btn i {
+    transition: transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.hero-v3-btn-primary:hover i,
+.lcb-btn:hover i { transform: translateX(5px); }
+
+/* ─ Why section — richer gradient bg ─────── */
+.why-section {
+    background:
+        radial-gradient(circle at 20% 50%, rgba(255,106,0,0.12), transparent 48%),
+        radial-gradient(circle at 85% 15%, rgba(99,102,241,0.07), transparent 38%),
+        #0f172a !important;
+}
+
+/* ─ Why cards — brighter hover border ────── */
+.why-card {
+    transition: border-color 240ms ease, background 240ms ease, transform 280ms cubic-bezier(0.2, 0.9, 0.2, 1) !important;
+}
+.why-card:hover {
+    border-color: rgba(255,106,0,0.30) !important;
+    background: rgba(255,106,0,0.05) !important;
+    transform: translateY(-5px) !important;
+}
+
+/* ─ WIQ cards — orange top accent on hover ─ */
+.wiq-card {
+    overflow: hidden;
+    position: relative;
+}
+.wiq-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ff6a00, #ffbc00);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 300ms cubic-bezier(0.2, 0.9, 0.2, 1);
+    border-radius: 16px 16px 0 0;
+}
+.wiq-card:hover::before { transform: scaleX(1); }
+
+/* ─ WIQ icon — playful bounce on card hover ─ */
+.wiq-icon {
+    display: block;
+    transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.wiq-card:hover .wiq-icon { transform: scale(1.18) rotate(-6deg); }
+
+/* ─ Workshop cards — gradient glow on hover ─ */
+.workshop-card-home {
+    position: relative;
+    overflow: hidden;
+}
+.workshop-card-home::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(145deg, rgba(255,106,0,0.06) 0%, transparent 58%);
+    opacity: 0;
+    transition: opacity 280ms ease;
+    pointer-events: none;
+    border-radius: inherit;
+}
+.workshop-card-home:hover::after { opacity: 1; }
+
+/* Workshop card arrow icon hover */
+.wch-link i {
+    transition: transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.wch-link:hover i { transform: translateX(5px); }
+
+/* ─ Diff cards — icon lift + overlay ─────── */
+.diff-card {
+    overflow: hidden;
+    position: relative;
+}
+.diff-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(145deg, rgba(255,106,0,0.05) 0%, transparent 58%);
+    opacity: 0;
+    transition: opacity 260ms ease;
+    pointer-events: none;
+    border-radius: inherit;
+}
+.diff-card:hover::after { opacity: 1; }
+
+.diff-icon {
+    transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.diff-card:hover .diff-icon { transform: scale(1.14) translateY(-3px); }
+
+/* ─ Pop card — shimmer shine sweep on hover ─ */
+.pop-card::after {
+    content: '';
+    position: absolute;
+    top: -80%; left: -60%;
+    width: 35%; height: 260%;
+    background: linear-gradient(120deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.16) 50%,
+        rgba(255,255,255,0) 100%);
+    transform: skewX(-20deg) translateX(-120%);
+    transition: transform 0.80s ease;
+    pointer-events: none;
+    z-index: 3;
+}
+.pop-card:hover::after {
+    transform: skewX(-20deg) translateX(480%);
+}
+
+/* ─ Pop section top accent — animated shimmer ─ */
+.pop-section::before {
+    background: linear-gradient(90deg, transparent, #ff6a00 30%, #ffbc00 60%, transparent 100%);
+    background-size: 200% auto;
+    animation: shimmerSlide 3.5s linear infinite;
+}
+
+/* View-all link arrow bounce */
+.pop-view-all i {
+    transition: transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.pop-view-all:hover i { transform: translateX(4px); }
+
+/* ─ Offering listing header — static gradient ─
+   (gradientRotate animation removed: background-position
+    animation triggers CPU repaint every frame)            */
+.of-hdr {
+    background:
+        linear-gradient(135deg, #0f172a 0%, #172038 50%, #0f172a 100%) !important;
+}
+
+/* ─ Offering card — gradient bottom glow ─── */
+.of-card {
+    position: relative;
+}
+
+/* ─ Navbar — enhanced scrolled state ────────── */
+.navbar.scrolled {
+    background: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    box-shadow:
+        0 1px 0 rgba(15, 23, 42, 0.06),
+        0 4px 28px rgba(15, 23, 42, 0.09) !important;
+}
+
+/* ─ Footer — gradient animated top border ─── */
+footer {
+    position: relative;
+}
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, #ff6a00 20%, #ffbc00 55%, #ff6a00 80%, transparent 100%);
+    background-size: 200% auto;
+    animation: shimmerSlide 4s linear infinite;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* ─ Live course banner — pulsing glow ───────── */
+.live-course-banner {
+    box-shadow: 0 8px 40px rgba(15,23,42,0.25), 0 0 0 1px rgba(255,106,0,0.08) !important;
+    transition: box-shadow 320ms ease !important;
+}
+.live-course-banner:hover {
+    box-shadow: 0 16px 56px rgba(15,23,42,0.32), 0 0 0 1px rgba(255,106,0,0.16) !important;
+}
+
+/* ─ Testimonials card — stronger hover ─────── */
+.testimonials-card {
+    transition: var(--transition-bounce) !important;
+}
+.testimonials-card:hover {
+    transform: translateY(-10px) !important;
+}
+
+/* ─ Offering detail thumbnail zoom ─────────── */
+.pop-thumb img,
+.of-thumb img {
+    will-change: transform;
+}
+
+/* ─ Button icon arrows — bounce on hover ───── */
+.hp-btn-shiny i,
+.hero-v3-btn-primary i,
+.mobile-bottom-cta__button i {
+    transition: transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.hp-btn-shiny:hover i { transform: translateX(4px); }
+
+/* ─ Pricing card — glow border animation ───── */
+.pricing-card-featured {
+    animation: borderGlowPulse 3s ease-in-out infinite;
+}
+
+/* ─ Reduce motion on mobile — keep CPU cool ─ */
+@media (max-width: 768px) {
+    .wiq-card:hover .wiq-icon  { transform: none; }
+    .diff-card:hover .diff-icon { transform: none; }
+    .pop-card::after            { display: none; }
+    .of-hdr                    { animation: none; }
+    .live-course-banner        { animation: none !important; }
+    .stats-panel::before       { animation: none; }
+    footer::before             { animation: none; }
+    #main-content              { animation: none; }
 }
 
 /* End overrides */

@@ -1,0 +1,886 @@
+/* ================================================
+   OFFERING DETAIL PAGE (Workshop / Course)
+   ================================================ */
+
+/* ── Hero ──────────────────────────────────────── */
+.od-hero {
+    padding: clamp(36px, 5vw, 64px) 0 clamp(44px, 5.5vw, 72px);
+    background: linear-gradient(160deg, #0f172a 0%, #162032 45%, #0f172a 100%);
+    position: relative;
+    overflow: hidden;
+}
+/* Multi-layer decorative gradient */
+.od-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 55% 60% at 75% 40%, rgba(255,106,0,0.10), transparent),
+        radial-gradient(ellipse 40% 50% at 15% 70%, rgba(99,102,241,0.06), transparent);
+    pointer-events: none;
+}
+/* Animated shimmer stripe at very top */
+.od-hero::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ff6a00 30%, #ffbc00 60%, transparent);
+    background-size: 200% auto;
+    animation: shimmerSlide 3s linear infinite;
+}
+
+.od-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    margin-bottom: 26px;
+    transition: color 0.15s ease;
+}
+.od-back-link:hover { color: rgba(255,255,255,0.85); }
+
+.od-hero-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+}
+
+/* ── Hero image ─────────────────────────────────── */
+.od-hero-visual {
+    position: relative;
+}
+/* Glow halo behind the image */
+.od-hero-visual::before {
+    content: '';
+    position: absolute;
+    inset: -20px;
+    background: radial-gradient(ellipse at center, rgba(255,106,0,0.14), transparent 70%);
+    border-radius: 28px;
+    pointer-events: none;
+}
+.od-hero-image {
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.2),
+        0 12px 48px rgba(0,0,0,0.38),
+        0 0 0 1px rgba(255,255,255,0.06);
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: #1a2540;
+    position: relative;
+    z-index: 1;
+}
+.od-hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 500ms cubic-bezier(0.2,0.9,0.2,1);
+}
+.od-hero-image:hover img { transform: scale(1.03); }
+
+/* ── Top badges (type + mode) ───────────────────── */
+.od-top-badges {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.od-type-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    padding: 4px 12px;
+    border-radius: 100px;
+}
+.od-type-badge.workshop {
+    background: rgba(255,106,0,0.15);
+    color: #ffb07c;
+    border: 1px solid rgba(255,106,0,0.25);
+}
+.od-type-badge.live-course {
+    background: rgba(99,102,241,0.15);
+    color: #a5b4fc;
+    border: 1px solid rgba(99,102,241,0.25);
+}
+
+.od-mode-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.65);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 4px 12px;
+    border-radius: 100px;
+}
+
+/* ── Title & subtitle ───────────────────────────── */
+.od-title {
+    font-size: clamp(1.75rem, 3.2vw, 2.7rem);
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin: 0 0 14px;
+}
+
+.od-subtitle {
+    font-size: clamp(0.9rem, 1.3vw, 1.05rem);
+    color: rgba(255,255,255,0.62);
+    line-height: 1.65;
+    margin: 0 0 20px;
+    max-width: 500px;
+}
+
+/* ── Session countdown — digit boxes on dark hero ──────────────── */
+/*
+ * countdown.js renders:
+ *   <span class="cd-label">Session starts in</span>
+ *   <span class="cd-blocks">  [d][h][m][s]  </span>
+ * or plain text "Ended" in the ended state.
+ */
+.od-countdown {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 16px 20px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    margin-bottom: 18px;
+    width: fit-content;
+    transition: background 200ms ease, border-color 200ms ease;
+}
+.od-countdown[hidden] { display: none !important; }
+
+/* "Session starts in" label */
+.od-countdown .cd-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.38);
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+}
+
+/* row of 4 boxes */
+.od-countdown .cd-blocks {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* each D / H / M / S box */
+.od-countdown .cd-seg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 10px;
+    padding: 10px 12px;
+    min-width: 62px;
+}
+.od-countdown .cd-num {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    font-style: normal;
+}
+.od-countdown .cd-lbl {
+    font-size: 0.55rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.42);
+    margin-top: 5px;
+}
+/* colon — vertically aligned with the number */
+.od-countdown .cd-sep {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: rgba(255,255,255,0.28);
+    line-height: 1;
+    flex-shrink: 0;
+    margin-bottom: 20px; /* push up so it aligns with numbers, not labels */
+}
+
+/* ── Urgency themes (dark background) ─────────────────────────── */
+
+/* > 24 h — subtle orange accent to stay on-brand */
+.od-countdown[data-urgency="normal"] {
+    background: rgba(255,106,0,0.08);
+    border-color: rgba(255,106,0,0.22);
+}
+.od-countdown[data-urgency="normal"] .cd-seg {
+    background: rgba(255,106,0,0.10);
+    border-color: rgba(255,106,0,0.16);
+}
+
+/* soon — orange tint */
+.od-countdown[data-urgency="soon"] {
+    background: rgba(255,106,0,0.12);
+    border-color: rgba(255,106,0,0.28);
+}
+.od-countdown[data-urgency="soon"] .cd-seg {
+    background: rgba(255,106,0,0.15);
+    border-color: rgba(255,106,0,0.22);
+}
+.od-countdown[data-urgency="soon"] .cd-num { color: #ffb07c; }
+.od-countdown[data-urgency="soon"] .cd-sep { color: rgba(255,176,124,0.50); }
+
+/* urgent — red + pulse */
+.od-countdown[data-urgency="urgent"] {
+    background: rgba(239,68,68,0.14);
+    border-color: rgba(239,68,68,0.32);
+    animation: pulseBadge 2s ease-in-out infinite;
+}
+.od-countdown[data-urgency="urgent"] .cd-seg {
+    background: rgba(239,68,68,0.16);
+    border-color: rgba(239,68,68,0.24);
+}
+.od-countdown[data-urgency="urgent"] .cd-num { color: #fca5a5; }
+.od-countdown[data-urgency="urgent"] .cd-sep { color: rgba(252,165,165,0.50); }
+
+/* ended — muted, no boxes (plain "Ended" text) */
+.od-countdown[data-urgency="ended"] {
+    background: rgba(100,116,139,0.10);
+    border-color: rgba(100,116,139,0.22);
+    color: rgba(255,255,255,0.38);
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-style: italic;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 18px;
+}
+
+/* mobile: shrink boxes */
+@media (max-width: 480px) {
+    .od-countdown { padding: 12px 14px; gap: 6px; }
+    .od-countdown .cd-seg { min-width: 48px; padding: 7px 8px; }
+    .od-countdown .cd-num { font-size: 1.5rem; }
+    .od-countdown .cd-sep { font-size: 1.2rem; margin-bottom: 14px; }
+}
+
+/* ── Disabled enroll buttons — detail page (dark background) ───── */
+.od-btn-enroll.btn-session-ended,
+.od-btn-enroll-lg.btn-session-ended {
+    background: rgba(255,255,255,0.07) !important;
+    background-image: none !important;
+    color: rgba(255,255,255,0.32) !important;
+    box-shadow: none !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    transform: none !important;
+}
+
+/* ── Hero image when session expired ──────────────────────────── */
+.od-hero.is-expired .od-hero-image {
+    filter: grayscale(45%);
+    transition: filter 600ms ease;
+}
+.od-hero.is-expired .od-hero-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(15,23,42,0.36);
+    border-radius: inherit;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* ── Feature pills ──────────────────────────────── */
+.od-feature-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 18px;
+}
+.od-pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.78);
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 5px 13px;
+    border-radius: 100px;
+}
+
+/* ── Batch info ─────────────────────────────────── */
+.od-batch-info {
+    font-size: 0.86rem;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 28px;
+}
+.od-batch-info strong { color: rgba(255,255,255,0.82); }
+
+/* ── Hero CTA: price + enroll ───────────────────── */
+.od-hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.od-price-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.od-price {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.04em;
+    line-height: 1;
+}
+/* Inline pill — readable against the dark hero */
+.od-price-note {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.55);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 3px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    width: fit-content;
+}
+.od-btn-enroll {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 32px;
+    background: linear-gradient(90deg, #ff6a00, #ff8c3a);
+    color: #fff;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    box-shadow: 0 8px 28px rgba(255,106,0,0.32);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    white-space: nowrap;
+}
+.od-btn-enroll:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 36px rgba(255,106,0,0.42);
+    color: #fff;
+}
+
+/* ── Section shared header ──────────────────────── */
+.od-section-header {
+    text-align: center;
+    margin-bottom: 36px;
+}
+.od-section-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    background: rgba(255,106,0,0.08);
+    color: var(--primary-orange);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 10px;
+}
+.od-section-title {
+    font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+    font-weight: 800;
+    color: var(--secondary-dark);
+    letter-spacing: -0.025em;
+    margin: 0 0 8px;
+}
+.od-section-sub {
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* ── Prerequisites & Outcomes ─────────────────────── */
+.od-expectations {
+    padding: clamp(48px, 6vw, 80px) 0;
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    position: relative;
+}
+.od-expectations::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,106,0,0.20), transparent);
+}
+
+.od-exp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+/* Card: elevated white with colored top border */
+.od-exp-card {
+    background: #ffffff;
+    border: 1px solid rgba(15,23,42,0.08);
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow:
+        0 2px 8px rgba(15,23,42,0.05),
+        0 8px 32px rgba(15,23,42,0.07);
+    transition: transform 280ms cubic-bezier(0.2,0.9,0.2,1), box-shadow 280ms ease;
+}
+.od-exp-card:hover {
+    transform: translateY(-5px);
+    box-shadow:
+        0 4px 16px rgba(15,23,42,0.07),
+        0 20px 56px rgba(15,23,42,0.10);
+}
+
+/* Colored top border stripe */
+.od-exp-card--prereq { border-top: 3px solid #ff6a00; }
+.od-exp-card--outcomes { border-top: 3px solid #16a34a; }
+
+/* Card header block */
+.od-exp-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 28px 22px;
+    background: linear-gradient(135deg, #fafbfc 0%, #ffffff 100%);
+    border-bottom: 1px solid rgba(15,23,42,0.06);
+}
+
+/* Icon: larger, gradient background */
+.od-exp-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    line-height: 1;
+}
+.od-exp-icon.prereq {
+    background: linear-gradient(135deg, rgba(255,106,0,0.12), rgba(255,179,71,0.08));
+    border: 1px solid rgba(255,106,0,0.15);
+    box-shadow: 0 4px 16px rgba(255,106,0,0.10);
+}
+.od-exp-icon.prereq::before { content: '⚡'; }
+.od-exp-icon.outcomes {
+    background: linear-gradient(135deg, rgba(22,163,74,0.10), rgba(74,222,128,0.06));
+    border: 1px solid rgba(22,163,74,0.15);
+    box-shadow: 0 4px 16px rgba(22,163,74,0.10);
+}
+.od-exp-icon.outcomes::before { content: '🎯'; }
+
+.od-exp-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.025em;
+    margin: 0 0 3px;
+    line-height: 1.25;
+}
+.od-exp-sub {
+    font-size: 0.775rem;
+    color: #94a3b8;
+    margin: 0;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+/* List: item rows with icon bullets */
+.od-exp-list {
+    list-style: none;
+    padding: 6px 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+.od-exp-list li {
+    font-size: 0.875rem;
+    color: #334155;
+    line-height: 1.55;
+    font-weight: 500;
+    padding: 12px 28px 12px 52px;
+    position: relative;
+    border-bottom: 1px solid rgba(15,23,42,0.045);
+    transition: background 160ms ease;
+}
+.od-exp-list li:last-child { border-bottom: none; }
+.od-exp-list li:hover { background: rgba(15,23,42,0.02); }
+
+/* Icon dot for each item */
+.od-exp-list li::before {
+    content: '';
+    position: absolute;
+    left: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.od-exp-card--prereq .od-exp-list li::before {
+    background: rgba(255,106,0,0.10);
+    border: 1.5px solid rgba(255,106,0,0.30);
+    box-shadow: inset 0 0 0 4px rgba(255,106,0,0.30);
+}
+.od-exp-card--outcomes .od-exp-list li::before {
+    background: rgba(22,163,74,0.08);
+    border: 1.5px solid rgba(22,163,74,0.28);
+    box-shadow: inset 0 0 0 4px rgba(22,163,74,0.28);
+}
+
+/* ── Curriculum ─────────────────────────────────────── */
+.od-curriculum {
+    padding: clamp(48px, 6vw, 80px) 0;
+    background:
+        radial-gradient(circle at 90% 10%, rgba(255,106,0,0.04), transparent 50%),
+        #f8fafc;
+    position: relative;
+}
+.od-curriculum::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(15,23,42,0.08), transparent);
+}
+
+/* Topic count badge shown below the section subtitle */
+.od-curriculum-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 5px 16px;
+    background: rgba(255,106,0,0.08);
+    border: 1px solid rgba(255,106,0,0.18);
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #ff6a00;
+    letter-spacing: 0.03em;
+}
+.od-curriculum-count::before { content: '◉'; font-size: 0.6rem; opacity: 0.7; }
+
+/* Two-column grid */
+.od-curriculum-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    counter-reset: curriculum-counter;
+}
+
+/* Each item: horizontal flex with number badge + text */
+.od-curriculum-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 20px;
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid rgba(15,23,42,0.07);
+    border-left: 3px solid rgba(255,106,0,0.22);
+    box-shadow: 0 1px 4px rgba(15,23,42,0.04);
+    transition:
+        border-color 220ms ease,
+        box-shadow 220ms ease,
+        transform 220ms cubic-bezier(0.2,0.9,0.2,1);
+    counter-increment: curriculum-counter;
+}
+.od-curriculum-item:hover {
+    border-left-color: #ff6a00;
+    box-shadow: 0 4px 20px rgba(255,106,0,0.10), 0 1px 4px rgba(15,23,42,0.06);
+    transform: translateX(3px);
+}
+
+/* Number badge via CSS counter */
+.od-curriculum-check {
+    flex-shrink: 0;
+    min-width: 28px; height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #ff6a00, #ff8c3a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.68rem;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+    margin-top: 1px;
+    box-shadow: 0 2px 8px rgba(255,106,0,0.28);
+}
+.od-curriculum-check::before {
+    content: counter(curriculum-counter, decimal-leading-zero);
+}
+
+/* Topic text */
+.od-curriculum-item > span:last-child {
+    font-size: 0.875rem;
+    color: #1e293b;
+    font-weight: 600;
+    line-height: 1.5;
+    padding-top: 4px;
+}
+
+/* ── Instructor ───────────────────────────────────── */
+.od-instructor-section {
+    padding: clamp(48px, 6vw, 80px) 0;
+    background: #fff;
+    position: relative;
+}
+.od-instructor-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,106,0,0.18), transparent);
+}
+
+.od-instructor-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 32px;
+    background: linear-gradient(135deg, #fafbfc 0%, #ffffff 100%);
+    border: 1px solid rgba(15,23,42,0.08);
+    border-radius: 24px;
+    padding: 36px 44px;
+    box-shadow:
+        0 4px 16px rgba(15,23,42,0.06),
+        0 16px 48px rgba(15,23,42,0.07);
+    max-width: 760px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+/* Subtle orange accent in top-left corner */
+.od-instructor-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: linear-gradient(180deg, #ff6a00, #ffbc00);
+    border-radius: 24px 0 0 24px;
+}
+
+.od-instructor-avatar {
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: rgba(255,106,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid rgba(255,106,0,0.18);
+    box-shadow:
+        0 0 0 6px rgba(255,106,0,0.06),
+        0 8px 28px rgba(255,106,0,0.18);
+}
+.od-instructor-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.od-instructor-initials {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--primary-orange);
+    line-height: 1;
+}
+
+.od-instructor-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+.od-instructor-name {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.025em;
+    margin: 0;
+}
+.od-instructor-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #ff6a00;
+    margin: 0;
+}
+.od-instructor-bio {
+    font-size: 0.875rem;
+    color: #64748b;
+    line-height: 1.72;
+    margin: 8px 0 0;
+    max-width: 520px;
+}
+
+/* ── Bottom CTA ───────────────────────────────────── */
+.od-cta {
+    padding: clamp(48px, 6vw, 80px) 0;
+    background:
+        radial-gradient(circle at 10% 90%, rgba(255,106,0,0.05), transparent 50%),
+        #f8fafc;
+}
+.od-cta-card {
+    background: linear-gradient(145deg, #0f172a 0%, #162032 50%, #0f172a 100%);
+    border-radius: 24px;
+    padding: clamp(32px, 4vw, 56px);
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto;
+    box-shadow:
+        0 4px 16px rgba(0,0,0,0.12),
+        0 24px 64px rgba(0,0,0,0.18),
+        0 0 0 1px rgba(255,255,255,0.06);
+    position: relative;
+    overflow: hidden;
+}
+/* Shimmer top accent */
+.od-cta-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ff6a00 30%, #ffbc00 60%, transparent);
+    background-size: 200% auto;
+    animation: shimmerSlide 3.5s linear infinite;
+}
+/* Radial orange glow inside */
+.od-cta-card::after {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(255,106,0,0.10), transparent 70%);
+    pointer-events: none;
+}
+.od-cta-title {
+    font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.025em;
+    margin: 0 0 10px;
+}
+.od-cta-sub {
+    font-size: 0.93rem;
+    color: rgba(255,255,255,0.58);
+    line-height: 1.65;
+    margin: 0 0 28px;
+}
+.od-cta-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+.od-btn-enroll-lg {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 34px;
+    background: linear-gradient(90deg, #ff6a00, #ff8c3a);
+    color: #fff;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    box-shadow: 0 8px 28px rgba(255,106,0,0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.od-btn-enroll-lg:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 40px rgba(255,106,0,0.42);
+    color: #fff;
+}
+.od-btn-back-lg {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 13px 26px;
+    background: rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.72);
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: background 0.15s ease;
+}
+.od-btn-back-lg:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+.od-cta-trust {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.35);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+.od-cta-trust span { display: flex; align-items: center; gap: 5px; }
+.od-cta-trust span::before { content: '·'; font-size: 1rem; display: none; }
+.od-cta-trust span:not(:first-child)::before { display: inline; }
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 900px) {
+    .od-hero-layout {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+    /* Show image above content on mobile instead of hiding it */
+    .od-hero-visual { order: -1; }
+    .od-hero-image { aspect-ratio: 16 / 9; max-height: 280px; }
+
+    .od-exp-grid { grid-template-columns: 1fr; }
+    .od-curriculum-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+    .od-hero-actions { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .od-btn-enroll { width: 100%; justify-content: center; }
+
+    .od-cta-actions { flex-direction: column; align-items: stretch; }
+    .od-btn-enroll-lg, .od-btn-back-lg { width: 100%; justify-content: center; }
+
+    .od-curriculum-grid { grid-template-columns: 1fr; }
+    .od-exp-list li { padding-left: 44px; }
+
+    .od-instructor-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 28px 24px;
+        gap: 20px;
+    }
+    .od-instructor-card::before { width: 100%; height: 4px; border-radius: 24px 24px 0 0; }
+    .od-instructor-info { align-items: center; }
+    .od-instructor-bio { text-align: left; }
+}

@@ -1,0 +1,112 @@
+/* Admin JSON Upload Page */
+
+.upload-header-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-left: auto;
+}
+
+.upload-editor-wrap {
+    padding: 0 24px 4px;
+}
+
+.upload-editor {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 340px;
+    font-family: 'Courier New', 'Fira Mono', monospace;
+    font-size: 0.84rem;
+    line-height: 1.6;
+    color: #0f172a;
+    background: #f8fafc;
+    border: 1px solid #dbe2ea;
+    border-radius: 12px;
+    padding: 16px;
+    resize: vertical;
+    transition: border-color 180ms ease, outline 180ms ease;
+}
+
+.upload-editor:focus {
+    border-color: #ff6a00;
+    outline: 3px solid rgba(255, 106, 0, 0.12);
+    outline-offset: 1px;
+    background: #fff;
+}
+
+.upload-json-error {
+    min-height: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #dc2626;
+    padding: 6px 2px 0;
+}
+
+.upload-footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    justify-content: flex-end;
+    border-top: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.upload-status-text {
+    font-size: 0.84rem;
+    color: #64748b;
+    margin-right: auto;
+}
+
+.admin-alert-error {
+    background: rgba(220, 38, 38, 0.08);
+    color: #dc2626;
+    border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.upload-result-card {
+    border-color: rgba(16, 185, 129, 0.25);
+}
+
+.upload-result-body {
+    padding: 20px 24px 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.upload-result-json {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.81rem;
+    line-height: 1.55;
+    color: #334155;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 360px;
+    overflow-y: auto;
+    margin: 0;
+}
+
+@media (max-width: 640px) {
+    .upload-header-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .upload-footer {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .upload-footer .admin-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .upload-status-text {
+        margin-right: 0;
+        text-align: center;
+    }
+}

@@ -218,6 +218,108 @@
 }
 
 /* =========================================
+   NAV DROPDOWN — DYNAMIC CARD ROWS
+========================================= */
+.nav-dd-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: background 160ms ease, border-color 160ms ease;
+    margin-bottom: 4px;
+}
+.nav-dd-card:last-of-type { margin-bottom: 0; }
+
+.nav-dd-card:hover {
+    background: rgba(255, 106, 0, 0.04);
+    border-color: rgba(255, 106, 0, 0.12);
+}
+.nav-dd-card-course:hover {
+    background: rgba(99, 102, 241, 0.04);
+    border-color: rgba(99, 102, 241, 0.12);
+}
+
+.nav-dd-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+}
+
+.nav-dd-name {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 160ms ease;
+}
+.nav-dd-card:hover .nav-dd-name { color: #ff6a00; }
+.nav-dd-card-course:hover .nav-dd-name { color: #6366f1; }
+
+.nav-dd-meta {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nav-dd-price {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #ff6a00;
+    background: rgba(255, 106, 0, 0.08);
+    padding: 3px 10px;
+    border-radius: 999px;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+.nav-dd-price-course {
+    color: #6366f1;
+    background: rgba(99, 102, 241, 0.08);
+}
+
+.nav-dropdown-price-course {
+    color: #6366f1;
+    background: rgba(99, 102, 241, 0.08);
+}
+
+.nav-dd-view-all {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    margin-top: 4px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #64748b;
+    text-decoration: none;
+    transition: background 150ms ease, color 150ms ease;
+}
+.nav-dd-view-all:hover {
+    background: rgba(15, 23, 42, 0.04);
+    color: #0f172a;
+}
+
+.nav-dd-empty {
+    padding: 10px 12px;
+    font-size: 0.82rem;
+    color: #94a3b8;
+    text-align: center;
+    font-style: italic;
+}
+
+/* =========================================
    LIVE COURSE LINK — special treatment
 ========================================= */
 .nav-live-course {

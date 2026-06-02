@@ -146,7 +146,10 @@
             otp: (els.otp.value || '').trim()
         }).then(function () {
             toast('Login successful. Redirecting...', 'success');
-            window.location.href = '/enroll';
+            // Redirect to ?next= param if present and safe, otherwise home
+            var params = new URLSearchParams(window.location.search);
+            var next = params.get('next') || '';
+            window.location.href = (next && next.charAt(0) === '/') ? next : '/';
         }).catch(function (err) {
             toast(err.message, 'error');
         }).finally(function () {

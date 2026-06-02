@@ -4,6 +4,160 @@
 ========================================= */
 
 /* =========================================
+   STATS STRIP — contained panel, not full bleed
+========================================= */
+.stats-strip {
+    background: transparent;
+    padding: 0 0 8px;   /* section itself has no background */
+}
+
+/* Dark rounded card sits inside .container, matches the page's max-width */
+.stats-panel {
+    background: #0f172a;
+    border-radius: 20px;
+    padding: 40px 32px;
+    box-shadow: 0 4px 24px rgba(15,23,42,0.14), 0 1px 4px rgba(15,23,42,0.08);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    text-align: center;
+}
+
+.stat-item {
+    padding: 8px 24px;
+    border-right: 1px solid rgba(255,255,255,0.08);
+}
+.stat-item:last-child { border-right: none; }
+
+.stat-number {
+    font-size: clamp(1.9rem, 3.5vw, 2.6rem);
+    font-weight: 900;
+    color: #ff6a00;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+.stat-plus, .stat-star {
+    font-size: 60%;
+    vertical-align: super;
+    margin-left: 1px;
+}
+.stat-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    line-height: 1.4;
+}
+
+@media (max-width: 640px) {
+    .stats-panel { padding: 28px 16px; border-radius: 16px; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-item:nth-child(2) { border-right: none; }
+    .stat-item:nth-child(3),
+    .stat-item:nth-child(4) { border-top: 1px solid rgba(255,255,255,0.08); }
+    .stat-item { padding: 12px 16px; }
+}
+
+/* =========================================
+   WHY INTQUES — Core Features
+========================================= */
+.wiq-section {
+    padding: clamp(56px, 7vw, 96px) 0;
+    background: #f8fafc;
+}
+
+.wiq-header {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto 52px;
+}
+
+.wiq-badge {
+    display: inline-block;
+    padding: 5px 16px;
+    background: rgba(255,106,0,0.08);
+    color: #ff6a00;
+    border: 1px solid rgba(255,106,0,0.18);
+    border-radius: 100px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 14px;
+}
+
+.wiq-header h2 {
+    font-size: clamp(1.7rem, 3vw, 2.2rem);
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin: 0 0 14px;
+}
+
+.wiq-header p {
+    font-size: 1rem;
+    color: #64748b;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.wiq-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.wiq-card {
+    background: #fff;
+    border: 1px solid rgba(15,23,42,0.07);
+    border-radius: 16px;
+    padding: 28px 26px;
+    transition: box-shadow 240ms ease, transform 240ms ease, border-color 200ms ease;
+}
+.wiq-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 28px rgba(15,23,42,0.09);
+    border-color: rgba(255,106,0,0.16);
+}
+
+.wiq-icon {
+    font-size: 1.8rem;
+    margin-bottom: 14px;
+    line-height: 1;
+    display: block;
+}
+
+.wiq-card h3 {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    margin: 0 0 10px;
+    line-height: 1.3;
+}
+
+.wiq-card p {
+    font-size: 0.875rem;
+    color: #64748b;
+    line-height: 1.68;
+    margin: 0;
+}
+
+@media (max-width: 900px) {
+    .wiq-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+    .wiq-grid { grid-template-columns: 1fr; gap: 14px; }
+    .wiq-section { padding: 40px 0; }
+    .wiq-header { margin-bottom: 32px; }
+}
+
+/* =========================================
    HERO OVERRIDES
 ========================================= */
 .hero-v3 {
@@ -86,8 +240,9 @@
 .hero-v3-pill {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
     background: #f6f8fb;
+    border: 1px solid #eaecf0;
     padding: 6px 13px;
     border-radius: 999px;
     font-size: 12px;
@@ -95,7 +250,16 @@
     color: #475569;
 }
 
-.hero-v3-pill i { color: #ff6a00; font-size: 11px; }
+/* CSS dot indicator — replaces removed FA icon */
+.hero-v3-pill::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #ff6a00;
+    flex-shrink: 0;
+    opacity: 0.75;
+}
 
 .hero-v3-actions {
     display: flex;
@@ -145,6 +309,30 @@
     background: #fffbf7;
 }
 
+/* Syllabus download link — sits below the main CTAs */
+.hero-syllabus-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #64748b;
+    text-decoration: none;
+    border-bottom: 1px dashed #cbd5e1;
+    padding-bottom: 1px;
+    transition: color 180ms ease, border-color 180ms ease;
+    margin-top: 4px;
+}
+.hero-syllabus-link:hover {
+    color: #ff6a00;
+    border-color: rgba(255,106,0,0.4);
+}
+.hero-syllabus-icon {
+    font-size: 1rem;
+    line-height: 1;
+    color: #ff6a00;
+}
+
 .hero-v3-social-proof {
     display: flex;
     align-items: center;
@@ -191,72 +379,24 @@
     position: relative;
 }
 
-.hero-code-card {
-    background: #1e293b;
-    border-radius: 18px;
+/* ── Promotional image (replaces code card) ──────────────────── */
+.hero-promo-wrap {
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 24px 60px rgba(15,23,42,0.20);
-    border: 1px solid rgba(148,163,184,0.10);
+    line-height: 0;
+    box-shadow:
+        0 2px 4px rgba(15,23,42,0.04),
+        0 8px 24px rgba(15,23,42,0.08),
+        0 24px 64px rgba(15,23,42,0.12);
+    border: 1px solid rgba(15,23,42,0.06);
+    background: #e8ecf4; /* placeholder colour while image loads */
 }
-
-.hero-code-bar {
-    background: #0f172a;
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-
-.hcb-dot { width: 9px; height: 9px; border-radius: 50%; }
-.hcb-dot.r { background: #ef4444; }
-.hcb-dot.a { background: #f59e0b; }
-.hcb-dot.g { background: #22c55e; }
-.hcb-file { font-size: 11px; color: #475569; font-family: 'Courier New', monospace; margin-left: 6px; }
-
-.hero-code-body {
-    padding: 22px 20px;
-    font-family: 'Courier New', monospace;
-    font-size: 13px;
-    line-height: 1.9;
-    color: #e2e8f0;
-}
-
-.hc-comment  { color: #475569; }
-.hc-keyword  { color: #f472b6; font-weight: bold; }
-.hc-annot    { color: #fbbf24; }
-.hc-string   { color: #86efac; }
-.hc-type     { color: #67e8f9; }
-
-.hero-code-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 16px;
-    background: rgba(255,106,0,0.06);
-    border-top: 1px solid rgba(255,255,255,0.04);
-}
-
-.hcf-tag {
-    font-size: 10px;
-    font-weight: 700;
-    color: #ff8c3a;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-}
-
-.hcf-tags {
-    display: flex;
-    gap: 6px;
-}
-
-.hcf-chip {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 5px;
-    background: rgba(255,255,255,0.07);
-    color: #94a3b8;
+.hero-promo-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    border-radius: inherit;
 }
 
 /* Float cards */
