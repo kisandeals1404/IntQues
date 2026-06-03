@@ -320,6 +320,11 @@ html { scroll-padding-top: 80px; }
     /* Make room so content isn't hidden behind the bar */
     body.has-mobile-bottom-cta { padding-bottom: 96px; }
 
+    /* Push WhatsApp button above the mobile CTA bar — solid base, no env() dependency */
+    body.has-mobile-bottom-cta .whatsapp-float {
+        bottom: 96px;
+    }
+
     /* The sticky container */
     .mobile-bottom-cta {
         display: block;
@@ -482,10 +487,7 @@ h2 { font-size: clamp(1.35rem, 2.6vw, 2.2rem); line-height:1.08; }
         .enroll-confirm-bar {
             padding-bottom: calc(14px + env(safe-area-inset-bottom));
         }
-        /* Push WhatsApp button above the mobile CTA bar + iOS home indicator */
-        body.has-mobile-bottom-cta .whatsapp-float {
-            bottom: calc(106px + env(safe-area-inset-bottom));
-        }
+        /* (WhatsApp float is handled separately below) */
     }
 }
 
