@@ -6,45 +6,49 @@
 
     var state = { userId: null, email: '', hasPassword: false, otpSent: false };
 
+    function el(id) { return document.getElementById(id); }
+
     var els = {
         // Step 1
-        step1:          document.getElementById('ls1'),
-        emailInput:     document.getElementById('lsEmail'),
-        continueBtn:    document.getElementById('lsContinueBtn'),
-        continueLoader: document.getElementById('lsContinueLoader'),
+        step1:          el('ls1'),
+        emailInput:     el('lsEmail'),
+        continueBtn:    el('lsContinueBtn'),
+        continueLoader: el('lsContinueLoader'),
 
         // Step 2 header
-        step2:          document.getElementById('ls2'),
-        emailDisplay:   document.getElementById('lsEmailDisplay'),
-        changeBtn:      document.getElementById('lsChangeBtn'),
-        methodTabs:     document.getElementById('lsMethodTabs'),
-        tabOtp:         document.getElementById('lsTabOtp'),
-        tabPwd:         document.getElementById('lsTabPwd'),
+        step2:          el('ls2'),
+        emailDisplay:   el('lsEmailDisplay'),
+        changeBtn:      el('lsChangeBtn'),
+        methodTabs:     el('lsMethodTabs'),
+        tabOtp:         el('lsTabOtp'),
+        tabPwd:         el('lsTabPwd'),
 
         // OTP panel
-        otpPanel:       document.getElementById('lsOtpPanel'),
-        otpSendState:   document.getElementById('lsOtpSendState'),
-        otpTargetEmail: document.getElementById('lsOtpTargetEmail'),
-        sendOtpBtn:     document.getElementById('lsSendOtpBtn'),
-        sendOtpLoader:  document.getElementById('lsSendOtpLoader'),
-
-        otpVerifyState: document.getElementById('lsOtpVerifyState'),
-        otpSentEmail:   document.getElementById('lsOtpSentEmail'),
-        otpInput:       document.getElementById('lsOtp'),
-        verifyOtpBtn:   document.getElementById('lsVerifyOtpBtn'),
-        verifyOtpLoader:document.getElementById('lsVerifyOtpLoader'),
-        resendOtpBtn:   document.getElementById('lsResendOtpBtn'),
+        otpPanel:        el('lsOtpPanel'),
+        otpSendState:    el('lsOtpSendState'),
+        otpTargetEmail:  el('lsOtpTargetEmail'),
+        sendOtpBtn:      el('lsSendOtpBtn'),
+        sendOtpLoader:   el('lsSendOtpLoader'),
+        otpVerifyState:  el('lsOtpVerifyState'),
+        otpSentEmail:    el('lsOtpSentEmail'),
+        otpInput:        el('lsOtp'),
+        verifyOtpBtn:    el('lsVerifyOtpBtn'),
+        verifyOtpLoader: el('lsVerifyOtpLoader'),
+        resendOtpBtn:    el('lsResendOtpBtn'),
 
         // Password panel
-        pwdPanel:       document.getElementById('lsPwdPanel'),
-        pwdInput:       document.getElementById('lsPassword'),
-        togglePwd:      document.getElementById('lsTogglePwd'),
-        loginPwdBtn:    document.getElementById('lsLoginPwdBtn'),
-        loginPwdLoader: document.getElementById('lsLoginPwdLoader'),
-        useOtpInstead:  document.getElementById('lsUseOtpInstead'),
+        pwdPanel:        el('lsPwdPanel'),
+        pwdInput:        el('lsPassword'),
+        togglePwd:       el('lsTogglePwd'),
+        loginPwdBtn:     el('lsLoginPwdBtn'),
+        loginPwdLoader:  el('lsLoginPwdLoader'),
+        useOtpInstead:   el('lsUseOtpInstead'),
 
-        message:        document.getElementById('lsMessage')
+        message:         el('lsMessage')
     };
+
+    // Bail out if the core step-1 elements are missing (old bundle vs new template mismatch)
+    if (!els.step1 || !els.emailInput || !els.continueBtn) return;
 
     var toastTimer = null;
 
@@ -78,64 +82,48 @@
         if (loader) loader.hidden = !on;
     }
 
-    // ── Navigation ────────────────────────────────────────────
+    // ── Navigation ──────────────────────────────────────────────
 
     function showStep1() {
-        els.step1.hidden = false;
-        els.step2.hidden = true;
+        if (els.step1) els.step1.hidden = false;
+        if (els.step2) els.step2.hidden = true;
         toast('');
     }
 
     function showStep2() {
-        els.step1.hidden = true;
-        els.step2.hidden = false;
-        els.emailDisplay.textContent = state.email;
-        els.otpTargetEmail.textContent = state.email;
-        els.otpSentEmail.textContent   = state.email;
-        els.methodTabs.hidden = !state.hasPassword;
+        if (els.step1) els.step1.hidden = true;
+        if (els.step2) els.step2.hidden = false;
+        if (els.emailDisplay)  els.emailDisplay.textContent  = state.email;
+        if (els.otpTargetEmail) els.otpTargetEmail.textContent = state.email;
+        if (els.otpSentEmail)  els.otpSentEmail.textContent  = state.email;
+        if (els.methodTabs)    els.methodTabs.hidden = !state.hasPassword;
         showOtpTab();
     }
 
     function showOtpTab() {
-        if (els.tabOtp) {
-            els.tabOtp.classList.add('login-method-tab--active');
-            els.tabOtp.setAttribute('aria-selected', 'true');
-        }
-        if (els.tabPwd) {
-            els.tabPwd.classList.remove('login-method-tab--active');
-            els.tabPwd.setAttribute('aria-selected', 'false');
-        }
-        els.otpPanel.hidden = false;
-        els.pwdPanel.hidden = true;
-        if (state.otpSent) {
-            showOtpVerifyState();
-        } else {
-            showOtpSendState();
-        }
+        if (els.tabOtp) { els.tabOtp.classList.add('login-method-tab--active');    els.tabOtp.setAttribute('aria-selected', 'true'); }
+        if (els.tabPwd) { els.tabPwd.classList.remove('login-method-tab--active'); els.tabPwd.setAttribute('aria-selected', 'false'); }
+        if (els.otpPanel) els.otpPanel.hidden = false;
+        if (els.pwdPanel) els.pwdPanel.hidden = true;
+        if (state.otpSent) { showOtpVerifyState(); } else { showOtpSendState(); }
     }
 
     function showPwdTab() {
-        if (els.tabOtp) {
-            els.tabOtp.classList.remove('login-method-tab--active');
-            els.tabOtp.setAttribute('aria-selected', 'false');
-        }
-        if (els.tabPwd) {
-            els.tabPwd.classList.add('login-method-tab--active');
-            els.tabPwd.setAttribute('aria-selected', 'true');
-        }
-        els.otpPanel.hidden = true;
-        els.pwdPanel.hidden = false;
+        if (els.tabOtp) { els.tabOtp.classList.remove('login-method-tab--active'); els.tabOtp.setAttribute('aria-selected', 'false'); }
+        if (els.tabPwd) { els.tabPwd.classList.add('login-method-tab--active');    els.tabPwd.setAttribute('aria-selected', 'true'); }
+        if (els.otpPanel) els.otpPanel.hidden = true;
+        if (els.pwdPanel) els.pwdPanel.hidden = false;
         if (els.pwdInput) els.pwdInput.focus();
     }
 
     function showOtpSendState() {
-        els.otpSendState.hidden   = false;
-        els.otpVerifyState.hidden = true;
+        if (els.otpSendState)   els.otpSendState.hidden   = false;
+        if (els.otpVerifyState) els.otpVerifyState.hidden = true;
     }
 
     function showOtpVerifyState() {
-        els.otpSendState.hidden   = true;
-        els.otpVerifyState.hidden = false;
+        if (els.otpSendState)   els.otpSendState.hidden   = true;
+        if (els.otpVerifyState) els.otpVerifyState.hidden = false;
         if (els.otpInput) els.otpInput.focus();
     }
 
@@ -145,7 +133,7 @@
         window.location.href = (next && next.charAt(0) === '/') ? next : '/';
     }
 
-    // ── Step 1: Continue ──────────────────────────────────────
+    // ── Step 1: Continue ───────────────────────────────────────
 
     els.continueBtn.addEventListener('click', function () {
         var email = (els.emailInput.value || '').trim();
@@ -157,7 +145,6 @@
         }
         els.emailInput.classList.remove('is-invalid');
         setLoading(els.continueBtn, els.continueLoader, true);
-
         postJson('/api/auth/login/check', { email: email })
             .then(function (res) {
                 state.userId      = res.userId;
@@ -174,36 +161,40 @@
         if (e.key === 'Enter') els.continueBtn.click();
     });
 
-    // ── Change email ─────────────────────────────────────────
+    // ── Change email ────────────────────────────────────────────
 
-    els.changeBtn.addEventListener('click', function () {
-        state.userId = null;
-        state.otpSent = false;
-        showStep1();
-        if (els.emailInput) els.emailInput.focus();
-    });
+    if (els.changeBtn) {
+        els.changeBtn.addEventListener('click', function () {
+            state.userId  = null;
+            state.otpSent = false;
+            showStep1();
+            els.emailInput.focus();
+        });
+    }
 
-    // ── Method tabs ──────────────────────────────────────────
+    // ── Method tabs ─────────────────────────────────────────────
 
     if (els.tabOtp) els.tabOtp.addEventListener('click', showOtpTab);
     if (els.tabPwd) els.tabPwd.addEventListener('click', showPwdTab);
 
-    // ── Send OTP ─────────────────────────────────────────────
+    // ── Send OTP ────────────────────────────────────────────────
 
-    els.sendOtpBtn.addEventListener('click', function () {
-        setLoading(els.sendOtpBtn, els.sendOtpLoader, true);
-        postJson('/api/auth/login/start', { email: state.email })
-            .then(function (res) {
-                state.userId  = res.userId;
-                state.otpSent = true;
-                showOtpVerifyState();
-                toast('Login OTP sent to ' + state.email + '.', 'success');
-            })
-            .catch(function (err) { toast(err.message, 'error'); })
-            .finally(function () { setLoading(els.sendOtpBtn, els.sendOtpLoader, false); });
-    });
+    if (els.sendOtpBtn) {
+        els.sendOtpBtn.addEventListener('click', function () {
+            setLoading(els.sendOtpBtn, els.sendOtpLoader, true);
+            postJson('/api/auth/login/start', { email: state.email })
+                .then(function (res) {
+                    state.userId  = res.userId;
+                    state.otpSent = true;
+                    showOtpVerifyState();
+                    toast('Login OTP sent to ' + state.email + '.', 'success');
+                })
+                .catch(function (err) { toast(err.message, 'error'); })
+                .finally(function () { setLoading(els.sendOtpBtn, els.sendOtpLoader, false); });
+        });
+    }
 
-    // ── Resend OTP ───────────────────────────────────────────
+    // ── Resend OTP ──────────────────────────────────────────────
 
     if (els.resendOtpBtn) {
         els.resendOtpBtn.addEventListener('click', function () {
@@ -213,7 +204,7 @@
                     state.userId = res.userId;
                     if (els.otpInput) els.otpInput.value = '';
                     toast('A new OTP has been sent to ' + state.email + '.', 'success');
-                    setTimeout(function () { els.resendOtpBtn.disabled = false; }, 30000);
+                    setTimeout(function () { if (els.resendOtpBtn) els.resendOtpBtn.disabled = false; }, 30000);
                 })
                 .catch(function (err) {
                     toast(err.message, 'error');
@@ -222,48 +213,49 @@
         });
     }
 
-    // ── Verify OTP ───────────────────────────────────────────
+    // ── Verify OTP ──────────────────────────────────────────────
 
-    els.verifyOtpBtn.addEventListener('click', function () {
-        if (!state.userId) { toast('Please request an OTP first.', 'error'); return; }
-        setLoading(els.verifyOtpBtn, els.verifyOtpLoader, true);
-        postJson('/api/auth/login/verify', {
-            userId: state.userId,
-            otp: (els.otpInput ? els.otpInput.value : '').trim()
-        })
-        .then(handleLoginSuccess)
-        .catch(function (err) { toast(err.message, 'error'); })
-        .finally(function () { setLoading(els.verifyOtpBtn, els.verifyOtpLoader, false); });
-    });
+    if (els.verifyOtpBtn) {
+        els.verifyOtpBtn.addEventListener('click', function () {
+            if (!state.userId) { toast('Please request an OTP first.', 'error'); return; }
+            setLoading(els.verifyOtpBtn, els.verifyOtpLoader, true);
+            postJson('/api/auth/login/verify', {
+                userId: state.userId,
+                otp: (els.otpInput ? els.otpInput.value : '').trim()
+            })
+            .then(handleLoginSuccess)
+            .catch(function (err) { toast(err.message, 'error'); })
+            .finally(function () { setLoading(els.verifyOtpBtn, els.verifyOtpLoader, false); });
+        });
+    }
 
     if (els.otpInput) {
         els.otpInput.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') els.verifyOtpBtn.click();
+            if (e.key === 'Enter' && els.verifyOtpBtn) els.verifyOtpBtn.click();
         });
     }
 
-    // ── Login with password ──────────────────────────────────
+    // ── Login with password ─────────────────────────────────────
 
-    els.loginPwdBtn.addEventListener('click', function () {
-        var pwd = els.pwdInput ? els.pwdInput.value : '';
-        if (!pwd) { toast('Please enter your password.', 'error'); if (els.pwdInput) els.pwdInput.focus(); return; }
-        setLoading(els.loginPwdBtn, els.loginPwdLoader, true);
-        postJson('/api/auth/login/password', {
-            userId: state.userId,
-            password: pwd
-        })
-        .then(handleLoginSuccess)
-        .catch(function (err) { toast(err.message, 'error'); })
-        .finally(function () { setLoading(els.loginPwdBtn, els.loginPwdLoader, false); });
-    });
+    if (els.loginPwdBtn) {
+        els.loginPwdBtn.addEventListener('click', function () {
+            var pwd = els.pwdInput ? els.pwdInput.value : '';
+            if (!pwd) { toast('Please enter your password.', 'error'); if (els.pwdInput) els.pwdInput.focus(); return; }
+            setLoading(els.loginPwdBtn, els.loginPwdLoader, true);
+            postJson('/api/auth/login/password', { userId: state.userId, password: pwd })
+                .then(handleLoginSuccess)
+                .catch(function (err) { toast(err.message, 'error'); })
+                .finally(function () { setLoading(els.loginPwdBtn, els.loginPwdLoader, false); });
+        });
+    }
 
     if (els.pwdInput) {
         els.pwdInput.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') els.loginPwdBtn.click();
+            if (e.key === 'Enter' && els.loginPwdBtn) els.loginPwdBtn.click();
         });
     }
 
-    // ── Password show/hide toggle ────────────────────────────
+    // ── Password show/hide ──────────────────────────────────────
 
     if (els.togglePwd && els.pwdInput) {
         els.togglePwd.addEventListener('click', function () {
@@ -276,12 +268,10 @@
         });
     }
 
-    // ── "Use OTP instead" (from password panel) ──────────────
+    // ── Use OTP instead ─────────────────────────────────────────
 
     if (els.useOtpInstead) {
-        els.useOtpInstead.addEventListener('click', function () {
-            showOtpTab();
-        });
+        els.useOtpInstead.addEventListener('click', showOtpTab);
     }
 
 })();
