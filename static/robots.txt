@@ -3,10 +3,6 @@ Allow: /
 
 # Private / authenticated pages — no crawl budget
 Disallow: /my-account
-Disallow: /my-enrollments
-Disallow: /enroll
-Disallow: /enrollment-success
-Disallow: /paymentSuccess
 Disallow: /login
 Disallow: /logout
 Disallow: /admin/

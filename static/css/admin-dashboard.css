@@ -5,7 +5,7 @@
 .dash-main {
     padding: 36px 0 80px;
     background: #f1f5f9;
-    min-height: 100vh;
+    min-height: calc(100vh - 58px);
 }
 
 /* ── Page header ──────────────────────────────────── */
@@ -80,7 +80,7 @@
 /* ── Stat tiles ───────────────────────────────────── */
 .dash-stats {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
     gap: 14px;
     margin-bottom: 24px;
 }
@@ -151,7 +151,7 @@
 
 .dash-actions {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 14px;
     margin-bottom: 28px;
 }
@@ -192,6 +192,7 @@
 .dash-action-tile--upload::after   { background: linear-gradient(90deg, #6366f1, #8b5cf6); }
 .dash-action-tile--enrolls::after  { background: linear-gradient(90deg, #0ea5e9, #38bdf8); }
 .dash-action-tile--csv::after      { background: linear-gradient(90deg, #10b981, #34d399); }
+.dash-action-tile--users::after    { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
 
 .dash-tile-icon {
     width: 40px; height: 40px;
@@ -206,6 +207,7 @@
 .dash-action-tile--upload .dash-tile-icon { background: rgba(99,102,241,0.10); color: #6366f1; }
 .dash-action-tile--enrolls .dash-tile-icon { background: rgba(14,165,233,0.10); color: #0284c7; }
 .dash-action-tile--csv    .dash-tile-icon { background: rgba(16,185,129,0.10); color: #059669; }
+.dash-action-tile--users  .dash-tile-icon { background: rgba(245,158,11,0.10); color: #d97706; }
 
 .dash-tile-title {
     font-size: 0.92rem;
@@ -315,6 +317,13 @@
 .dash-badge--expired  { background: rgba(239,68,68,0.10); color: #dc2626; border: 1px solid rgba(239,68,68,0.20); }
 .dash-badge--ws       { background: rgba(255,106,0,0.10); color: #c2410c; border: 1px solid rgba(255,106,0,0.18); }
 .dash-badge--lc       { background: rgba(139,92,246,0.10); color: #7c3aed; border: 1px solid rgba(139,92,246,0.18); }
+.dash-badge--premium  {
+    background: linear-gradient(135deg, #ff6a00, #ff2fa0);
+    color: #fff;
+    border: 1px solid transparent;
+    gap: 4px;
+}
+.dash-badge--premium i { font-size: 0.7em; }
 
 /* ── Row actions ──────────────────────────────────── */
 .dash-td-actions {
@@ -480,4 +489,415 @@
     .dash-stats { grid-template-columns: 1fr 1fr; }
     .dash-actions { grid-template-columns: 1fr; }
     .dash-header { flex-direction: column; align-items: flex-start; }
+}
+
+/* =====================================================
+   ADMIN BODY — removes site nav offset
+   ===================================================== */
+
+.admin-body {
+    padding-top: 0;
+}
+
+/* =====================================================
+   ADMIN TOP NAV (standalone — replaces site nav on admin pages)
+   ===================================================== */
+
+.admin-top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 1300;
+    background: #0f172a;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 2px 18px rgba(0,0,0,0.22);
+}
+
+.admin-top-inner {
+    display: flex;
+    align-items: center;
+    height: 58px;
+}
+
+/* ── Brand ─────────────────────────────────────────── */
+.admin-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    padding: 0 24px 0 0;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    margin-right: 6px;
+    height: 100%;
+    flex-shrink: 0;
+    transition: opacity 150ms ease;
+}
+.admin-brand:hover { opacity: 0.85; }
+
+.admin-brand-logo {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(255,106,0,0.30);
+}
+
+.admin-brand-name {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    white-space: nowrap;
+}
+
+.admin-brand-pill {
+    font-size: 0.55rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    padding: 2px 7px;
+    border-radius: 100px;
+    background: rgba(255,106,0,0.18);
+    color: #ff8c3a;
+    border: 1px solid rgba(255,106,0,0.28);
+    line-height: 1.4;
+}
+
+/* ── Tabs ──────────────────────────────────────────── */
+.admin-nav-tabs {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 2px;
+    padding: 0 6px;
+}
+.admin-nav-tabs::-webkit-scrollbar { display: none; }
+
+.admin-nav-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 38px;
+    padding: 0 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.52);
+    text-decoration: none;
+    border-radius: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: color 140ms ease, background 140ms ease;
+}
+.admin-nav-tab:hover { color: #fff; background: rgba(255,255,255,0.08); text-decoration: none; }
+.admin-nav-tab.is-active { color: #ff8c3a; background: rgba(255,106,0,0.14); font-weight: 700; }
+.admin-nav-tab--soon { color: rgba(255,255,255,0.28); cursor: default; }
+.admin-nav-tab--soon:hover { background: none; color: rgba(255,255,255,0.28); }
+
+.admin-soon-tag {
+    font-size: 0.56rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    padding: 2px 5px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.28);
+    line-height: 1.4;
+}
+
+/* ── View Site link ────────────────────────────────── */
+.admin-view-site {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 100%;
+    padding: 0 20px;
+    border-left: 1px solid rgba(255,255,255,0.08);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.45);
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: color 140ms ease;
+    white-space: nowrap;
+}
+.admin-view-site:hover { color: #fff; text-decoration: none; }
+
+/* Mobile: collapse text labels */
+@media (max-width: 860px) {
+    .admin-brand-name .admin-brand-pill { display: none; }
+}
+@media (max-width: 640px) {
+    .admin-brand-name { display: none; }
+    .admin-brand { padding-right: 12px; margin-right: 4px; }
+    .admin-nav-tab span { display: none; }
+    .admin-view-site span { display: none; }
+    .admin-nav-tab { padding: 0 10px; }
+    .admin-view-site { padding: 0 12px; }
+}
+
+/* =====================================================
+   ADMIN HUB (overview / dashboard page)
+   ===================================================== */
+
+.admin-hub-main {
+    padding: 48px 0 80px;
+    background: #f1f5f9;
+    min-height: calc(100vh - 58px);
+}
+
+.admin-hub-heading {
+    margin-bottom: 32px;
+    text-align: center;
+}
+.admin-hub-title {
+    font-size: 1.7rem;
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: -0.025em;
+    margin: 0 0 6px;
+}
+.admin-hub-subtitle {
+    font-size: 0.88rem;
+    color: #64748b;
+    margin: 0;
+}
+
+/* ── Module cards grid ────────────────────────────── */
+.admin-hub-modules {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 32px;
+}
+
+/* ── Card base ────────────────────────────────────── */
+.admin-module-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid rgba(15,23,42,0.07);
+    border-radius: 20px;
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(15,23,42,0.05), 0 4px 20px rgba(15,23,42,0.04);
+    transition: transform 220ms ease, box-shadow 220ms ease;
+    position: relative;
+}
+.admin-module-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 48px rgba(15,23,42,0.13);
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Always-visible top color accent */
+.admin-module-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+}
+.admin-module-card--courses::before { background: linear-gradient(90deg, #ff6a00, #ff9a3a); }
+.admin-module-card--enroll::before  { background: linear-gradient(90deg, #0ea5e9, #38bdf8); }
+.admin-module-card--users::before   { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.admin-module-card--quizzes::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+.admin-module-card--assignments::before { background: linear-gradient(90deg, #16a34a, #4ade80); }
+.admin-module-card--grading::before     { background: linear-gradient(90deg, #eab308, #fde047); }
+.admin-module-card--questions::before   { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+.admin-module-card--resume::before      { background: linear-gradient(90deg, #0ea5e9, #38bdf8); }
+
+/* ── Card inner content ───────────────────────────── */
+.admin-module-card-inner {
+    padding: 26px 24px 22px;
+    flex: 1;
+}
+
+.admin-module-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.admin-module-card-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+    transition: transform 220ms ease;
+}
+.admin-module-card:hover .admin-module-card-icon {
+    transform: scale(1.1) rotate(-4deg);
+}
+.admin-module-card--courses .admin-module-card-icon { background: rgba(255,106,0,0.10); color: #ff6a00; }
+.admin-module-card--enroll  .admin-module-card-icon { background: rgba(14,165,233,0.10); color: #0284c7; }
+.admin-module-card--users   .admin-module-card-icon { background: rgba(245,158,11,0.10); color: #d97706; }
+.admin-module-card--quizzes .admin-module-card-icon { background: rgba(139,92,246,0.10); color: #7c3aed; }
+.admin-module-card--assignments .admin-module-card-icon { background: rgba(22,163,74,0.10); color: #16a34a; }
+.admin-module-card--grading     .admin-module-card-icon { background: rgba(234,179,8,0.10);  color: #a16207; }
+.admin-module-card--questions   .admin-module-card-icon { background: rgba(139,92,246,0.10); color: #7c3aed; }
+.admin-module-card--resume      .admin-module-card-icon { background: rgba(14,165,233,0.10); color: #0284c7; }
+
+.admin-module-card-info { flex: 1; min-width: 0; }
+.admin-module-card-title {
+    font-size: 1.02rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    margin: 0 0 4px;
+    line-height: 1.2;
+}
+.admin-module-card-desc {
+    font-size: 0.79rem;
+    color: #64748b;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* ── Stat chips ───────────────────────────────────── */
+.admin-module-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(68px, 1fr));
+    gap: 8px;
+}
+.admin-module-stat-chip {
+    background: #f8fafc;
+    border: 1px solid rgba(15,23,42,0.06);
+    border-radius: 11px;
+    padding: 10px 8px 9px;
+    text-align: center;
+    transition: background 150ms ease;
+}
+.admin-module-card:hover .admin-module-stat-chip {
+    background: #f1f5f9;
+}
+.admin-module-stat-num {
+    font-size: 1.55rem;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    display: block;
+}
+.admin-module-stat-lbl {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-top: 3px;
+    white-space: nowrap;
+}
+
+/* Color stat numbers by card type */
+.admin-module-card--courses .admin-module-stat-num { color: #ff6a00; }
+.admin-module-card--enroll  .admin-module-stat-num { color: #0284c7; }
+.admin-module-card--users   .admin-module-stat-num { color: #d97706; }
+.admin-module-card--quizzes .admin-module-stat-num { color: #7c3aed; }
+.admin-module-card--assignments .admin-module-stat-num { color: #16a34a; }
+.admin-module-card--grading     .admin-module-stat-num { color: #a16207; }
+.admin-module-card--questions   .admin-module-stat-num { color: #7c3aed; }
+.admin-module-card--resume      .admin-module-stat-num { color: #0284c7; }
+
+/* ── Card footer CTA ──────────────────────────────── */
+.admin-module-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 24px;
+    border-top: 1px solid rgba(15,23,42,0.06);
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #64748b;
+    background: #fafbfd;
+    transition: color 150ms ease, background 150ms ease;
+}
+.admin-module-card:hover .admin-module-card-footer {
+    color: #0f172a;
+    background: #f3f6fb;
+}
+.admin-module-card-footer i {
+    font-size: 0.72rem;
+    color: #cbd5e1;
+    transition: transform 200ms ease, color 150ms ease;
+}
+.admin-module-card:hover .admin-module-card-footer i {
+    transform: translateX(5px);
+    color: #94a3b8;
+}
+
+/* ── Open-tickets alert ──────────────────────────── */
+.admin-hub-ticket-alert {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 16px;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #92400e;
+    background: rgba(245,158,11,0.09);
+    border: 1px solid rgba(245,158,11,0.25);
+    margin-bottom: 24px;
+}
+
+/* ── Hub responsive ───────────────────────────────── */
+@media (max-width: 700px) {
+    .admin-hub-modules { grid-template-columns: 1fr; }
+    .admin-hub-modules { gap: 14px; }
+}
+
+/* =====================================================
+   ADMIN FORM (test user creation and similar forms)
+   ===================================================== */
+
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px 20px;
+}
+.admin-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.admin-form-field--full {
+    grid-column: 1 / -1;
+}
+.admin-form-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #475569;
+    letter-spacing: 0.01em;
+}
+.admin-form-input {
+    padding: 9px 13px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-family: inherit;
+    color: #0f172a;
+    background: #fff;
+    outline: none;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+.admin-form-input:focus {
+    border-color: #ff6a00;
+    box-shadow: 0 0 0 3px rgba(255,106,0,0.10);
+}
+.admin-form-input::placeholder { color: #cbd5e1; }
+@media (max-width: 600px) {
+    .admin-form-grid { grid-template-columns: 1fr; }
+    .admin-form-field--full { grid-column: 1; }
 }

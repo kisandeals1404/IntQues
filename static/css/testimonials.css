@@ -105,7 +105,7 @@ TESTIMONIALS SECTION - PREMIUM SAAS
     bottom: -5px;
     right: -5px;
     background: white;
-    color: #007bff;
+    color: var(--primary-orange, #ff6a00);
     border-radius: 50%;
     width: 20px;
     height: 20px;
@@ -133,12 +133,53 @@ TESTIMONIALS SECTION - PREMIUM SAAS
 }
 
 /* TEXT */
+.testimonials-rating {
+    display: flex;
+    gap: 3px;
+    margin-bottom: 16px;
+    color: #fbbf24;
+    font-size: 0.85rem;
+}
+
 .testimonials-text {
     font-size: 1.05rem;
     color: var(--text-main);
     line-height: 1.7;
     margin-bottom: 30px;
     font-style: italic;
+}
+
+/* Compact company-logo trust strip (replaces the old dual logo walls) */
+.testimonials-logo-strip {
+    margin-top: 56px;
+    text-align: center;
+}
+.testimonials-logo-strip-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 20px;
+}
+.testimonials-logo-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(24px, 5vw, 48px);
+}
+.testimonials-logo-img {
+    height: 26px;
+    width: auto;
+    max-width: 90px;
+    object-fit: contain;
+    filter: grayscale(100%) opacity(0.55);
+    transition: filter 220ms ease;
+}
+.testimonials-logo-img:hover {
+    filter: grayscale(0%) opacity(1);
 }
 
 /* SALARY BADGE - ROI FOCUS */

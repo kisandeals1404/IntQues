@@ -1,9 +1,10 @@
 /* --- HERO PREMIUM V2 SCOPED STYLES (Unified) --- */
 .hero-premium-v2 {
-    /* Section-scoped color aliases (do not modify global variables) */
-    --hp-primary: #ff6a00;
-    --hp-dark: #0f172a;
-    --hp-text-soft: #64748b;
+    /* Section-scoped aliases, sourced from the global tokens they duplicate values with —
+       kept as local names since the rest of this file references --hp-* extensively. */
+    --hp-primary: var(--primary-orange);
+    --hp-dark: var(--dark-900);
+    --hp-text-soft: var(--text-muted);
 
     position: relative;
     background: #ffffff;

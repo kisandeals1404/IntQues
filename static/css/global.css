@@ -13,6 +13,7 @@
     --primary-gradient: linear-gradient(135deg, #ff6a00, #ff8c3a);
 
     /* Dark palette */
+    --dark-950: #07090d; /* footer's deliberately-deeper-than-navbar dark, tokenized */
     --dark-900: #0f172a;
     --dark-800: #1e293b;
     --dark-700: #334155;
@@ -56,6 +57,9 @@
     --radius-xs:  6px;
     --radius-sm:  8px;
     --radius-md:  12px;
+    --radius-card: 14px; /* de-facto card radius used across the site — tokenized rather
+                             than changed, since 14px (between --radius-md and --radius-lg)
+                             is already what's shipped on ~28 cards/panels */
     --radius-lg:  16px;
     --radius-xl:  20px;
     --radius-2xl: 24px;
@@ -187,10 +191,14 @@ body {
     text-decoration: none;
 }
 
+/* Single source of truth for keyboard-focus rings — previously defined three times
+   (here, and twice more in ux-overrides.css) with three different values, so which one
+   a given element got depended on cascade order/specificity luck rather than intent. */
 *:focus { outline: none; }
 *:focus-visible {
-    outline: 3px solid rgba(255, 106, 0, 0.35);
-    outline-offset: 2px;
+    outline: 2.5px solid var(--primary-orange);
+    outline-offset: 3px;
+    border-radius: var(--radius-xs);
 }
 
 [data-nav-url] { cursor: pointer; }
@@ -435,3 +443,144 @@ section > .curr-container {
 /* Utility class */
 .fade-up   { animation: fadeUp 520ms cubic-bezier(0.2, 0.9, 0.2, 1) both; }
 .float-slow { animation: floatSlow 6s ease-in-out infinite; }
+
+/* =========================================
+   SKELETON / SHIMMER LOADING
+========================================= */
+.skeleton {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(90deg, #eef1f6 25%, #f8fafc 37%, #eef1f6 63%);
+    background-size: 400% 100%;
+    animation: shimmerSlide 1.4s ease-in-out infinite;
+}
+.skeleton > * { visibility: hidden; }
+
+/* =========================================
+   CONFIRM DIALOG — shared accessible replacement for confirm()
+   (see static/js/confirm-dialog.js — IntQuesConfirm.show({...}))
+========================================= */
+.iq-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    z-index: 1400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 180ms, visibility 180ms;
+}
+.iq-confirm-overlay.open { opacity: 1; visibility: visible; }
+
+.iq-confirm-modal {
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8) var(--space-6);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    box-shadow: var(--shadow-xl);
+    transform: scale(0.96);
+    transition: transform 180ms;
+}
+.iq-confirm-overlay.open .iq-confirm-modal { transform: scale(1); }
+
+.iq-confirm-title {
+    font-size: var(--text-xl);
+    font-weight: 800;
+    color: var(--dark-900);
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+}
+.iq-confirm-body {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    margin: 0 0 var(--space-6);
+    line-height: 1.55;
+}
+.iq-confirm-actions {
+    display: flex;
+    gap: 10px;
+}
+.iq-confirm-cancel,
+.iq-confirm-confirm {
+    flex: 1;
+    padding: 11px;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition-fast);
+}
+.iq-confirm-cancel {
+    background: var(--light-bg);
+    border: 1.5px solid var(--border-color);
+    color: var(--text-body);
+}
+.iq-confirm-cancel:hover { border-color: var(--slate-400); color: var(--dark-900); }
+
+.iq-confirm-confirm {
+    background: var(--dark-900);
+    color: #fff;
+}
+.iq-confirm-confirm:hover { background: var(--dark-800); }
+
+.iq-confirm-confirm--danger { background: #ef4444; }
+.iq-confirm-confirm--danger:hover { background: #dc2626; }
+
+/* =========================================
+   LIST CONTROLS — shared search box + pager
+   (see layout/list-controls.ftl)
+========================================= */
+.admin-search-form {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: var(--space-5);
+}
+.admin-search-input {
+    flex: 1 1 220px;
+    min-width: 0;
+    padding: 9px 14px;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+    font-family: inherit;
+    outline: none;
+}
+.admin-search-input:focus { border-color: var(--primary-orange); }
+.admin-search-clear { background: var(--light-bg); color: var(--text-body); }
+
+.admin-pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: var(--space-5) 0;
+}
+.admin-pager-status {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    padding: 0 8px;
+}
+.admin-pager-disabled { opacity: 0.45; pointer-events: none; }
+
+/* =========================================
+   MOTION ACCESSIBILITY
+========================================= */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

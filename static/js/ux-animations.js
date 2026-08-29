@@ -44,7 +44,7 @@
         '.certificate-btn-primary',
         '.mobile-bottom-cta__button',
         '.demo-cta-btn',
-        '[href="/enroll"]',
+        '.mbc-seg',
         '.of-btn-enroll',
         '.of-btn-o',
         '.od-btn-enroll',
@@ -95,31 +95,11 @@
     var SECTION_HEADERS = [
         '.testimonials-header',
         '.faq-header',
-        '.pricing-header',
-        '.curriculum-header',
-        '.instructors-header',
-        '.certificate-header',
-        '.companies-header',
-        '.wiq-header',
-        '.why-heading',
-        '.workshops-heading',
-        '.diff-section .section-heading',
         '.stats-strip',
-        '.pop-group-header',
     ];
 
     var GRID_SELECTORS = [
         '.testimonials-grid',
-        '.curriculum-grid',
-        '.instructors-grid',
-        '.ta-grid',
-        '.companies-logos',
-        '.pricing-wrapper',
-        '.wiq-grid',
-        '.why-grid',
-        '.workshops-grid',
-        '.diff-grid',
-        '.pop-grid',
     ];
 
     function autoMarkReveal() {
@@ -158,16 +138,18 @@
 
     /* ─────────────────────────────────────────
        6. COUNTER ANIMATION — animated number roll-up
-          Covers hero metrics + stats strip numbers
+          Generic utility: any element with
+          data-counter-target="1000" (+ optional
+          data-counter-suffix="+") counts up from 0
+          once it scrolls into view. Used by the
+          homepage trust-stats section and reusable
+          anywhere else a number should animate in.
     ───────────────────────────────────────── */
-    function animateCounters() {
-        /* .hp-metric-number — plain text like "120", "98%", safe to replace */
-        document.querySelectorAll('.hp-metric-number').forEach(function (el) {
-            var text = el.textContent.trim();
-            var match = text.match(/^(\d+)/);
-            if (!match) return;
-            var target = parseInt(match[1], 10);
-            var suffix = text.slice(match[0].length);
+    function initCounterAnimation() {
+        document.querySelectorAll('[data-counter-target]').forEach(function (el) {
+            var target = parseInt(el.getAttribute('data-counter-target'), 10);
+            if (isNaN(target)) return;
+            var suffix = el.getAttribute('data-counter-suffix') || '';
             var duration = 1400;
             var startTime = null;
             var started = false;
@@ -180,37 +162,25 @@
                 if (progress < 1) requestAnimationFrame(step);
             }
 
-            var obs = new IntersectionObserver(function (entries) {
-                if (entries[0].isIntersecting && !started) {
-                    started = true;
-                    requestAnimationFrame(step);
-                    obs.disconnect();
-                }
-            }, { threshold: 0.4 });
-            obs.observe(el.closest('section') || el);
-        });
-
-        /* .stat-number — contains child <span> elements, use CSS-class entrance only.
-           Observe the panel so all 4 numbers trigger together (staggered via CSS delay). */
-        var statsPanel = document.querySelector('.stats-panel');
-        if (statsPanel) {
-            if ('IntersectionObserver' in window) {
-                var statObs = new IntersectionObserver(function (entries) {
-                    if (entries[0].isIntersecting) {
-                        statsPanel.querySelectorAll('.stat-number').forEach(function (el) {
-                            el.classList.add('stat-counted');
-                        });
-                        statObs.disconnect();
-                    }
-                }, { threshold: 0.3 });
-                statObs.observe(statsPanel);
-            } else {
-                /* Fallback: show immediately if IntersectionObserver unsupported */
-                statsPanel.querySelectorAll('.stat-number').forEach(function (el) {
-                    el.classList.add('stat-counted');
-                });
+            function start() {
+                if (started) return;
+                started = true;
+                el.classList.add('is-counted'); /* releases any opacity/transform reveal-gate CSS */
+                requestAnimationFrame(step);
             }
-        }
+
+            if ('IntersectionObserver' in window) {
+                var obs = new IntersectionObserver(function (entries) {
+                    if (entries[0].isIntersecting) {
+                        start();
+                        obs.disconnect();
+                    }
+                }, { threshold: 0.4 });
+                obs.observe(el.closest('section') || el);
+            } else {
+                start();
+            }
+        });
     }
 
     /* ─────────────────────────────────────────
@@ -233,16 +203,297 @@
     }
 
     /* ─────────────────────────────────────────
+       8. INFINITE MARQUEE — popular offerings
+          Cards clone themselves and scroll
+          continuously. Pauses on hover.
+    ───────────────────────────────────────── */
+    function initMarquees() {
+        document.querySelectorAll('[data-marquee]').forEach(function (track) {
+            var cards = Array.from(track.children);
+            if (cards.length === 0) return;
+
+            /* Clone all cards for seamless loop (original + clone = 200%) */
+            cards.forEach(function (card) {
+                var clone = card.cloneNode(true);
+                clone.setAttribute('aria-hidden', 'true');
+                /* Prevent duplicate interactive elements in clones */
+                clone.querySelectorAll('a, button').forEach(function (el) {
+                    el.setAttribute('tabindex', '-1');
+                });
+                track.appendChild(clone);
+            });
+
+            /* Speed: ~6s per card, min 20s, max 60s */
+            var dur = Math.min(60, Math.max(20, cards.length * 7));
+            track.style.setProperty('--marquee-dur', dur + 's');
+            track.classList.add('marquee-ready');
+        });
+    }
+
+    /* ─────────────────────────────────────────
+       9. AUTO-PLAY — sc-track carousels
+          Advances automatically, pauses on
+          hover or touch, loops back to start.
+    ───────────────────────────────────────── */
+    function initAutoPlay() {
+        var INTERVAL  = 3800; /* ms between advances */
+        var TOUCH_RESUME = 3000; /* ms after touch to resume */
+
+        document.querySelectorAll('.sc-track').forEach(function (track) {
+            var timer  = null;
+            var paused = false;
+
+            function cardStep() {
+                /* Use first real card (not aria-hidden clone) */
+                var first = track.querySelector(':scope > *:not([aria-hidden="true"])');
+                return first ? first.offsetWidth + 20 : 300;
+            }
+
+            function advance() {
+                if (paused) return;
+                var max = track.scrollWidth - track.clientWidth;
+                if (max <= 4) return; /* single card — nothing to scroll */
+
+                if (track.scrollLeft + 6 >= max) {
+                    track.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    track.scrollBy({ left: cardStep(), behavior: 'smooth' });
+                }
+            }
+
+            function start() { timer = setInterval(advance, INTERVAL); }
+            function stop()  { clearInterval(timer); }
+
+            track.addEventListener('mouseenter', function () { paused = true;  stop(); });
+            track.addEventListener('mouseleave', function () { paused = false; start(); });
+
+            track.addEventListener('touchstart', function () { stop(); }, { passive: true });
+            track.addEventListener('touchend', function () {
+                setTimeout(function () { start(); }, TOUCH_RESUME);
+            }, { passive: true });
+
+            /* Sync arrow buttons on scroll (keeps nav state correct) */
+            track.addEventListener('scroll', function () {
+                var atStart = track.scrollLeft <= 4;
+                var atEnd   = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+                var wrap    = track.closest('.sc-wrap');
+                var fade    = wrap ? wrap.querySelector('.sc-fade') : null;
+                var id      = track.id;
+                if (id) {
+                    document.querySelectorAll('[data-carousel="' + id + '"]').forEach(function (btn) {
+                        var d = parseInt(btn.getAttribute('data-dir'), 10);
+                        btn.disabled = (d === -1 && atStart) || (d === 1 && atEnd);
+                    });
+                }
+                if (fade) fade.style.opacity = atEnd ? '0' : '1';
+            }, { passive: true });
+
+            /* Arrow button clicks */
+            if (track.id) {
+                document.querySelectorAll('[data-carousel="' + track.id + '"]').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        var d = parseInt(btn.getAttribute('data-dir'), 10);
+                        track.scrollBy({ left: d * cardStep(), behavior: 'smooth' });
+                        /* Brief pause so user sees where they clicked to */
+                        stop();
+                        setTimeout(start, INTERVAL * 2);
+                    });
+                });
+            }
+
+            /* Stagger start times so not all sections advance simultaneously */
+            var delay = 1500 + Math.random() * 1000;
+            setTimeout(start, delay);
+        });
+    }
+
+    /* ─────────────────────────────────────────
+       10. Remove stagger-children from carousels
+           Cards must be fully visible — no fade-in
+    ───────────────────────────────────────── */
+    function fixCarouselStagger() {
+        document.querySelectorAll('.pop-marquee-track, .sc-track').forEach(function (el) {
+            el.classList.remove('stagger-children');
+            el.querySelectorAll(':scope > *').forEach(function (card) {
+                card.style.opacity    = '';
+                card.style.transform  = '';
+                card.style.transition = '';
+            });
+        });
+    }
+
+    /* ─────────────────────────────────────────
+       11. HERO SEARCH — redirect to offerings
+    ───────────────────────────────────────── */
+    /* ─────────────────────────────────────────
+       12. HERO HEADLINE — rotating word
+           "Only Coding." → "Building." → …
+           Slides old word up, slides new in from below.
+    ───────────────────────────────────────── */
+    function initHeroWordRotate() {
+        var el = document.querySelector('.h1-rotate');
+        if (!el) return;
+
+        var words   = ['Hired.', 'Interview-Ready.', 'Noticed.', 'Job-Ready.'];
+        var current = 0;
+
+        function rotateTo(next) {
+            /* Exit: fade + slide up */
+            el.style.opacity   = '0';
+            el.style.transform = 'translateY(-14px)';
+            el.style.transition = 'opacity 240ms ease-in, transform 240ms ease-in';
+
+            setTimeout(function () {
+                /* Teleport below, swap text */
+                el.style.transition = 'none';
+                el.style.transform  = 'translateY(18px)';
+                el.style.opacity    = '0';
+                el.textContent      = words[next];
+
+                /* Force reflow so the reset is applied before the enter transition */
+                void el.offsetWidth;
+
+                /* Enter: slide up from below */
+                el.style.transition = 'opacity 340ms ease-out, transform 380ms cubic-bezier(0.2, 0.9, 0.2, 1)';
+                el.style.opacity    = '1';
+                el.style.transform  = 'translateY(0)';
+                current             = next;
+            }, 260);
+        }
+
+        /* Start rotating after 2.4s so user reads the first word first */
+        setTimeout(function () {
+            setInterval(function () {
+                rotateTo((current + 1) % words.length);
+            }, 2600);
+        }, 2400);
+    }
+
+    /* ─────────────────────────────────────────
+       15. OFFERINGS SEARCH — cycling placeholder
+           Keeps the same rotating hints as the
+           hero search so both feel consistent.
+    ───────────────────────────────────────── */
+    function initOfferingsSearchPlaceholder() {
+        var input = document.getElementById('of-search');
+        if (!input) return;
+        var hints = ['Java', 'Kafka', 'Spring Boot', 'SQL', 'REST APIs', 'AWS', 'Microservices'];
+        var hi = 0;
+        setInterval(function () {
+            if (document.activeElement === input) return;
+            hi = (hi + 1) % hints.length;
+            input.placeholder = 'Try “' + hints[hi] + '”…';
+        }, 2800);
+    }
+
+    /* ─────────────────────────────────────────
+       13. MOUSE DRAG — desktop drag-to-scroll
+           Lets desktop users drag carousels with
+           mouse, same as touch swipe on mobile.
+           Suppresses child link clicks when the
+           gesture was a drag, not a tap.
+    ───────────────────────────────────────── */
+    function initMouseDrag() {
+        document.querySelectorAll('.sc-track, .pop-marquee-track').forEach(function (track) {
+            var isDown   = false;
+            var hasMoved = false;
+            var startX   = 0;
+            var startScroll = 0;
+
+            function rect() { return track.getBoundingClientRect(); }
+
+            track.addEventListener('mousedown', function (e) {
+                if (e.button !== 0) return;
+                isDown     = true;
+                hasMoved   = false;
+                startX     = e.pageX - rect().left;
+                startScroll = track.scrollLeft;
+                track.style.cursor     = 'grabbing';
+                track.style.userSelect = 'none';
+            });
+
+            track.addEventListener('mousemove', function (e) {
+                if (!isDown) return;
+                e.preventDefault();
+                var x  = e.pageX - rect().left;
+                var dx = x - startX;
+                if (Math.abs(dx) > 4) hasMoved = true;
+                track.scrollLeft = startScroll - dx;
+            });
+
+            function release() {
+                if (!isDown) return;
+                isDown = false;
+                track.style.cursor     = 'grab';
+                track.style.userSelect = '';
+            }
+            track.addEventListener('mouseup',    release);
+            track.addEventListener('mouseleave', release);
+
+            /* Block child-link navigation when the action was a drag, not a click */
+            track.addEventListener('click', function (e) {
+                if (hasMoved) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    hasMoved = false;
+                }
+            }, true);
+        });
+    }
+
+    /* ─────────────────────────────────────────
+       14. RESET CAROUSEL SCROLL — ensure every
+           carousel starts at position 0 so mobile
+           users always see the first card.
+    ───────────────────────────────────────── */
+    function resetCarouselPositions() {
+        document.querySelectorAll('.sc-track, .pop-marquee-track').forEach(function (track) {
+            track.scrollLeft = 0;
+        });
+    }
+
+    /* ─────────────────────────────────────────
+       16. BACK TO TOP — appears after 400px scroll
+    ───────────────────────────────────────── */
+    function initBackToTop() {
+        var btn = document.createElement('button');
+        btn.className = 'btt-btn';
+        btn.setAttribute('aria-label', 'Back to top');
+        btn.innerHTML = '<i class="fa-solid fa-chevron-up" aria-hidden="true"></i>';
+        btn.addEventListener('click', function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        document.body.appendChild(btn);
+
+        var visible = false;
+        window.addEventListener('scroll', function () {
+            var shouldShow = window.scrollY > 400;
+            if (shouldShow !== visible) {
+                visible = shouldShow;
+                btn.classList.toggle('visible', visible);
+            }
+        }, { passive: true });
+    }
+
+    /* ─────────────────────────────────────────
        INIT
     ───────────────────────────────────────── */
     document.addEventListener('DOMContentLoaded', function () {
         injectFloatKeyframes();
         autoMarkReveal();
+        fixCarouselStagger();   /* clear stagger before reveal observer starts */
         upgradeCTAs();
         attachRipples();
         initScrollReveal();
-        animateCounters();
+        initCounterAnimation();
         initNavbarScroll();
+        initMarquees();
+        resetCarouselPositions(); /* ensure all carousels start at first card */
+        initAutoPlay();
+        initMouseDrag();
+        initHeroWordRotate();
+        initOfferingsSearchPlaceholder();
+        initBackToTop();
     });
 })();
 

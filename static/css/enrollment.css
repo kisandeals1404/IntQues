@@ -598,7 +598,7 @@
     min-width: min(360px, calc(100vw - 32px));
     max-width: 420px;
     padding: 14px 18px;
-    border-radius: 14px;
+    border-radius: var(--radius-card);
     color: #ffffff;
     font-weight: 700;
     font-size: 0.9rem;
@@ -705,6 +705,118 @@
     padding: clamp(28px, 5vw, 64px) 0 clamp(40px, 6vw, 80px);
 }
 
+/* ── Split layout: brand panel + form card ── */
+.auth-split {
+    display: grid;
+    grid-template-columns: minmax(0, 380px) minmax(0, 1fr);
+    align-items: center;
+    gap: 40px;
+}
+
+.auth-brand-panel {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    min-height: 480px;
+    padding: 40px 32px;
+    border-radius: 24px;
+    background: linear-gradient(160deg, #0f172a 0%, #1e293b 100%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.auth-brand-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    pointer-events: none;
+}
+.auth-brand-glow--a { width: 260px; height: 260px; top: -100px; right: -80px; background: rgba(255,106,0,0.35); }
+.auth-brand-glow--b { width: 220px; height: 220px; bottom: -110px; left: -70px; background: rgba(99,102,241,0.25); }
+
+.auth-brand-badge {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 14px;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #ffb066;
+    width: fit-content;
+    margin-bottom: 20px;
+}
+
+.auth-brand-panel h2 {
+    position: relative;
+    font-size: 1.6rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.25;
+    margin: 0 0 14px;
+}
+
+.auth-brand-panel > p {
+    position: relative;
+    font-size: 0.92rem;
+    color: rgba(255,255,255,0.62);
+    line-height: 1.65;
+    margin: 0 0 32px;
+}
+
+.auth-brand-features {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.auth-brand-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.auth-brand-feature-icon {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,106,0,0.16);
+    border: 1px solid rgba(255,106,0,0.28);
+    color: #ff8c3a;
+    font-size: 0.95rem;
+}
+
+.auth-brand-feature-text h3 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 3px;
+}
+
+.auth-brand-feature-text p {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.5;
+    margin: 0;
+}
+
+@media (max-width: 991px) {
+    .auth-split { grid-template-columns: 1fr; }
+    .auth-brand-panel { display: none; }
+}
+
 /* Centered card shell */
 .enroll-shell {
     background: #ffffff;
@@ -716,10 +828,41 @@
     width: 100%;
 }
 
+/* Auth pages (login/signup) only — not the legal-page reuse of .enroll-shell */
+.enroll-shell--auth {
+    position: relative;
+    overflow: hidden;
+}
+.enroll-shell--auth::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--primary-gradient);
+}
+
 /* Form header block */
 .enroll-header {
     text-align: center;
     margin-bottom: 28px;
+}
+
+/* Legal/policy page body (privacy, terms, cookie policy) */
+.legal-body {
+    color: var(--text-body, #334155);
+    line-height: 1.75;
+}
+.legal-body h2 {
+    font-size: 1.1rem;
+    margin-top: 28px;
+    margin-bottom: 8px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(15, 23, 42, 0.07);
+}
+.legal-body h2:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
 }
 
 .enroll-badge {
@@ -812,6 +955,45 @@
     background: #f0fdf4;
 }
 
+.form-field input.is-invalid {
+    border-color: #ef4444;
+    background: #fef2f2;
+}
+
+/* ── Account type toggle (Individual / Business) ── */
+.account-type-toggle {
+    display: flex;
+    gap: 10px;
+}
+
+.account-type-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
+}
+
+.account-type-btn:hover {
+    border-color: #ff6a00;
+    color: #0f172a;
+}
+
+.account-type-btn.is-active {
+    background: rgba(255, 106, 0, 0.08);
+    border-color: #ff6a00;
+    color: #ea580c;
+}
+
 /* ── OTP grid (2-column for email + mobile) ── */
 .otp-grid {
     display: grid;
@@ -837,7 +1019,8 @@
 .otp-card-head {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 10px;
     margin-bottom: 12px;
 }
 
@@ -1055,14 +1238,29 @@
 }
 
 /* ── Button loading states ── */
-.btn-loader,
-.btn-loader-overlay {
+.btn-loader {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     font-size: 0.88rem;
     font-weight: 600;
     color: #64748b;
+}
+
+/* Overlays the button absolutely so the row doesn't widen */
+.btn-loader-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #ffffff;
+    background: linear-gradient(135deg, #ff6a00, #ff7a1a);
+    border-radius: 12px;
+    z-index: 1;
 }
 
 .btn-loader-small {
@@ -1096,9 +1294,7 @@
     flex-shrink: 0;
 }
 
-@keyframes spinnerSpin {
-    to { transform: rotate(360deg); }
-}
+/* @keyframes spinnerSpin is defined once, in global.css */
 
 /* ── Hint text ── */
 .form-hint {
@@ -1134,8 +1330,8 @@
 
 /* ── Page shell ──────────────────────── */
 .ep-page {
-    max-width: 780px;
-    padding-top: 40px;
+    max-width: 960px;
+    padding-top: 36px;
     padding-bottom: 80px;
 }
 
@@ -1193,33 +1389,46 @@
 }
 .ep-user-edit:hover { color: #ff6a00; }
 
-/* ── Search bar ───────────────────────── */
-.ep-search-wrap { position: relative; }
-
+/* ── Search bar — matches offerings page ─ */
+.ep-search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 2px solid rgba(15,23,42,0.10);
+    border-radius: 18px;
+    box-shadow: 0 2px 8px rgba(15,23,42,0.06), 0 8px 32px rgba(15,23,42,0.08);
+    overflow: hidden;
+    transition: border-color 200ms ease, box-shadow 250ms ease;
+}
+.ep-search-wrap *:focus { outline: none; }
+.ep-search-wrap:focus-within {
+    border-color: rgba(255,106,0,0.40);
+    box-shadow:
+        0 8px 32px rgba(255,106,0,0.13),
+        0 0 0 4px rgba(255,106,0,0.09),
+        0 2px 8px rgba(15,23,42,0.06);
+}
 .ep-search-icon {
-    position: absolute; left: 14px; top: 50%;
-    transform: translateY(-50%);
-    font-size: 14px; color: #94a3b8;
+    flex-shrink: 0;
+    color: #ff6a00;
+    font-size: 15px;
+    margin-left: 18px;
     pointer-events: none;
 }
 .ep-search-input {
-    width: 100%;
-    padding: 13px 44px 13px 40px;
-    background: #fff;
-    border: 1.5px solid rgba(15,23,42,0.10);
-    border-radius: 14px;
-    font-size: 0.95rem; color: #0f172a;
-    font-family: inherit;
-    box-shadow: 0 2px 10px rgba(15,23,42,0.05);
-    transition: border-color 200ms ease, box-shadow 200ms ease;
+    flex: 1;
+    border: none;
     outline: none;
+    background: transparent;
+    padding: 18px 48px 18px 14px;
+    font-size: 0.95rem; font-weight: 500; color: #0f172a;
+    font-family: inherit;
+    min-width: 0;
     -webkit-appearance: none;
 }
-.ep-search-input::placeholder { color: #94a3b8; }
-.ep-search-input:focus {
-    border-color: rgba(255,106,0,0.40);
-    box-shadow: 0 0 0 3px rgba(255,106,0,0.10), 0 2px 10px rgba(15,23,42,0.05);
-}
+.ep-search-input::placeholder { color: #94a3b8; font-weight: 400; }
+.ep-search-input:focus { box-shadow: none; border: none; }
 /* Hide browser's native clear button */
 .ep-search-input::-webkit-search-cancel-button { display: none; }
 
@@ -1267,29 +1476,65 @@
 .ep-card {
     background: #fff;
     border: 1.5px solid rgba(15,23,42,0.08);
-    border-left: 4px solid rgba(255,106,0,0.20);
-    border-radius: 16px;
+    border-radius: 18px;
+    position: relative;   /* for .ep-card-link overlay */
+    overflow: hidden;
+    cursor: pointer;
     transition:
         border-color 220ms ease,
-        border-left-color 220ms ease,
-        box-shadow 220ms ease,
-        transform 220ms cubic-bezier(0.2,0.9,0.2,1);
+        box-shadow 240ms cubic-bezier(0.2,0.9,0.2,1),
+        transform 240ms cubic-bezier(0.2,0.9,0.2,1);
 }
 .ep-card:hover {
     border-color: rgba(255,106,0,0.28);
-    border-left-color: #ff6a00;
-    box-shadow: 0 6px 24px rgba(255,106,0,0.09);
-    transform: translateX(3px);
+    box-shadow:
+        0 6px 24px rgba(15,23,42,0.07),
+        0 16px 40px rgba(255,106,0,0.09),
+        0 0 0 1px rgba(255,106,0,0.10);
+    transform: translateY(-3px);
 }
 .ep-card[data-hidden="true"] { display: none; }
+
+/* Full-card clickable link — navigates to detail page */
+.ep-card-link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+}
+
+/* Thumbnail image — left side of card */
+.ep-card-thumb {
+    width: 120px;
+    flex-shrink: 0;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #e8ecf5;
+    border-radius: 10px;
+    margin: 16px 0 16px 16px;
+}
+.ep-card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 400ms cubic-bezier(0.2,0.9,0.3,1);
+}
+.ep-card:hover .ep-card-thumb img { transform: scale(1.06); }
 
 .ep-card-inner {
     display: flex;
     align-items: center;
-    gap: 24px;
-    padding: 20px 22px;
+    gap: 20px;
+    padding: 18px 20px;
 }
 .ep-card-main { flex: 1; min-width: 0; }
+
+/* Enroll button must sit above the overlay link */
+.ep-enroll-btn {
+    position: relative;
+    z-index: 2;
+}
 
 /* Card top: type + popular badges */
 .ep-card-top {
@@ -1330,10 +1575,9 @@
 
 /* Name */
 .ep-name {
-    font-size: 1.12rem; font-weight: 800;
+    font-size: 1.08rem; font-weight: 800;
     color: #0f172a; letter-spacing: -0.02em;
     line-height: 1.3; margin: 0 0 5px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
 /* ── Countdown digit boxes — enrollment page ─────────────────── */
@@ -1552,13 +1796,20 @@
 @media (max-width: 640px) {
     .ep-page { padding-top: 24px; }
     .ep-header-top { flex-direction: column-reverse; gap: 12px; }
-    .ep-user-pill { width: 100%; border-radius: 14px; padding: 10px 14px; }
+    .ep-user-pill { width: 100%; border-radius: var(--radius-card); padding: 10px 14px; }
     .ep-user-email { max-width: 100%; }
 
     .ep-card-inner { flex-direction: column; align-items: flex-start; gap: 14px; }
     .ep-card-right { flex-direction: row; align-items: center; justify-content: space-between; width: 100%; }
     .ep-price { font-size: 1.2rem; }
     .ep-name  { white-space: normal; }
+}
+
+@media (max-width: 600px) {
+    .ep-card-thumb { display: none; }
+    .ep-card-inner { gap: 14px; padding: 16px; }
+    .ep-card-right { flex-direction: row; align-items: center; gap: 12px; }
+    .ep-price { font-size: 1.2rem; }
 }
 
 @media (max-width: 400px) {
@@ -1662,3 +1913,86 @@
     text-underline-offset: 2px;
 }
 .login-text-btn:hover { color: #d45a00; }
+
+/* ── OTP digit boxes ─────────────────────────────────────────────── */
+.otp-boxes {
+    display: flex;
+    gap: 7px;
+    justify-content: center;
+    margin: 14px 0 10px;
+}
+
+.otp-box {
+    flex: 1;
+    min-width: 0;
+    max-width: 46px;
+    height: 52px;
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 800;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #0f172a;
+    outline: none;
+    font-family: inherit;
+    caret-color: transparent;
+    transition: border-color 150ms ease, box-shadow 150ms ease, background 150ms ease;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.otp-box:focus {
+    border-color: #ff6a00;
+    box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.12);
+}
+
+.otp-box.otp-verified {
+    border-color: #10b981;
+    background: #f0fdf4;
+    color: #047857;
+}
+
+.otp-box.otp-error {
+    border-color: #dc2626;
+    background: #fef2f2;
+    color: #dc2626;
+    animation: otp-shake 0.4s ease;
+}
+
+@keyframes otp-shake {
+    0%, 100% { transform: translateX(0); }
+    20%       { transform: translateX(-5px); }
+    60%       { transform: translateX(5px); }
+    80%       { transform: translateX(-3px); }
+}
+
+/* Row below OTP boxes: verify btn + resend */
+.otp-action-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+/* Compact verify button inside OTP card */
+.otp-verify-btn {
+    padding: 7px 14px !important;
+    font-size: 0.78rem !important;
+    min-height: 34px !important;
+}
+
+/* Inline spinner shown inside the otp-action-row while verifying */
+.otp-loader {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.otp-loader[hidden] { display: none !important; }
