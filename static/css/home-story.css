@@ -1,0 +1,518 @@
+/* ============================================================
+   HOME PAGE — "STORY" SECTIONS
+   Shared CSS for the glue sections of the redesigned homepage:
+   How It Works (timeline), Comparison, Daily Habit, Learning
+   Paths, Resume Builder teaser, Final CTA. Each block below is
+   clearly separated; relies on the shared .section-heading /
+   .glass-card / .home-section primitives from home-shared.css.
+   ============================================================ */
+
+/* ────────────────────────────────────────────────────────────
+   SECTION 2 — How It Works (timeline)
+   ──────────────────────────────────────────────────────────── */
+.hiw-timeline {
+    position: relative;
+}
+
+.hiw-line {
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    top: 28px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255,106,0,0.08), #ff6a00, rgba(255,106,0,0.08));
+    transform-origin: left center;
+    transform: scaleX(0);
+    transition: transform 1100ms cubic-bezier(0.2,0.9,0.2,1) 200ms;
+    z-index: 0;
+}
+.hiw-line.is-visible { transform: scaleX(1); }
+
+.hiw-steps {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+}
+
+.hiw-step {
+    text-align: center;
+    padding: 0 6px;
+}
+
+.hiw-step-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ff6a00, #ff8c3a);
+    color: #fff;
+    font-size: 1.15rem;
+    box-shadow: 0 8px 20px rgba(255,106,0,0.28), 0 0 0 6px #ffffff;
+}
+.hiw-step-icon--final {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    box-shadow: 0 8px 20px rgba(22,163,74,0.28), 0 0 0 6px #ffffff;
+}
+
+.hiw-step-num {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #ff6a00;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+}
+
+.hiw-step h3 {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+}
+
+.hiw-step p {
+    font-size: 0.85rem;
+    color: #64748b;
+    line-height: 1.55;
+    margin: 0;
+}
+
+.hiw-step-progress {
+    width: 80%;
+    margin: 12px auto 0;
+    height: 5px;
+    border-radius: var(--radius-full, 999px);
+    background: rgba(15,23,42,0.08);
+    overflow: hidden;
+}
+.hiw-step-progress-fill {
+    height: 100%;
+    width: 40%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #ff6a00, #ffbc00);
+    transform-origin: left center;
+    transform: scaleX(0);
+}
+.hiw-steps.is-visible .hiw-step-progress-fill {
+    animation: hiwProgressFill 900ms 900ms cubic-bezier(0.2,0.9,0.2,1) both;
+}
+@keyframes hiwProgressFill {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); width: 88%; }
+}
+
+@media (max-width: 900px) {
+    .hiw-line { display: none; }
+    .hiw-steps {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        max-width: 360px;
+        margin: 0 auto;
+        position: relative;
+        padding-left: 28px;
+        text-align: left;
+        border-left: 2px dashed rgba(255,106,0,0.25);
+    }
+    .hiw-step { text-align: left; padding: 0; }
+    .hiw-step-icon { margin: 0 0 10px; }
+    .hiw-step-progress { margin: 12px 0 0; }
+}
+
+/* ────────────────────────────────────────────────────────────
+   SECTION 3 — Comparison (Traditional vs IntQues)
+   ──────────────────────────────────────────────────────────── */
+.cmp-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    max-width: 880px;
+    margin: 0 auto;
+    align-items: center;
+}
+
+.cmp-card {
+    border-radius: var(--radius-2xl, 24px);
+    padding: 32px 28px;
+}
+
+.cmp-card--old {
+    background: #f1f5f9;
+    border: 1px solid rgba(15,23,42,0.06);
+}
+
+.cmp-card--new {
+    background: linear-gradient(165deg, #ffffff 0%, #fff8f2 100%);
+    border: 1.5px solid rgba(255,106,0,0.22);
+    box-shadow: 0 12px 32px rgba(255,106,0,0.10), 0 4px 12px rgba(15,23,42,0.05);
+}
+
+.cmp-card-label {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 18px;
+}
+.cmp-card--old .cmp-card-label { color: #94a3b8; }
+.cmp-card--new .cmp-card-label { color: #ff6a00; }
+
+.cmp-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.cmp-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.94rem;
+    font-weight: 600;
+}
+.cmp-card--old .cmp-list li { color: #64748b; }
+.cmp-card--new .cmp-list li { color: #0f172a; font-weight: 700; }
+
+.cmp-list i { font-size: 0.85rem; flex-shrink: 0; }
+.cmp-card--old .cmp-list i { color: #ef4444; }
+.cmp-card--new .cmp-list i { color: #16a34a; }
+
+.cmp-vs {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #0f172a;
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 900;
+    letter-spacing: 0.03em;
+    box-shadow: 0 8px 24px rgba(15,23,42,0.28), 0 0 0 6px #fbfbfd;
+    z-index: 2;
+}
+
+@media (max-width: 767px) {
+    .cmp-grid { grid-template-columns: 1fr; gap: 44px; }
+    .cmp-vs { top: 0; transform: translate(-50%, -50%); }
+    .cmp-card { padding: 28px 22px; }
+}
+
+/* ────────────────────────────────────────────────────────────
+   SECTION 7 — Daily Learning Habit
+   ──────────────────────────────────────────────────────────── */
+.dh-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+}
+
+.dh-copy p { font-size: 1.02rem; color: #475569; line-height: 1.7; margin: 0; }
+
+.dh-card { padding: 30px 28px; max-width: 460px; }
+
+.dh-streak-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(15,23,42,0.07);
+}
+.dh-streak {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: #ea580c;
+}
+.dh-xp {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, #ff6a00, #ffbc00);
+    padding: 4px 11px;
+    border-radius: var(--radius-full, 999px);
+}
+
+.dh-col-title {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+}
+
+.dh-goal-block { margin-bottom: 24px; }
+.dh-goal-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.dh-goal-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #0f172a;
+    opacity: 0;
+    transform: translateX(-8px);
+}
+.dh-goal-item.is-shown { animation: dhSlideIn 380ms cubic-bezier(0.2,0.9,0.2,1) both; }
+@keyframes dhSlideIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
+
+.dh-goal-check {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: rgba(22,163,74,0.12);
+    color: #16a34a;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    flex-shrink: 0;
+}
+
+.dh-chart { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; align-items: end; }
+.dh-bar-col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.dh-bar-track {
+    position: relative;
+    width: 100%;
+    height: 64px;
+    border-radius: 6px;
+    background: rgba(15,23,42,0.06);
+    overflow: hidden;
+}
+.dh-bar {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(180deg, #ffbc00, #ff6a00);
+    transform-origin: bottom center;
+    transform: scaleY(0);
+    transition: transform 700ms cubic-bezier(0.2,0.9,0.2,1);
+}
+.dh-bar--today { background: linear-gradient(180deg, #4ade80, #16a34a); }
+.dh-bar.is-grown { transform: scaleY(calc(var(--dh-h) / 100%)); }
+.dh-bar-day { font-size: 9.5px; font-weight: 700; color: #94a3b8; text-transform: uppercase; }
+
+@media (max-width: 991px) {
+    .dh-container { grid-template-columns: 1fr; gap: 40px; }
+    .dh-copy { text-align: center; }
+    .dh-card { margin: 0 auto; }
+}
+
+/* ────────────────────────────────────────────────────────────
+   SECTION 8 — Learning Paths
+   ──────────────────────────────────────────────────────────── */
+.lp-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.lp-card {
+    display: block;
+    padding: 24px 22px;
+    text-decoration: none;
+    transition: transform 260ms cubic-bezier(0.2,0.9,0.2,1), box-shadow 260ms ease;
+}
+.lp-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px rgba(15,23,42,0.10), 0 4px 12px rgba(15,23,42,0.06);
+}
+
+.lp-card-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: rgba(255,106,0,0.10);
+    color: #ff6a00;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    margin-bottom: 14px;
+}
+
+.lp-card h3 {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 10px;
+    letter-spacing: -0.01em;
+}
+
+.lp-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.lp-tag {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 9px;
+    border-radius: var(--radius-full, 999px);
+    background: rgba(15,23,42,0.06);
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+.lp-tag--duration { background: rgba(255,106,0,0.08); color: #e65f00; }
+
+.lp-progress-label {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 5px;
+}
+.lp-progress-track {
+    height: 5px;
+    border-radius: var(--radius-full, 999px);
+    background: rgba(15,23,42,0.07);
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+.lp-progress-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #ff6a00, #ffbc00);
+    width: calc(var(--lp-pct));
+}
+
+.lp-counts {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+}
+
+@media (max-width: 991px) {
+    .lp-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+    .lp-grid { grid-template-columns: 1fr; }
+}
+
+/* ────────────────────────────────────────────────────────────
+   SECTION 9 — Resume Builder (compact teaser)
+   ──────────────────────────────────────────────────────────── */
+.rt-inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 40px;
+    align-items: center;
+    padding: 36px 40px;
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+.rt-copy h2 { font-size: clamp(1.4rem, 2.4vw, 1.7rem); font-weight: 900; color: #0f172a; margin: 10px 0 8px; letter-spacing: -0.02em; }
+.rt-copy p { font-size: 0.92rem; color: #64748b; margin: 0 0 16px; }
+
+.rt-flow { display: flex; align-items: center; gap: 14px; }
+.rt-step { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 92px; text-align: center; }
+.rt-step-icon {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: #0f172a;
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+}
+.rt-step-icon--final { background: linear-gradient(135deg, #ff6a00, #ff8c3a); }
+.rt-step span { font-size: 10.5px; font-weight: 700; color: #475569; line-height: 1.3; }
+.rt-arrow { color: #cbd5e1; font-size: 0.85rem; }
+
+@media (max-width: 900px) {
+    .rt-inner { grid-template-columns: 1fr; padding: 30px 26px; text-align: center; }
+    .rt-flow { justify-content: center; margin: 0 auto; }
+}
+@media (max-width: 480px) {
+    .rt-flow { flex-wrap: wrap; justify-content: center; }
+    .rt-arrow { display: none; }
+}
+
+/* ────────────────────────────────────────────────────────────
+   SECTION 12 — Final CTA
+   ──────────────────────────────────────────────────────────── */
+.fcta-panel {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    padding: clamp(56px, 8vw, 88px) 32px;
+    border-radius: var(--radius-2xl, 24px);
+    background: linear-gradient(135deg, #ff6a00 0%, #ff8c3a 55%, #ffb347 100%);
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+.fcta-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    background: rgba(255,255,255,0.25);
+    pointer-events: none;
+}
+.fcta-glow--a { width: 320px; height: 320px; top: -140px; left: -80px; }
+.fcta-glow--b { width: 260px; height: 260px; bottom: -120px; right: -60px; }
+
+.fcta-panel h2 {
+    position: relative;
+    z-index: 1;
+    font-size: clamp(2rem, 4.4vw, 3rem);
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.03em;
+    margin: 0 0 14px;
+}
+
+.fcta-panel p {
+    position: relative;
+    z-index: 1;
+    font-size: 1.02rem;
+    color: rgba(255,255,255,0.92);
+    max-width: 480px;
+    margin: 0 auto 30px;
+    line-height: 1.6;
+}
+
+.fcta-btn {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #ffffff;
+    color: #e65f00;
+    font-weight: 800;
+    font-size: 1.02rem;
+    padding: 16px 32px;
+    border-radius: var(--radius-md, 14px);
+    text-decoration: none;
+    box-shadow: 0 12px 32px rgba(15,23,42,0.20);
+    transition: transform 220ms cubic-bezier(0.2,0.9,0.2,1), box-shadow 220ms ease;
+}
+.fcta-btn:hover {
+    color: #e65f00;
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px rgba(15,23,42,0.24);
+}
+.fcta-btn i { transition: transform 220ms ease; }
+.fcta-btn:hover i { transform: translateX(4px); }
+
+@media (max-width: 600px) {
+    .fcta-panel { padding: 48px 24px; }
+}

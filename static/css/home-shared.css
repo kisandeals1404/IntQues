@@ -1,0 +1,93 @@
+/* ============================================================
+   HOME PAGE — SHARED PRIMITIVES
+   Reused across every section below the hero canvas: a common
+   centered heading pattern and a glass-card base. Generalized
+   from the existing .ps-header (platform-services.css) and
+   .hs-panel-inner (hero-showcase.css) recipes so every new
+   section reads as one consistent system rather than each
+   reinventing its own header/card chrome.
+   ============================================================ */
+
+.section-heading {
+    text-align: center;
+    max-width: 660px;
+    margin: 0 auto 52px;
+}
+
+.section-badge {
+    display: inline-block;
+    padding: 5px 16px;
+    background: rgba(255,106,0,0.08);
+    color: #ff6a00;
+    border: 1px solid rgba(255,106,0,0.18);
+    border-radius: var(--radius-full, 999px);
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 16px;
+}
+
+.section-heading h2 {
+    font-size: clamp(1.7rem, 3vw, 2.4rem);
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin: 0 0 14px;
+}
+
+.section-heading p {
+    font-size: 1rem;
+    color: #64748b;
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* Generic white glass card — reused by comparison, learning-paths,
+   daily-habit, resume-teaser, etc. Flagship showcase sections use
+   their own richer variants but share this same recipe. */
+.glass-card {
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(15,23,42,0.07);
+    border-radius: var(--radius-2xl, 24px);
+    box-shadow:
+        0 4px 16px rgba(15,23,42,0.06),
+        0 20px 48px rgba(15,23,42,0.08);
+}
+
+/* Section-level vertical rhythm, applied per-section by wrapping
+   <section class="home-section"> — consistent breathing room without
+   every new section re-declaring its own padding. */
+.home-section {
+    padding: clamp(56px, 8vw, 96px) 0;
+}
+.home-section--tint {
+    background: linear-gradient(180deg, #fbfbfd 0%, #ffffff 100%);
+}
+
+/* Shared "eyebrow -> big number -> label" stat tile, used by the
+   trust-stats strip and can be reused elsewhere. */
+.stat-tile {
+    text-align: center;
+}
+.stat-tile-number {
+    display: block;
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+.stat-tile-number .stat-tile-accent { color: #ff6a00; }
+.stat-tile-label {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}

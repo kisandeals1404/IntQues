@@ -1,0 +1,1 @@
+!function(){"use strict";document.querySelectorAll("select[data-autosubmit]").forEach(function(t){var e=null;function n(){e&&(clearTimeout(e),e=null),t.form.submit()}t.addEventListener("change",function(){e&&clearTimeout(e),e=setTimeout(n,500)}),t.addEventListener("blur",function(){e&&n()})})}();

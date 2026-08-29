@@ -1,0 +1,439 @@
+/* =========================================
+   ABOUT PAGE
+========================================= */
+
+/* ── Hero ─────────────────────────────── */
+.about-hero {
+    padding: clamp(72px, 10vw, 120px) 0 clamp(56px, 8vw, 96px);
+    background:
+        radial-gradient(ellipse at 90% 10%, rgba(255,106,0,0.09) 0%, transparent 48%),
+        radial-gradient(ellipse at 8% 85%, rgba(99,102,241,0.05) 0%, transparent 40%),
+        linear-gradient(160deg, #fffcf8 0%, #ffffff 55%, #f8faff 100%);
+}
+
+.about-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
+    align-items: center;
+    gap: 40px;
+}
+
+.about-hero-inner {
+    max-width: 560px;
+    text-align: left;
+}
+
+.about-hero-visual {
+    justify-self: center;
+}
+
+.about-hero-visual img {
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    display: block;
+}
+
+@media (max-width: 991px) {
+    .about-hero-grid { grid-template-columns: 1fr; gap: 32px; text-align: center; }
+    .about-hero-inner { max-width: 620px; margin: 0 auto; text-align: center; }
+    .about-hero-visual { max-width: 340px; margin: 0 auto; }
+    .about-hero-visual img { max-width: 320px; }
+}
+
+.about-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 16px;
+    background: rgba(255,106,0,0.08);
+    color: #ff6a00;
+    border: 1px solid rgba(255,106,0,0.20);
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    margin-bottom: 24px;
+    box-shadow: 0 0 0 4px rgba(255,106,0,0.06);
+}
+
+.about-hero-title {
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 900;
+    color: #0a0f1e;
+    line-height: 1.1;
+    letter-spacing: -0.045em;
+    margin-bottom: 20px;
+}
+
+.about-hero-highlight {
+    background: linear-gradient(120deg, #ff6a00 0%, #ff9500 50%, #ffbc00 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.about-hero-sub {
+    font-size: 1.1rem;
+    color: #475569;
+    line-height: 1.75;
+    max-width: 620px;
+    margin: 0 auto 36px;
+}
+
+.about-hero-ctas {
+    display: flex;
+    gap: 14px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 991px) {
+    .about-hero-ctas { justify-content: center; }
+}
+
+/* ── Shared buttons ───────────────────── */
+.about-cta-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #ff6a00, #ff7a1a);
+    color: #fff;
+    border-radius: var(--radius-card);
+    font-weight: 800;
+    font-size: 0.95rem;
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(255,106,0,0.28);
+    transition: transform 220ms ease, box-shadow 220ms ease;
+}
+.about-cta-primary:hover {
+    color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 14px 36px rgba(255,106,0,0.34);
+}
+
+.about-cta-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 24px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(8px);
+    color: #0f172a;
+    border: 1.5px solid rgba(15,23,42,0.14);
+    border-radius: var(--radius-card);
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: border-color 200ms ease, background 200ms ease, transform 200ms ease;
+}
+.about-cta-outline:hover {
+    border-color: rgba(255,106,0,0.35);
+    background: #fffcf8;
+    color: #0f172a;
+    transform: translateY(-2px);
+}
+
+.about-cta-outline--light {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.30);
+    color: #fff;
+}
+.about-cta-outline--light:hover {
+    background: rgba(255,255,255,0.22);
+    border-color: rgba(255,255,255,0.55);
+    color: #fff;
+}
+
+/* ── Shared section header ────────────── */
+.about-section-header {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto 52px;
+}
+
+.about-section-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 16px;
+    background: rgba(255,106,0,0.07);
+    color: #ff6a00;
+    border: 1px solid rgba(255,106,0,0.20);
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    margin-bottom: 14px;
+    box-shadow: 0 0 0 4px rgba(255,106,0,0.06);
+}
+
+.about-section-title {
+    font-size: clamp(1.9rem, 3.8vw, 2.8rem);
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: -0.04em;
+    line-height: 1.15;
+    margin: 0;
+}
+
+/* ── Mission ──────────────────────────── */
+.about-mission {
+    padding: clamp(56px, 7vw, 96px) 0;
+    background: #ffffff;
+}
+
+.about-mission-body {
+    max-width: 760px;
+    margin: 0 auto;
+    background: #f8fafc;
+    border: 1px solid rgba(15,23,42,0.07);
+    border-radius: 20px;
+    padding: 36px 40px 36px 52px;
+    position: relative;
+    overflow: hidden;
+}
+
+.about-mission-body::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 5px;
+    background: linear-gradient(180deg, #ff6a00 0%, #ffb347 100%);
+    border-radius: 20px 0 0 20px;
+}
+
+.about-mission-body p {
+    font-size: 1.06rem;
+    color: #334155;
+    line-height: 1.85;
+    margin-bottom: 18px;
+}
+.about-mission-body p:last-child { margin-bottom: 0; }
+.about-mission-body strong { color: #0f172a; font-weight: 700; }
+
+/* ── Beliefs ──────────────────────────── */
+.about-beliefs {
+    padding: clamp(56px, 7vw, 96px) 0;
+    background:
+        radial-gradient(ellipse at 94% 8%, rgba(255,106,0,0.05) 0%, transparent 46%),
+        radial-gradient(ellipse at 8% 88%, rgba(99,102,241,0.03) 0%, transparent 40%),
+        #f8fafc;
+}
+
+.about-beliefs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.about-belief-card {
+    background: #ffffff;
+    border: 1.5px solid rgba(15,23,42,0.08);
+    border-radius: 20px;
+    padding: 32px 28px;
+    transition: border-color 240ms ease, box-shadow 240ms ease, transform 240ms cubic-bezier(0.2,0.9,0.2,1);
+}
+
+.about-belief-card:hover {
+    border-color: rgba(255,106,0,0.22);
+    box-shadow:
+        0 8px 28px rgba(15,23,42,0.07),
+        0 20px 48px rgba(255,106,0,0.09),
+        0 0 0 1px rgba(255,106,0,0.10);
+    transform: translateY(-4px);
+}
+
+.about-belief-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-card);
+    background: rgba(255,106,0,0.08);
+    color: #ff6a00;
+    border: 1px solid rgba(255,106,0,0.16);
+}
+
+.about-belief-card h3 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    margin: 0 0 10px;
+    line-height: 1.3;
+}
+
+.about-belief-card p {
+    font-size: 0.9rem;
+    color: #64748b;
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* ── How It Works ─────────────────────── */
+.about-how {
+    padding: clamp(56px, 7vw, 96px) 0;
+    background: #ffffff;
+}
+
+.about-steps {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.about-step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.about-step-num {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff6a00, #ff8c3a);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 20px rgba(255,106,0,0.28);
+    flex-shrink: 0;
+}
+
+.about-step-body h3 {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    margin: 0 0 10px;
+}
+
+.about-step-body p {
+    font-size: 0.875rem;
+    color: #64748b;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.about-step-divider {
+    width: 48px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255,106,0,0.30), rgba(255,106,0,0.10));
+    border-radius: 2px;
+    flex-shrink: 0;
+    margin-top: 27px; /* align with center of number circle */
+}
+
+/* ── CTA section ──────────────────────── */
+.about-cta-section {
+    padding: clamp(56px, 7vw, 96px) 0;
+    background: #f8fafc;
+}
+
+.about-cta-card {
+    background: #0f172a;
+    border-radius: 28px;
+    padding: clamp(40px, 6vw, 72px) clamp(28px, 5vw, 80px);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 48px rgba(15,23,42,0.22);
+}
+
+.about-cta-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #ff6a00 30%, #ffbc00 65%, transparent 100%);
+    background-size: 200% auto;
+    animation: shimmerSlide 3.5s linear infinite;
+}
+
+.about-cta-card h2 {
+    font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: -0.04em;
+    line-height: 1.15;
+    margin-bottom: 14px;
+}
+
+.about-cta-card p {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 36px;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.7;
+}
+
+.about-cta-btns {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* ── Responsive ───────────────────────── */
+@media (max-width: 768px) {
+    .about-beliefs-grid { grid-template-columns: 1fr; }
+
+    .about-steps {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+    }
+
+    .about-step {
+        flex-direction: row;
+        align-items: flex-start;
+        text-align: left;
+        padding: 0 0 32px;
+    }
+
+    .about-step-num {
+        width: 44px;
+        height: 44px;
+        font-size: 0.875rem;
+        margin-bottom: 0;
+        margin-right: 18px;
+        flex-shrink: 0;
+    }
+
+    .about-step-divider {
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .about-mission-body {
+        padding: 24px 20px 24px 32px;
+        border-radius: 16px;
+    }
+    .about-mission-body::before { width: 4px; }
+    .about-hero-ctas { flex-direction: column; align-items: center; }
+    .about-cta-btns  { flex-direction: column; align-items: center; }
+    .about-cta-primary,
+    .about-cta-outline { width: 100%; justify-content: center; max-width: 320px; }
+}

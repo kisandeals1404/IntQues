@@ -1,0 +1,73 @@
+/* ══════════════════════════════════════════════════════
+   Achievements page + earn-moment banner (shared class names
+   used from quiz-result.ftl / game-results.ftl too)
+═══════════════════════════════════════════════════════ */
+
+.ach-page { padding-top: 96px; min-height: 80vh; background: var(--light-bg); }
+.ach-wrap { max-width: 900px; margin: 0 auto; padding: 0 20px 60px; }
+
+.ach-hero { text-align: center; margin-bottom: 32px; }
+.ach-title { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; color: var(--text-main); margin: 0 0 8px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+.ach-title i { color: #f59e0b; }
+.ach-sub { color: var(--text-muted); margin: 0 0 16px; }
+.ach-progress-track { max-width: 320px; margin: 0 auto; height: 8px; background: var(--border-color); border-radius: var(--radius-full); overflow: hidden; }
+.ach-progress-fill { height: 100%; background: var(--primary-gradient); transition: width 400ms ease; }
+
+.ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+
+.ach-card {
+    background: var(--white);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-xs);
+    padding: 24px;
+    text-align: center;
+    opacity: 0.55;
+    filter: grayscale(1);
+    transition: var(--transition-fast);
+}
+.ach-card--earned { opacity: 1; filter: none; box-shadow: var(--shadow-sm); }
+
+.ach-card-icon {
+    width: 64px; height: 64px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    background: rgba(255,106,0,0.1);
+    color: var(--primary-orange);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+}
+.ach-card--earned .ach-card-icon { background: var(--primary-gradient); color: var(--white); }
+
+.ach-card-title { font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+.ach-card-desc { font-size: var(--text-sm); color: var(--text-muted); margin-bottom: 12px; min-height: 36px; }
+.ach-card-date { font-size: var(--text-xs); color: var(--primary-orange); font-weight: 600; }
+.ach-card-locked { font-size: var(--text-xs); color: var(--text-subtle); }
+
+/* ── Earn-moment banner (embedded on result pages) ── */
+.ach-earn-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border-radius: var(--radius-card);
+    padding: 18px 22px;
+    margin: 0 0 24px;
+    animation: ach-earn-pop 500ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+@keyframes ach-earn-pop {
+    0%   { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1);   opacity: 1; }
+}
+.ach-earn-icon {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: #f59e0b;
+    color: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+.ach-earn-text { text-align: left; }
+.ach-earn-label { font-size: var(--text-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #b45309; }
+.ach-earn-title { font-weight: 800; color: #78350f; font-size: var(--text-lg); }
+.ach-earn-link { margin-left: auto; font-size: var(--text-sm); font-weight: 600; color: #b45309; text-decoration: none; white-space: nowrap; }

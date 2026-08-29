@@ -1,0 +1,211 @@
+/* ============================================================
+   SECTION 5 — QUIZ EXPERIENCE (flagship)
+   Animated quiz card + leaderboard preview. Transform/opacity
+   only. Driven by static/js/quiz-experience.js.
+   ============================================================ */
+
+.qex-section { background: linear-gradient(180deg, #fffcf8 0%, #ffffff 100%); }
+
+.qex-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+}
+
+.qex-copy p {
+    font-size: 1.02rem;
+    color: #475569;
+    line-height: 1.7;
+    margin: 0 0 22px;
+}
+
+.qex-visual {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: start;
+    max-width: 520px;
+}
+
+.qex-card {
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(15,23,42,0.08);
+    border-radius: var(--radius-2xl, 24px);
+    box-shadow: 0 8px 22px rgba(15,23,42,0.09), 0 24px 56px rgba(15,23,42,0.10);
+    padding: 26px 24px;
+}
+
+.qex-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.qex-qnum { font-size: 12px; font-weight: 800; color: #64748b; }
+.qex-confidence { font-size: 11.5px; font-weight: 700; color: #64748b; }
+.qex-confidence strong { color: #16a34a; font-size: 13px; }
+
+.qex-progress-track {
+    height: 5px;
+    border-radius: var(--radius-full, 999px);
+    background: rgba(15,23,42,0.08);
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+.qex-progress-fill {
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #ff6a00, #ff9f1c);
+    transform-origin: left center;
+    transform: scaleX(0.3);
+    transition: transform 700ms cubic-bezier(0.2,0.9,0.2,1);
+}
+
+.qex-question {
+    font-size: 1.02rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.4;
+    margin: 0 0 14px;
+}
+
+.qex-options { list-style: none; margin: 0 0 14px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.qex-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 13px;
+    border-radius: 12px;
+    background: #ffffff;
+    border: 1px solid rgba(15,23,42,0.08);
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #334155;
+    transition: transform 240ms cubic-bezier(0.34,1.56,0.64,1), border-color 200ms ease, background 200ms ease;
+}
+.qex-radio { width: 15px; height: 15px; border-radius: 50%; border: 2px solid rgba(15,23,42,0.18); flex-shrink: 0; transition: background 200ms ease, border-color 200ms ease, box-shadow 200ms ease; }
+
+.qex-option.is-correct { transform: scale(1.02); border-color: rgba(22,163,74,0.35); background: rgba(22,163,74,0.06); }
+.qex-option.is-correct .qex-radio { background: #16a34a; border-color: #16a34a; box-shadow: 0 0 0 4px rgba(22,163,74,0.16); }
+
+.qex-option.is-wrong { transform: scale(1.02); border-color: rgba(239,68,68,0.35); background: rgba(239,68,68,0.06); }
+.qex-option.is-wrong .qex-radio { background: #ef4444; border-color: #ef4444; box-shadow: 0 0 0 4px rgba(239,68,68,0.14); }
+
+.qex-meta-row { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; min-height: 20px; }
+
+.qex-feedback {
+    font-size: 12px;
+    font-weight: 800;
+    color: #16a34a;
+    opacity: 0;
+    transform: translateY(4px) scale(0.9);
+}
+.qex-feedback.is-wrong { color: #dc2626; }
+.qex-feedback.is-shown {
+    animation: qexPop 380ms cubic-bezier(0.34,1.56,0.64,1) both;
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.qex-streak {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #ea580c;
+}
+.qex-streak i { animation: qexFlicker 1.8s ease-in-out infinite; }
+
+.qex-xp-pop {
+    font-size: 11.5px;
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, #ff6a00, #ffbc00);
+    padding: 3px 10px;
+    border-radius: var(--radius-full, 999px);
+    opacity: 0;
+    transform: translateY(6px) scale(0.8);
+}
+.qex-xp-pop.is-shown {
+    animation: qexXpPop 1200ms cubic-bezier(0.2,0.9,0.2,1) both;
+}
+
+@keyframes qexPop {
+    0%   { opacity: 0; transform: translateY(4px) scale(0.85); }
+    60%  { opacity: 1; transform: translateY(0) scale(1.08); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes qexFlicker {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.75; transform: scale(0.92); }
+}
+@keyframes qexXpPop {
+    0%   { opacity: 0; transform: translateY(6px) scale(0.8); }
+    25%  { opacity: 1; transform: translateY(-2px) scale(1.05); }
+    75%  { opacity: 1; transform: translateY(-2px) scale(1); }
+    100% { opacity: 0; transform: translateY(-10px) scale(0.95); }
+}
+
+/* ── Leaderboard preview ─────────────────────────── */
+.qex-leaderboard {
+    padding: 20px 18px;
+    width: 170px;
+    align-self: start;
+}
+.qex-leaderboard-title {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 14px;
+}
+.qex-leaderboard-title i { color: #ff6a00; margin-right: 4px; }
+
+.qex-lb-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 0;
+    font-size: 12px;
+}
+.qex-lb-rank {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: rgba(15,23,42,0.06);
+    color: #64748b;
+    font-weight: 800;
+    font-size: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.qex-lb-name { flex: 1; font-weight: 700; color: #334155; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qex-lb-score { font-weight: 800; color: #94a3b8; font-size: 10.5px; white-space: nowrap; }
+
+.qex-lb-row--you {
+    border-radius: 10px;
+    background: rgba(255,106,0,0.07);
+    padding-left: 6px;
+    padding-right: 6px;
+    animation: qexYouPulse 3s ease-in-out infinite;
+}
+.qex-lb-row--you .qex-lb-rank { background: #ff6a00; color: #fff; }
+.qex-lb-row--you .qex-lb-name { color: #ea580c; }
+@keyframes qexYouPulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.03); }
+}
+
+@media (max-width: 991px) {
+    .qex-container { grid-template-columns: 1fr; gap: 40px; }
+    .qex-copy { text-align: center; order: -1; }
+    .qex-visual { grid-template-columns: 1fr; margin: 0 auto; max-width: 420px; }
+    .qex-leaderboard { width: 100%; }
+}

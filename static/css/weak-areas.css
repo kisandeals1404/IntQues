@@ -1,0 +1,150 @@
+/* ============================================================
+   SECTION 6 — WEAK-AREA ANALYTICS (flagship)
+   Proficiency bars, CSS heat map, recommendations. One-shot
+   scroll reveal (see static/js/weak-areas.js) — transform/
+   opacity only, plus a continuous warm glow on weak bars.
+   ============================================================ */
+
+.wka-dashboard {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 40px;
+    padding: 36px;
+    max-width: 980px;
+    margin: 0 auto 32px;
+}
+
+.wka-col-title {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 800;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+}
+
+/* ── Proficiency bars ─────────────────────────────── */
+.wka-bars-col { display: flex; flex-direction: column; }
+
+.wka-bar-row {
+    display: grid;
+    grid-template-columns: 92px 1fr 44px;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 0;
+    border-radius: 12px;
+    position: relative;
+}
+
+.wka-bar-label { font-size: 0.86rem; font-weight: 700; color: #0f172a; }
+
+.wka-bar-track {
+    height: 9px;
+    border-radius: var(--radius-full, 999px);
+    background: rgba(15,23,42,0.07);
+    overflow: hidden;
+}
+.wka-bar-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #ff6a00, #ffbc00);
+    transform-origin: left center;
+    transform: scaleX(0);
+    transition: transform 900ms cubic-bezier(0.2,0.9,0.2,1);
+}
+.wka-bar-row[data-wka-strong="true"] .wka-bar-fill { background: linear-gradient(90deg, #16a34a, #4ade80); }
+.wka-bar-fill.is-filled { transform: scaleX(calc(var(--wka-pct) / 100%)); }
+
+.wka-bar-pct { font-size: 0.82rem; font-weight: 800; color: #64748b; text-align: right; }
+
+.wka-bar-badge {
+    grid-column: 1 / -1;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    width: fit-content;
+    margin-top: 6px;
+    padding: 3px 10px;
+    border-radius: var(--radius-full, 999px);
+    background: rgba(22,163,74,0.10);
+    color: #16a34a;
+    font-size: 10.5px;
+    font-weight: 800;
+    opacity: 0;
+    transform: scale(0.85);
+}
+.wka-bar-badge.is-shown {
+    animation: wkaBadgePop 420ms cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes wkaBadgePop {
+    0%   { opacity: 0; transform: scale(0.7); }
+    60%  { opacity: 1; transform: scale(1.08); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Weak rows: warm pulsing glow once revealed */
+.wka-bar-row--weak.is-glowing {
+    animation: wkaWeakGlow 2.6s ease-in-out infinite;
+}
+@keyframes wkaWeakGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.0); background: transparent; }
+    50%      { box-shadow: 0 0 0 8px rgba(239,68,68,0.05); background: rgba(239,68,68,0.035); }
+}
+
+/* ── Heat map ─────────────────────────────────────── */
+.wka-heatmap-block { margin-bottom: 26px; }
+.wka-heatmap {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+.wka-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px 4px;
+    border-radius: 10px;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    color: #fff;
+    opacity: 0;
+    transform: scale(0.7);
+}
+.wka-cell.is-shown { animation: wkaCellPop 380ms cubic-bezier(0.34,1.56,0.64,1) both; }
+@keyframes wkaCellPop {
+    0%   { opacity: 0; transform: scale(0.6); }
+    100% { opacity: 1; transform: scale(1); }
+}
+.wka-cell--strong { background: linear-gradient(135deg, #16a34a, #4ade80); }
+.wka-cell--mid    { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+.wka-cell--weak   { background: linear-gradient(135deg, #ef4444, #f87171); }
+
+/* ── Recommendations ─────────────────────────────── */
+.wka-recommend-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.wka-recommend-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: #334155;
+    opacity: 0;
+    transform: translateX(-8px);
+}
+.wka-recommend-list li.is-shown { animation: wkaSlideIn 380ms cubic-bezier(0.2,0.9,0.2,1) both; }
+@keyframes wkaSlideIn {
+    from { opacity: 0; transform: translateX(-8px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+.wka-recommend-list i { color: #ff6a00; font-size: 0.8rem; }
+
+.wka-cta-row { text-align: center; }
+
+@media (max-width: 767px) {
+    .wka-dashboard { grid-template-columns: 1fr; gap: 32px; padding: 26px 22px; }
+    .wka-bar-row { grid-template-columns: 78px 1fr 40px; }
+    .wka-heatmap { grid-template-columns: repeat(3, 1fr); }
+}

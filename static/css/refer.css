@@ -1,0 +1,50 @@
+/* ══════════════════════════════════════════════════════
+   Invite Friends / referral page
+═══════════════════════════════════════════════════════ */
+
+.refer-page { padding-top: 96px; min-height: 80vh; background: var(--light-bg); display: flex; justify-content: center; }
+.refer-wrap { width: 100%; max-width: 560px; padding: 0 20px 60px; text-align: center; }
+
+.refer-title { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; color: var(--text-main); margin: 0 0 10px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+.refer-title i { color: var(--primary-orange); }
+.refer-sub { color: var(--text-muted); margin: 0 0 28px; }
+
+.refer-code-card {
+    background: var(--white);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-md);
+    padding: 24px;
+    margin-bottom: 20px;
+}
+.refer-code-label { font-size: var(--text-sm); font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+.refer-link-row { display: flex; gap: 8px; }
+.refer-link-input {
+    flex: 1;
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    font-size: var(--text-sm);
+    color: var(--text-body);
+    background: var(--surface-subtle);
+}
+.refer-copy-btn {
+    padding: 11px 18px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: var(--primary-gradient);
+    color: var(--white);
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.refer-code-sub { margin-top: 12px; font-size: var(--text-sm); color: var(--text-muted); }
+
+.refer-stat-card {
+    margin-top: 28px;
+    background: var(--white);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-xs);
+    padding: 24px;
+}
+.refer-stat-num { font-size: 2.4rem; font-weight: 800; color: var(--primary-orange); }
+.refer-stat-label { color: var(--text-muted); font-size: var(--text-sm); }

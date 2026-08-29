@@ -1,0 +1,549 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   FLASHCARDS — Listing & Topics pages
+═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Card description clamp (also defined in quiz.css; duplicated here since
+   flashcards.ftl uses it without loading quiz.css) ── */
+.qz-card-desc {
+    font-size: 0.83rem;
+    color: #64748b;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+}
+
+/* ── Shared hero shapes ───────────────────────────────────────────────── */
+.fc-hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+    pointer-events: none;
+}
+.fc-hero-orb--1 { width: 200px; height: 200px; top: -60px; right: -40px; }
+.fc-hero-orb--2 { width: 120px; height: 120px; bottom: -20px; left: 10%;  }
+.fc-hero-orb--3 { width:  80px; height:  80px; top: 50%; right: 18%;      }
+
+/* ── Course card thumbnail with a custom image ──────────────────────────
+   (mirrors .qz-thumb--img from quiz.css, which isn't loaded on this page) */
+.fc-thumb {
+    padding: 0;
+    background: #f1f5f9;
+}
+.fc-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LISTING PAGE — hero + of-body override
+═══════════════════════════════════════════════════════════════════════ */
+
+/* Subtle warm gradient hero */
+.fc-list-hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #fff4ed 0%, #ffeedd 50%, #fff8f2 100%);
+    border-bottom: 1px solid rgba(255,106,0,0.1);
+    padding: 40px 0 36px;
+}
+
+.fc-list-hero-inner {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+}
+
+.fc-list-hero-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #ff6a00, #ff8c3a);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(255,106,0,0.3);
+}
+
+.fc-list-hero-title {
+    font-size: 1.65rem;
+    font-weight: 900;
+    color: #1a0c00;
+    margin: 0 0 4px;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #1a0800 0%, #6b2a00 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.fc-list-hero-sub {
+    font-size: 0.875rem;
+    color: #7c5d44;
+    margin: 0;
+}
+
+.fc-list-hero-badge {
+    margin-left: auto;
+    padding: 6px 18px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ff6a00, #ff8c3a);
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 800;
+    box-shadow: 0 2px 10px rgba(255,106,0,0.25);
+    white-space: nowrap;
+}
+
+.of-body--fc {
+    padding-top: 32px;
+}
+
+/* ── Course card tag ─────────────────────────────────────────────────── */
+.fc-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: rgba(255,106,0,0.1);
+    color: #ff6a00;
+    letter-spacing: 0.01em;
+}
+
+/* ── Course progress bars on listing cards ───────────────────────────── */
+.fc-course-progress-wrap {
+    margin-top: 10px;
+}
+.fc-course-progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: #6b7280;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+.fc-course-progress-label .fc-pct {
+    font-weight: 700;
+    color: #ff6a00;
+}
+.fc-course-progress-bar {
+    height: 5px;
+    background: #f3f0ed;
+    border-radius: 999px;
+    overflow: hidden;
+}
+.fc-course-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff6a00, #ff8c3a);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+}
+.fc-completed-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #16a34a;
+    background: rgba(22,163,74,0.1);
+    padding: 2px 9px;
+    border-radius: 999px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TOPICS PAGE — hero + list
+═══════════════════════════════════════════════════════════════════════ */
+
+/* Hero banner — soft warm gradient matching listing page */
+.fc-hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #fff4ed 0%, #ffeedd 50%, #fff8f2 100%);
+    border-bottom: 1px solid rgba(255,106,0,0.12);
+}
+
+/* Horizontal flex row — content centred, back pinned left */
+.fc-hero-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Back link — pinned to left */
+.fc-hero-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #7c5d44;
+    text-decoration: none;
+    position: absolute;
+    left: 0;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1.5px solid rgba(255,106,0,0.22);
+    background: rgba(255,106,0,0.07);
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+.fc-hero-back:hover {
+    border-color: #ff6a00;
+    color: #ff6a00;
+    background: rgba(255,106,0,0.12);
+    text-decoration: none;
+}
+
+/* Divider not needed with centered layout */
+.fc-hero-divider { display: none; }
+
+/* Centred info block */
+.fc-hero-info {
+    text-align: center;
+}
+
+.fc-hero-title {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: #1a0c00;
+    margin: 0 0 6px;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+}
+
+.fc-hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+}
+
+.fc-hero-stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #7c5d44;
+    background: rgba(255,106,0,0.08);
+    border: 1px solid rgba(255,106,0,0.15);
+    padding: 3px 10px;
+    border-radius: 999px;
+}
+
+/* Progress — pinned to right (shown by JS) */
+.fc-hero-progress {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    position: absolute;
+    right: 0;
+}
+.fc-hero-progress-track {
+    width: 72px;
+    height: 5px;
+    background: rgba(255,106,0,0.12);
+    border-radius: 999px;
+    overflow: hidden;
+}
+.fc-hero-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff6a00, #ff8c3a);
+    border-radius: 999px;
+    transition: width 0.5s ease;
+    width: 0;
+}
+.fc-hero-progress-pct {
+    font-size: 0.78rem;
+    font-weight: 900;
+    color: #ff6a00;
+}
+.fc-hero-progress-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #a08060;
+}
+
+/* ── Topics section below hero ──────────────────────────────────────── */
+.fc-topics-section {
+    padding: 28px 0 80px;
+    background: #f7f3ef;
+}
+
+/* ── Topic list (vertical) ───────────────────────────────────────────── */
+.fc-topics-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.fc-topic-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 20px;
+    background: #fff;
+    border: 1.5px solid #f0e8e0;
+    border-radius: 16px;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: border-color 0.18s, box-shadow 0.18s, transform 0.15s;
+    overflow: hidden;
+}
+.fc-topic-item:hover {
+    border-color: #ff6a00;
+    box-shadow: 0 4px 20px rgba(255,106,0,0.1);
+    transform: translateY(-1px);
+    color: inherit;
+    text-decoration: none;
+}
+.fc-topic-item--done {
+    border-color: rgba(22,163,74,0.25);
+    background: #fafffe;
+}
+.fc-topic-item--done:hover {
+    border-color: #16a34a;
+    box-shadow: 0 4px 20px rgba(22,163,74,0.1);
+}
+
+/* Number badge */
+.fc-topic-num {
+    flex-shrink: 0;
+    font-size: 0.78rem;
+    font-weight: 900;
+    color: #c4a882;
+    letter-spacing: 0.02em;
+    min-width: 26px;
+    text-align: right;
+    line-height: 1;
+}
+
+/* Icon */
+.fc-topic-icon-wrap {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(255,106,0,0.08);
+    color: #ff6a00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    transition: background 0.15s;
+}
+.fc-topic-item:hover .fc-topic-icon-wrap {
+    background: rgba(255,106,0,0.14);
+}
+.fc-topic-item--done .fc-topic-icon-wrap {
+    background: rgba(22,163,74,0.08);
+    color: #16a34a;
+}
+
+/* Topic body */
+.fc-topic-body {
+    flex: 1;
+    min-width: 0;
+}
+.fc-topic-name {
+    font-size: 0.97rem;
+    font-weight: 800;
+    color: #1a1208;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 3px;
+}
+.fc-topic-meta {
+    font-size: 0.76rem;
+    color: #a0917e;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+/* Progress bar inside topic body */
+.fc-topic-bar-wrap {
+    display: none; /* shown by JS when seen > 0 */
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+}
+.fc-topic-bar {
+    flex: 1;
+    height: 4px;
+    background: #f0e8e0;
+    border-radius: 999px;
+    overflow: hidden;
+    max-width: 180px;
+}
+.fc-topic-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff6a00, #ff8c3a);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+    width: 0;
+}
+.fc-topic-bar-pct {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #ff6a00;
+    white-space: nowrap;
+}
+.fc-topic-bar-pct--done {
+    color: #16a34a;
+}
+.fc-topic-bar-pct--active {
+    color: #ff6a00;
+}
+
+/* Right side */
+.fc-topic-right {
+    flex-shrink: 0;
+    margin-left: auto;
+}
+.fc-topic-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #d1c4b0;
+    font-size: 0.85rem;
+    transition: color 0.15s, transform 0.15s;
+}
+.fc-topic-item:hover .fc-topic-status {
+    color: #ff6a00;
+    transform: translateX(3px);
+}
+
+.fc-topic-check {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #dcfce7;
+    color: #16a34a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+}
+
+/* ── Locked topic (Pro only) ─────────────────────────────────────────── */
+.fc-topic-item--locked {
+    opacity: 0.72;
+    border-color: #e8e0d8;
+    background: #fafaf8;
+    cursor: pointer;
+}
+.fc-topic-item--locked:hover {
+    border-color: #ff8c00;
+    box-shadow: 0 4px 20px rgba(255,106,0,0.08);
+    transform: translateY(-1px);
+    opacity: 1;
+}
+.fc-topic-item--locked .fc-topic-icon-wrap {
+    background: rgba(0,0,0,0.04);
+    color: #bbb;
+}
+.fc-topic-item--locked:hover .fc-topic-icon-wrap {
+    background: rgba(255,106,0,0.08);
+    color: #ff8c00;
+}
+.fc-topic-item--locked .fc-topic-name { color: #9a8f84; }
+
+.fc-topic-pro-hint {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #c4a040 !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+}
+.fc-topic-pro-hint i { font-size: 0.65rem; }
+
+.fc-topic-pro-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 11px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #a07010;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border: 1px solid rgba(180,130,0,0.25);
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+}
+.fc-topic-pro-badge i { font-size: 0.65rem; }
+
+/* ── Empty state ─────────────────────────────────────────────────────── */
+.fc-empty-state {
+    text-align: center;
+    padding: 64px 24px;
+    color: #6b7280;
+}
+.fc-empty-ico {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+    display: block;
+    opacity: 0.3;
+}
+.fc-empty-title {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 12px;
+}
+.fc-empty-link {
+    color: #ff6a00;
+    font-weight: 700;
+    text-decoration: none;
+}
+.fc-empty-link:hover { text-decoration: underline; }
+
+/* ── Responsive ───────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+    .fc-list-hero        { padding: 28px 0 24px; }
+    .fc-list-hero-title  { font-size: 1.35rem; }
+    .fc-list-hero-badge  { margin-left: 0; }
+    .fc-hero-title       { font-size: 1rem; }
+    .fc-hero-progress    { display: none !important; }
+    .fc-hero-back        { font-size: 0; padding: 8px 10px; min-height: 44px; min-width: 44px; justify-content: center; }
+    .fc-hero-back i      { font-size: 0.85rem; }
+}
+
+@media (max-width: 575px) {
+    /* Listing page hero */
+    .fc-list-hero        { padding: 14px 0 12px; }
+    .fc-list-hero-inner  { gap: 12px; flex-wrap: nowrap; align-items: center; }
+    .fc-list-hero-icon   { width: 40px; height: 40px; font-size: 1rem; border-radius: 12px; }
+    .fc-list-hero-title  { font-size: 1.15rem; margin: 0; }
+    .fc-list-hero-sub    { display: none; }
+    .fc-list-hero-badge  { display: none; }
+
+    /* Topics page hero */
+    .fc-hero-row         { padding-top: 12px; padding-bottom: 12px; }
+    .fc-hero-stats       { display: none; }
+    .fc-hero-title       { font-size: 0.95rem; margin: 0; }
+
+    /* Topic items — compact on small phones */
+    .fc-topic-item { padding: 14px 16px; gap: 10px; }
+    .fc-topic-num  { display: none; }
+}

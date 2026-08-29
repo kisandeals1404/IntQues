@@ -1,0 +1,130 @@
+/* ============================================================
+   SECTION 4 — FLASHCARDS SHOWCASE (flagship)
+   Continuously-cycling vertical card stack. Transform/opacity
+   only. Driven by static/js/flashcards-showcase.js (built on
+   motion-kit.js's shared ticker).
+   ============================================================ */
+
+.fcs-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+}
+
+.fcs-copy p {
+    font-size: 1.02rem;
+    color: #475569;
+    line-height: 1.7;
+    margin: 0 0 22px;
+}
+
+.fcs-topics-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 26px;
+}
+.fcs-topic-chip {
+    padding: 6px 13px;
+    border-radius: var(--radius-full, 999px);
+    background: #0f172a;
+    color: rgba(255,255,255,0.9);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+/* ── Card deck ────────────────────────────────── */
+.fcs-deck-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.fcs-deck-glow {
+    position: absolute;
+    inset: -12% -8%;
+    z-index: 0;
+    border-radius: 50%;
+    filter: blur(64px);
+    background: radial-gradient(circle, rgba(255,106,0,0.14) 0%, transparent 70%);
+}
+
+.fcs-deck {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    z-index: 1;
+}
+
+.fcs-card {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(15,23,42,0.08);
+    border-radius: var(--radius-2xl, 24px);
+    box-shadow: 0 8px 22px rgba(15,23,42,0.10), 0 24px 56px rgba(15,23,42,0.12);
+    padding: 30px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 12px;
+    will-change: transform, opacity;
+    transition: transform 650ms cubic-bezier(0.2,0.9,0.2,1), opacity 500ms ease;
+}
+
+.fcs-card[data-slot="0"] { transform: translate3d(0,0,0)     scale(1);    opacity: 1;    z-index: 4; }
+.fcs-card[data-slot="1"] { transform: translate3d(0,18px,0)  scale(0.96); opacity: 0.65; z-index: 3; }
+.fcs-card[data-slot="2"] { transform: translate3d(0,34px,0)  scale(0.92); opacity: 0.35; z-index: 2; }
+.fcs-card[data-slot="3"] { transform: translate3d(0,48px,0)  scale(0.88); opacity: 0;    z-index: 1; }
+
+.fcs-card.is-exiting {
+    transform: translate3d(0,-64px,0) scale(1.02) !important;
+    opacity: 0 !important;
+    transition: transform 480ms cubic-bezier(0.4,0,1,1), opacity 380ms ease;
+}
+
+.fcs-card-topic {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: var(--radius-full, 999px);
+    background: rgba(255,106,0,0.10);
+    color: #e65f00;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.fcs-card-q {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.fcs-card-hint {
+    font-size: 11px;
+    font-weight: 700;
+    color: #ff6a00;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+@media (max-width: 991px) {
+    .fcs-container { grid-template-columns: 1fr; gap: 40px; }
+    .fcs-copy { text-align: center; }
+    .fcs-topics-row { justify-content: center; }
+}
+
+@media (max-width: 480px) {
+    .fcs-deck { height: 240px; }
+    .fcs-card { padding: 24px 22px; }
+    .fcs-card-q { font-size: 0.96rem; }
+}
