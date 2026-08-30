@@ -335,7 +335,7 @@
 }
 
 /* Primary CTA button — premium gradient, used for "Build My Resume",
-   "Save Profile", "Save Password", "Submit Request" across account pages */
+   "Save Profile", "Submit Request" across account pages */
 .btn-cta {
     display: inline-flex;
     align-items: center;

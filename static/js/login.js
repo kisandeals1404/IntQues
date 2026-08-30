@@ -4,7 +4,7 @@
     var form = document.getElementById('loginForm');
     if (!form) return;
 
-    var state = { userId: null, email: '', hasPassword: false, otpSent: false };
+    var state = { userId: null, email: '', otpSent: false };
 
     function el(id) { return document.getElementById(id); }
 
@@ -19,12 +19,8 @@
         step2:          el('ls2'),
         emailDisplay:   el('lsEmailDisplay'),
         changeBtn:      el('lsChangeBtn'),
-        methodTabs:     el('lsMethodTabs'),
-        tabOtp:         el('lsTabOtp'),
-        tabPwd:         el('lsTabPwd'),
 
         // OTP panel
-        otpPanel:        el('lsOtpPanel'),
         otpSendState:    el('lsOtpSendState'),
         otpTargetEmail:  el('lsOtpTargetEmail'),
         sendOtpBtn:      el('lsSendOtpBtn'),
@@ -35,38 +31,13 @@
         verifyOtpLoader: el('lsVerifyOtpLoader'),
         resendOtpBtn:    el('lsResendOtpBtn'),
 
-        // Password panel
-        pwdPanel:        el('lsPwdPanel'),
-        pwdInput:        el('lsPassword'),
-        togglePwd:       el('lsTogglePwd'),
-        loginPwdBtn:     el('lsLoginPwdBtn'),
-        loginPwdLoader:  el('lsLoginPwdLoader'),
-        useOtpInstead:   el('lsUseOtpInstead'),
-        forgotPwdBtn:    el('lsForgotPwdBtn'),
-
-        // Reset password panel
-        resetPanel:        el('lsResetPanel'),
-        resetTargetEmail:  el('lsResetTargetEmail'),
-        resetSendState:    el('lsResetSendState'),
-        resetSendBtn:      el('lsResetSendBtn'),
-        resetSendLoader:   el('lsResetSendLoader'),
-        resetVerifyState:  el('lsResetVerifyState'),
-        resetSentEmail:    el('lsResetSentEmail'),
-        resetNewPwd:       el('lsResetNewPwd'),
-        resetTogglePwd:    el('lsResetTogglePwd'),
-        resetConfirmPwd:   el('lsResetConfirmPwd'),
-        resetSubmitBtn:    el('lsResetSubmitBtn'),
-        resetSubmitLoader: el('lsResetSubmitLoader'),
-        resetResendBtn:    el('lsResetResendBtn'),
-        resetBackBtn:      el('lsResetBackBtn'),
-
         message:         el('lsMessage')
     };
 
     // Bail out if the core step-1 elements are missing (old bundle vs new template mismatch)
     if (!els.step1 || !els.emailInput || !els.continueBtn) return;
 
-    // ── OTP boxes factory (used for both login OTP and password-reset OTP) ──
+    // ── OTP boxes ──────────────────────────────────────────────
     function makeOtpBoxes(containerId, onComplete) {
         var container = el(containerId);
         if (!container) return null;
@@ -146,8 +117,6 @@
     var loginOtpBoxes = makeOtpBoxes('loginOtpBoxes', function () {
         if (els.verifyOtpBtn && !els.verifyOtpBtn.disabled) els.verifyOtpBtn.click();
     });
-    // Reset OTP auto-completion doesn't auto-submit — the new-password fields still need filling in.
-    var resetOtpBoxes = makeOtpBoxes('resetOtpBoxes', null);
 
     var toastTimer = null;
 
@@ -231,46 +200,33 @@
         if (els.emailDisplay)  els.emailDisplay.textContent  = state.email;
         if (els.otpTargetEmail) els.otpTargetEmail.textContent = state.email;
         if (els.otpSentEmail)  els.otpSentEmail.textContent  = state.email;
-        if (els.methodTabs)    els.methodTabs.hidden = !state.hasPassword;
-        showOtpTab();
+
+        if (state.otpSent) {
+            showOtpVerifyState();
+        } else {
+            // Email is the only thing to confirm — send the OTP immediately instead of
+            // making the user click a second "Send Login OTP" button for no real decision.
+            showOtpSendState();
+            sendLoginOtp();
+        }
     }
 
-    function showOtpTab() {
-        if (els.resetPanel) els.resetPanel.hidden = true;
-        if (els.tabOtp) { els.tabOtp.classList.add('login-method-tab--active');    els.tabOtp.setAttribute('aria-selected', 'true'); }
-        if (els.tabPwd) { els.tabPwd.classList.remove('login-method-tab--active'); els.tabPwd.setAttribute('aria-selected', 'false'); }
-        if (els.otpPanel) els.otpPanel.hidden = false;
-        if (els.pwdPanel) els.pwdPanel.hidden = true;
-        if (state.otpSent) { showOtpVerifyState(); } else { showOtpSendState(); }
-    }
-
-    function showPwdTab() {
-        if (els.resetPanel) els.resetPanel.hidden = true;
-        if (els.tabOtp) { els.tabOtp.classList.remove('login-method-tab--active'); els.tabOtp.setAttribute('aria-selected', 'false'); }
-        if (els.tabPwd) { els.tabPwd.classList.add('login-method-tab--active');    els.tabPwd.setAttribute('aria-selected', 'true'); }
-        if (els.otpPanel) els.otpPanel.hidden = true;
-        if (els.pwdPanel) els.pwdPanel.hidden = false;
-        if (els.pwdInput) els.pwdInput.focus();
-    }
-
-    function showResetPanel() {
-        if (els.otpPanel) els.otpPanel.hidden = true;
-        if (els.pwdPanel) els.pwdPanel.hidden = true;
-        if (els.resetPanel) els.resetPanel.hidden = false;
-        if (els.resetTargetEmail) els.resetTargetEmail.textContent = state.email;
-        if (els.resetSentEmail)   els.resetSentEmail.textContent   = state.email;
-        showResetSendState();
-    }
-
-    function showResetSendState() {
-        if (els.resetSendState)   els.resetSendState.hidden   = false;
-        if (els.resetVerifyState) els.resetVerifyState.hidden = true;
-    }
-
-    function showResetVerifyState() {
-        if (els.resetSendState)   els.resetSendState.hidden   = true;
-        if (els.resetVerifyState) els.resetVerifyState.hidden = false;
-        if (resetOtpBoxes) resetOtpBoxes.focusFirst();
+    function sendLoginOtp() {
+        setLoading(els.sendOtpBtn, els.sendOtpLoader, true);
+        return postJson('/api/auth/login/start', { email: state.email })
+            .then(function (res) {
+                state.userId  = res.userId;
+                state.otpSent = true;
+                showOtpVerifyState();
+                toast('Login OTP sent to ' + state.email + '.', 'success');
+            })
+            .catch(function (err) {
+                // Auto-send failed (e.g. mail service down) — fall back to the manual
+                // send-state so the user has a button to retry, instead of being stuck.
+                toast(err.message, 'error');
+                showOtpSendState();
+            })
+            .finally(function () { setLoading(els.sendOtpBtn, els.sendOtpLoader, false); });
     }
 
     function showOtpSendState() {
@@ -304,10 +260,9 @@
         setLoading(els.continueBtn, els.continueLoader, true);
         postJson('/api/auth/login/check', { email: email })
             .then(function (res) {
-                state.userId      = res.userId;
-                state.email       = email;
-                state.hasPassword = !!res.hasPassword;
-                state.otpSent     = false;
+                state.userId  = res.userId;
+                state.email   = email;
+                state.otpSent = false;
                 showStep2();
             })
             .catch(function (err) { toast(err.message, 'error'); })
@@ -329,26 +284,10 @@
         });
     }
 
-    // ── Method tabs ─────────────────────────────────────────────
-
-    if (els.tabOtp) els.tabOtp.addEventListener('click', showOtpTab);
-    if (els.tabPwd) els.tabPwd.addEventListener('click', showPwdTab);
-
-    // ── Send OTP ────────────────────────────────────────────────
+    // ── Send OTP (manual retry, if auto-send failed) ─────────────
 
     if (els.sendOtpBtn) {
-        els.sendOtpBtn.addEventListener('click', function () {
-            setLoading(els.sendOtpBtn, els.sendOtpLoader, true);
-            postJson('/api/auth/login/start', { email: state.email })
-                .then(function (res) {
-                    state.userId  = res.userId;
-                    state.otpSent = true;
-                    showOtpVerifyState();
-                    toast('Login OTP sent to ' + state.email + '.', 'success');
-                })
-                .catch(function (err) { toast(err.message, 'error'); })
-                .finally(function () { setLoading(els.sendOtpBtn, els.sendOtpLoader, false); });
-        });
+        els.sendOtpBtn.addEventListener('click', sendLoginOtp);
     }
 
     // ── Resend OTP ──────────────────────────────────────────────
@@ -386,134 +325,6 @@
                 if (loginOtpBoxes) loginOtpBoxes.setError();
             })
             .finally(function () { setLoading(els.verifyOtpBtn, els.verifyOtpLoader, false); });
-        });
-    }
-
-    // ── Login with password ─────────────────────────────────────
-
-    if (els.loginPwdBtn) {
-        els.loginPwdBtn.addEventListener('click', function () {
-            var pwd = els.pwdInput ? els.pwdInput.value : '';
-            if (!pwd) { toast('Please enter your password.', 'error'); if (els.pwdInput) els.pwdInput.focus(); return; }
-            setLoading(els.loginPwdBtn, els.loginPwdLoader, true);
-            postJson('/api/auth/login/password', { userId: state.userId, password: pwd })
-                .then(handleLoginSuccess)
-                .catch(function (err) { toast(err.message, 'error'); })
-                .finally(function () { setLoading(els.loginPwdBtn, els.loginPwdLoader, false); });
-        });
-    }
-
-    if (els.pwdInput) {
-        els.pwdInput.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' && els.loginPwdBtn) els.loginPwdBtn.click();
-        });
-    }
-
-    // ── Password show/hide ──────────────────────────────────────
-
-    if (els.togglePwd && els.pwdInput) {
-        els.togglePwd.addEventListener('click', function () {
-            var isText = els.pwdInput.type === 'text';
-            els.pwdInput.type = isText ? 'password' : 'text';
-            els.togglePwd.innerHTML = isText
-                ? '<i class="fa-regular fa-eye" aria-hidden="true"></i>'
-                : '<i class="fa-regular fa-eye-slash" aria-hidden="true"></i>';
-            els.togglePwd.setAttribute('aria-label', isText ? 'Show password' : 'Hide password');
-        });
-    }
-
-    // ── Use OTP instead ─────────────────────────────────────────
-
-    if (els.useOtpInstead) {
-        els.useOtpInstead.addEventListener('click', showOtpTab);
-    }
-
-    // ── Forgot password / reset flow ─────────────────────────────
-
-    if (els.forgotPwdBtn) {
-        els.forgotPwdBtn.addEventListener('click', showResetPanel);
-    }
-
-    if (els.resetBackBtn) {
-        els.resetBackBtn.addEventListener('click', showPwdTab);
-    }
-
-    if (els.resetSendBtn) {
-        els.resetSendBtn.addEventListener('click', function () {
-            setLoading(els.resetSendBtn, els.resetSendLoader, true);
-            postJson('/api/auth/password/forgot', { email: state.email })
-                .then(function (res) {
-                    state.userId = res.userId;
-                    if (resetOtpBoxes) resetOtpBoxes.reset();
-                    showResetVerifyState();
-                    toast('A password reset code was sent to ' + state.email + '.', 'success');
-                })
-                .catch(function (err) { toast(err.message, 'error'); })
-                .finally(function () { setLoading(els.resetSendBtn, els.resetSendLoader, false); });
-        });
-    }
-
-    if (els.resetResendBtn) {
-        els.resetResendBtn.addEventListener('click', function () {
-            els.resetResendBtn.disabled = true;
-            postJson('/api/auth/password/forgot', { email: state.email })
-                .then(function (res) {
-                    state.userId = res.userId;
-                    if (resetOtpBoxes) resetOtpBoxes.reset();
-                    toast('A new reset code has been sent to ' + state.email + '.', 'success');
-                    startResendCountdown(els.resetResendBtn, 30);
-                })
-                .catch(function (err) {
-                    toast(err.message, 'error');
-                    els.resetResendBtn.disabled = false;
-                });
-        });
-    }
-
-    if (els.resetTogglePwd && els.resetNewPwd) {
-        els.resetTogglePwd.addEventListener('click', function () {
-            var isText = els.resetNewPwd.type === 'text';
-            els.resetNewPwd.type = isText ? 'password' : 'text';
-            els.resetTogglePwd.innerHTML = isText
-                ? '<i class="fa-regular fa-eye" aria-hidden="true"></i>'
-                : '<i class="fa-regular fa-eye-slash" aria-hidden="true"></i>';
-            els.resetTogglePwd.setAttribute('aria-label', isText ? 'Show password' : 'Hide password');
-        });
-    }
-
-    if (els.resetSubmitBtn) {
-        els.resetSubmitBtn.addEventListener('click', function () {
-            var otp = resetOtpBoxes ? resetOtpBoxes.getValue() : '';
-            var newPwd = els.resetNewPwd ? els.resetNewPwd.value : '';
-            var confirmPwd = els.resetConfirmPwd ? els.resetConfirmPwd.value : '';
-
-            if (otp.length !== 6) { toast('Please enter the 6-digit code.', 'error'); return; }
-            if (!newPwd || newPwd.length < 8) {
-                toast('Password must be at least 8 characters.', 'error');
-                if (els.resetNewPwd) els.resetNewPwd.focus();
-                return;
-            }
-            if (newPwd !== confirmPwd) {
-                toast('Passwords do not match.', 'error');
-                if (els.resetConfirmPwd) els.resetConfirmPwd.focus();
-                return;
-            }
-
-            setLoading(els.resetSubmitBtn, els.resetSubmitLoader, true);
-            postJson('/api/auth/password/reset', { userId: state.userId, otp: otp, newPassword: newPwd })
-                .then(function () {
-                    toast('Password reset. Please log in with your new password.', 'success');
-                    if (resetOtpBoxes) resetOtpBoxes.reset();
-                    if (els.resetNewPwd) els.resetNewPwd.value = '';
-                    if (els.resetConfirmPwd) els.resetConfirmPwd.value = '';
-                    if (els.pwdInput) els.pwdInput.value = '';
-                    showPwdTab();
-                })
-                .catch(function (err) {
-                    toast(err.message, 'error');
-                    if (resetOtpBoxes) resetOtpBoxes.setError();
-                })
-                .finally(function () { setLoading(els.resetSubmitBtn, els.resetSubmitLoader, false); });
         });
     }
 

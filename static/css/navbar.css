@@ -416,6 +416,34 @@
     background: rgba(15, 23, 42, 0.03);
 }
 
+.nav-account-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(15, 23, 42, 0.10);
+    background: #ffffff;
+    color: #475569;
+    font-size: 17px;
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color 200ms ease, color 200ms ease, background 200ms ease;
+}
+
+.nav-account-toggle::after { display: none !important; }
+
+.nav-account-toggle:hover,
+.dropdown.show > .nav-account-toggle {
+    color: #ff6a00;
+    border-color: rgba(255, 106, 0, 0.30);
+    background: rgba(255, 106, 0, 0.06);
+}
+
+.nav-account-menu { min-width: 260px; }
+
 /* =========================================
    MOBILE HAMBURGER — left-aligned
 ========================================= */
