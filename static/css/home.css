@@ -333,6 +333,7 @@
 }
 .hvss-item-text { flex: 1; min-width: 0; }
 .hvss-item-name {
+    display: block;
     font-size: 0.9rem;
     font-weight: 700;
     color: #0f172a;
@@ -340,7 +341,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.hvss-item-meta { font-size: 0.76rem; color: #94a3b8; font-weight: 500; }
+.hvss-item-meta { display: block; margin-top: 2px; font-size: 0.76rem; color: #94a3b8; font-weight: 500; }
 .hvss-empty {
     padding: 14px 12px;
     font-size: 0.85rem;

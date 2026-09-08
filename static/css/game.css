@@ -379,7 +379,10 @@
     gap: 12px;
     margin-bottom: 32px;
 }
-.gresult-podium-spot { display: flex; flex-direction: column; align-items: center; width: 110px; }
+/* flex: 1 1 0 + min-width: 0 lets each spot shrink to fit on narrow phones (.gresult-wrap
+   is 20px-padded and .gresult-page clips overflow, so a fixed width here could get cut off
+   rather than wrap) while the max-width still caps it on wider screens. */
+.gresult-podium-spot { display: flex; flex-direction: column; align-items: center; flex: 1 1 0; min-width: 0; max-width: 130px; }
 .gresult-podium-avatar {
     width: 48px; height: 48px;
     border-radius: 50%;
@@ -391,7 +394,7 @@
 }
 .gresult-podium-spot--1 .gresult-podium-avatar { width: 60px; height: 60px; font-size: var(--text-lg); }
 .gresult-podium-crown { color: #f59e0b; font-size: 1.4rem; margin-bottom: 2px; }
-.gresult-podium-name { font-weight: 700; color: var(--text-main); font-size: var(--text-sm); text-align: center; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gresult-podium-name { font-weight: 700; color: var(--text-main); font-size: var(--text-sm); text-align: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .gresult-podium-score { color: var(--text-muted); font-size: var(--text-xs); margin-bottom: 8px; }
 .gresult-podium-bar {
     width: 100%;

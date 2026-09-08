@@ -153,6 +153,24 @@
     cursor: default;
 }
 
+.afc-order-input {
+    width: 44px;
+    text-align: center;
+    padding: 3px 2px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    color: var(--text-body);
+    background: var(--white);
+}
+
+.afc-order-input:focus {
+    outline: none;
+    border-color: #ff6a00;
+    box-shadow: 0 0 0 2px rgba(255,106,0,0.15);
+}
+
 .afc-reorder-actions {
     display: flex;
     gap: 10px;
