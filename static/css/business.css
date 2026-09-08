@@ -255,6 +255,7 @@
 .bz-compare-col {
     border-radius: 20px;
     padding: 28px 30px;
+    min-width: 0;
 }
 
 .bz-compare-col--old {
@@ -321,6 +322,7 @@
     border: 1px solid #eef2f7;
     border-radius: 18px;
     padding: 28px 22px;
+    min-width: 0;
     transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
 
@@ -433,6 +435,9 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     align-items: stretch;
+    /* .bz-plan-popular-tag sits at top:-13px relative to its own card (see below) — without this,
+       it has nothing above it to clear and overlaps whatever precedes the grid (the coupon box). */
+    margin-top: 28px;
 }
 
 .bz-plan-card {
@@ -443,6 +448,7 @@
     padding: 30px 24px;
     display: flex;
     flex-direction: column;
+    min-width: 0;
     transition: border-color 200ms ease, box-shadow 200ms ease, transform 180ms ease;
 }
 
@@ -631,6 +637,66 @@
 }
 
 .bz-pricing-error.show { display: block; }
+
+/* ── Coupon code ── */
+.bz-coupon-wrap {
+    max-width: 380px;
+    margin: 28px auto 24px;
+}
+
+.bz-coupon-row {
+    display: flex;
+    gap: 8px;
+}
+
+.bz-coupon-input {
+    flex: 1;
+    min-width: 0;
+    padding: 11px 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-family: inherit;
+    text-transform: uppercase;
+    outline: none;
+}
+
+.bz-coupon-input:focus {
+    border-color: #ff6a00;
+}
+
+.bz-coupon-btn {
+    padding: 11px 18px;
+    border-radius: 10px;
+    border: 1.5px solid #ff6a00;
+    background: #fff;
+    color: #ff6a00;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 160ms ease, color 160ms ease;
+}
+
+.bz-coupon-btn:hover:not(:disabled) {
+    background: #ff6a00;
+    color: #fff;
+}
+
+.bz-coupon-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.bz-coupon-msg {
+    margin-top: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.bz-coupon-msg.is-success { color: #16a34a; }
+.bz-coupon-msg.is-error { color: #dc2626; }
 
 /* ── Final CTA ── */
 .bz-final-cta {

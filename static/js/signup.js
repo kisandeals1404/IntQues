@@ -235,8 +235,11 @@
             .then(function () {
                 toast('Account created! Redirecting…', 'success', 2);
                 var next = new URLSearchParams(window.location.search).get('next') || '';
+                // See login.js's handleLoginSuccess for why "starts with /" alone isn't enough
+                // ("//evil.com" and "/\evil.com" are both browser-resolved as off-site).
+                var isSafeRelative = next.charAt(0) === '/' && next.charAt(1) !== '/' && next.charAt(1) !== '\\';
                 setTimeout(function () {
-                    window.location.href = (next && next.charAt(0) === '/') ? next : '/';
+                    window.location.href = isSafeRelative ? next : '/';
                 }, 1200);
             })
             .catch(function (err) {

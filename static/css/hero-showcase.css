@@ -110,6 +110,10 @@
         0 24px 60px rgba(15,23,42,0.14);
     padding: 20px;
     overflow: hidden;
+    /* backdrop-filter promotes this box to its own compositing layer in
+       WebKit/Safari, which can make overflow:hidden fail to clip children
+       (a known Safari bug) — contain:paint forces a hard clip regardless. */
+    contain: paint;
 }
 
 .hs-scene-badge {
@@ -729,7 +733,11 @@
 
 @media (max-width: 767px) {
     .hero-showcase { max-width: 400px; }
-    .hs-stage { aspect-ratio: 4 / 5; animation: none; }
+    /* .hs-track below is a 3-panel flex row (300% total width) shifted with translate3d to show
+       one panel at a time — without clipping it here, the other two panels' content spills out
+       past the rounded-corner edge instead of staying hidden, which is what caused the horizontal
+       overflow/cut-off look. */
+    .hs-stage { aspect-ratio: 4 / 5; animation: none; overflow: hidden; }
     .hs-stage-glow { display: none; }
     .hs-badge { display: none; }
 

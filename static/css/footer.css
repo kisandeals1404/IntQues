@@ -222,7 +222,8 @@
     }
 }
 
-/* FLOATING WHATSAPP CTA */
+/* FLOATING WHATSAPP CTA — shares its corner slot with #btt-btn (back-to-top); only one of the
+   two is ever shown at once (see initScrollFab in ux-animations.js), so they never stack. */
 .whatsapp-float {
     position: fixed;
     right: 18px;
@@ -239,7 +240,16 @@
     text-decoration: none;
     box-shadow: 0 12px 26px rgba(37, 211, 102, 0.35);
     z-index: 1400;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease, opacity 220ms ease, visibility 220ms;
+}
+.whatsapp-float.fab-hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8);
+    pointer-events: none;
 }
 
 .whatsapp-float:hover {
@@ -254,8 +264,5 @@
     outline-offset: 3px;
 }
 
-@media (max-width: 768px) {
-    body.has-mobile-bottom-cta .whatsapp-float {
-        bottom: 96px;
-    }
-}
+/* Mobile bottom offset (clearing the site-wide mobile tab bar) is set unconditionally in
+   ux-overrides.css, which loads last — see the MOBILE TAB BAR block there. */

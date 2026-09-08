@@ -307,78 +307,84 @@
 html { scroll-padding-top: 80px; }
 
 /* =========================================
-   MOBILE BOTTOM CTA — sticky "Join Demo Class" bar
+   MOBILE TAB BAR — persistent app-style bottom nav
+   Site-wide (every page, not just home) — see layout/mobile-tab-bar.ftl
 ========================================= */
 
 /* Hidden by default on desktop */
-.mobile-bottom-cta {
+.mobile-tab-bar {
     display: none;
 }
 
 @media (max-width: 768px) {
 
-    /* Make room so content isn't hidden behind the bar */
-    body.has-mobile-bottom-cta { padding-bottom: 96px; }
+    /* Make room on every page so content/footer isn't hidden behind the bar */
+    body { padding-bottom: 70px; }
 
-    /* Push WhatsApp button above the mobile CTA bar — solid base, no env() dependency */
-    body.has-mobile-bottom-cta .whatsapp-float {
-        bottom: 96px;
+    /* Push WhatsApp button above the tab bar. Must track the SAME env(safe-area-inset-bottom)
+       the tab bar itself grows by below (see the @supports block further down) — a fixed 78px
+       only ccleared the bar on devices with no home-indicator inset; on an iPhone-style device
+       the bar is taller by that inset, and a bare 78px let the button sit on top of the Account
+       tab instead of above the whole bar. 56px tab content + 6px tab padding + 14px clearance. */
+    .whatsapp-float {
+        bottom: calc(76px + env(safe-area-inset-bottom, 0px));
     }
 
-    /* The sticky container */
-    .mobile-bottom-cta {
-        display: block;
+    .mobile-tab-bar {
+        display: flex;
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
         z-index: 1500; /* above WhatsApp float; nav-drawer is 1600 so drawer still wins */
-        padding: 10px 16px 14px; /* extra bottom for safe-area on iOS */
-        background: rgba(255, 255, 255, 0.96);
+        padding-bottom: 6px; /* extra bottom for safe-area on iOS, see the env() block below */
+        /* Same fix as .navbar (navbar.css) — 0.99 still let the dark footer's white wordmark
+           ghost through when scrolled directly behind; only fully opaque removes it for good. */
+        background: #ffffff;
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        border-top: 1px solid rgba(255, 106, 0, 0.12);
-        box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.07);
-
-        /* Wrapper should not block taps outside the CTA button */
-        pointer-events: none;
+        border-top: 1px solid rgba(15, 23, 42, 0.08);
+        box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.06);
     }
 
-    /* Three-segment variant — Flashcards / Quizzes / Resume, equal weight */
-    .mobile-bottom-cta--triple {
-        display: flex;
-        gap: 8px;
-        pointer-events: auto;
-    }
-
-    .mbc-seg {
+    .mtb-tab {
         flex: 1 1 0;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 3px;
-        min-height: 54px;
-        padding: 8px 4px;
-        border-radius: var(--radius-card);
-        background: linear-gradient(135deg, #ff6a00, #ff7a1a);
-        color: #fff;
+        min-height: 56px;
+        padding: 8px 2px 6px;
         text-decoration: none;
-        font-weight: 800;
-        font-size: 0.72rem;
+        color: #94a3b8;
+        font-weight: 700;
+        font-size: 0.66rem;
         letter-spacing: 0.01em;
-        box-shadow: 0 6px 18px rgba(255, 106, 0, 0.26);
-        transition: transform 220ms cubic-bezier(.2,.9,.2,1);
+        transition: color 160ms ease;
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
     }
 
-    .mbc-seg i { font-size: 1.05rem; }
+    .mtb-tab i { font-size: 1.15rem; transition: transform 160ms ease; }
 
-    .mbc-seg:hover,
-    .mbc-seg:active {
-        color: #fff;
-        transform: translateY(-2px);
+    .mtb-tab.mtb-active {
+        color: #ff6a00;
+    }
+    .mtb-tab.mtb-active i {
+        transform: translateY(-1px);
+    }
+
+    .mtb-tab:hover,
+    .mtb-tab:active {
+        color: #ff6a00;
+    }
+}
+
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    @media (max-width: 768px) {
+        .mobile-tab-bar { padding-bottom: calc(6px + env(safe-area-inset-bottom)); }
+        body { padding-bottom: calc(70px + env(safe-area-inset-bottom)); }
     }
 }
 
@@ -426,21 +432,9 @@ h2 { font-size: clamp(1.35rem, 2.6vw, 2.2rem); line-height:1.08; }
 
 /* ── 1. iOS Safe-Area Insets ─────────────────────────────────
    Prevents bottom sheet content from hiding behind the iOS
-   home indicator on iPhone X and newer devices.
+   home indicator on iPhone X and newer devices — see the
+   .mobile-tab-bar env() block further up for the actual rule.
    ──────────────────────────────────────────────────────────── */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-    @media (max-width: 768px) {
-        /* Mobile sticky CTA bar — keep z-index in sync with the main rule above */
-        .mobile-bottom-cta {
-            padding-bottom: calc(10px + env(safe-area-inset-bottom));
-        }
-        /* Body offset to clear the sticky bar */
-        body.has-mobile-bottom-cta {
-            padding-bottom: calc(96px + env(safe-area-inset-bottom));
-        }
-        /* (WhatsApp float is handled separately below) */
-    }
-}
 
 /* ── 2. Disable card-lift hover effects on touch devices ─────
    On touchscreens, :hover fires on tap and never un-fires,
@@ -470,8 +464,6 @@ h2 { font-size: clamp(1.35rem, 2.6vw, 2.2rem); line-height:1.08; }
     /* Hero/section buttons: keep glow but remove the lift */
     .hp-btn-shiny:hover,
     .hp-btn-outline:hover,
-    .hero-v3-btn-primary:hover,
-    .hero-v3-btn-outline:hover,
     .course-btn-primary:hover,
     .course-btn-outline:hover,
     .cp-main-button:hover,
@@ -579,17 +571,14 @@ h2 { font-size: clamp(1.35rem, 2.6vw, 2.2rem); line-height:1.08; }
     .why-card        { padding: 20px 16px !important; }
 }
 
-/* ── 10. Sticky CTA button — better text layout on 320 px ───*/
+/* ── 10. Mobile tab bar — tighten labels on 320 px ──────────*/
 @media (max-width: 360px) {
-    .mobile-bottom-cta__text    { font-size: 0.92rem; }
-    .mobile-bottom-cta__subtext { font-size: 0.68rem; }
+    .mtb-tab { font-size: 0.6rem; }
+    .mtb-tab i { font-size: 1.05rem; }
 }
 
-/* ── 11. Hero action buttons — always full-width below 400 px */
+/* ── 11. Course-detail hero actions — always full-width below 400 px */
 @media (max-width: 400px) {
-    .hero-v3-actions { flex-direction: column; }
-    .hero-v3-btn-primary,
-    .hero-v3-btn-outline { width: 100%; justify-content: center; }
     .course-hero-actions { flex-direction: column; align-items: stretch; }
     .course-btn-primary,
     .course-btn-outline { justify-content: center; }
@@ -862,11 +851,9 @@ html { scroll-padding-top: 80px; }
 }
 
 /* ─ Hero CTA arrow — bounce on hover ─────── */
-.hero-v3-btn-primary i,
 .lcb-btn i {
     transition: transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.hero-v3-btn-primary:hover i,
 .lcb-btn:hover i { transform: translateX(5px); }
 
 /* ─ Why section — richer gradient bg ─────── */
@@ -996,15 +983,10 @@ html { scroll-padding-top: 80px; }
     position: relative;
 }
 
-/* ─ Navbar — enhanced scrolled state ────────── */
-.navbar.scrolled {
-    background: rgba(255, 255, 255, 0.98) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-    box-shadow:
-        0 1px 0 rgba(15, 23, 42, 0.06),
-        0 4px 28px rgba(15, 23, 42, 0.09) !important;
-}
+/* Navbar scrolled-state glass effect lives in one place now — see the
+   ".navbar.scrolled" rule further down (search "enhanced glass"). This was a duplicate
+   selector that always lost to that later one anyway (same specificity, both !important,
+   later wins), left as dead code that made the real rule harder to find and fix. */
 
 /* ─ Footer — gradient animated top border ─── */
 footer {
@@ -1046,9 +1028,7 @@ footer::before {
 }
 
 /* ─ Button icon arrows — bounce on hover ───── */
-.hp-btn-shiny i,
-.hero-v3-btn-primary i,
-.mobile-bottom-cta__button i {
+.hp-btn-shiny i {
     transition: transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .hp-btn-shiny:hover i { transform: translateX(4px); }
@@ -1107,18 +1087,6 @@ footer::before {
         inset 0 1px 0 rgba(255,255,255,0.98) !important;
 }
 
-/* ── 5. Hero outline button — glass look ─────── */
-.hero-v3-btn-outline {
-    background: rgba(255,255,255,0.88) !important;
-    backdrop-filter: blur(8px) !important;
-    border: 1px solid rgba(15,23,42,0.12) !important;
-}
-.hero-v3-btn-outline:hover {
-    background: rgba(255,251,247,0.96) !important;
-    border-color: rgba(255,106,0,0.38) !important;
-    box-shadow: 0 0 0 3px rgba(255,106,0,0.07) !important;
-}
-
 /* ── 6. Stats panel — layered gradient + depth ── */
 .stats-panel {
     background: linear-gradient(160deg, #101828 0%, #162038 50%, #0d1526 100%) !important;
@@ -1172,8 +1140,14 @@ footer::before {
 }
 
 /* ── 12. Navbar scrolled — enhanced glass ─────── */
+/* This is the rule that actually applies (there was a duplicate, now-removed, earlier in this
+   file with weaker values that always lost to this one). background was rgba(...,0.97) — a
+   fully-opaque .navbar base (navbar.css) doesn't help if this !important rule re-introduces
+   transparency the moment .scrolled is added, which is nearly always once the page scrolls at
+   all. Same ghosting bug as navbar.css: the dark footer's white wordmark showed through a
+   blurred few-percent gap once scrolled directly behind the bar. */
 .navbar.scrolled {
-    background: rgba(255,255,255,0.97) !important;
+    background: #ffffff !important;
     backdrop-filter: blur(28px) saturate(220%) !important;
     -webkit-backdrop-filter: blur(28px) saturate(220%) !important;
     box-shadow:
@@ -1623,25 +1597,6 @@ footer::before {
    Hero, section headers, cards, nav, forms
 ============================================= */
 
-/* ── 1. Hero search — orange focus ring ─── */
-.hero-search-form:focus-within {
-    border-color: rgba(255,106,0,0.40) !important;
-    box-shadow:
-        0 8px 32px rgba(255,106,0,0.13),
-        0 0 0 4px rgba(255,106,0,0.09),
-        0 2px 8px rgba(15,23,42,0.06) !important;
-}
-
-/* ── 2. Hero stat numbers — orange gradient ─ */
-.hero-stat-num {
-    background: linear-gradient(135deg, #d95500 0%, #ff6a00 50%, #ff9500 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-size: 1.6rem !important;
-    display: inline-block;
-}
-
 /* ── 3. Hero trust pills — white card feel ─── */
 .hero-v3-pill {
     background: #ffffff !important;
@@ -1881,18 +1836,6 @@ footer::before {
         #f8fafc !important;
 }
 
-/* ── 27. Hero search tags — better hover ─────── */
-.hero-search-tag {
-    transition: border-color 180ms ease, color 180ms ease, background 180ms ease,
-                transform 200ms ease, box-shadow 200ms ease !important;
-}
-.hero-search-tag:hover {
-    border-color: rgba(255,106,0,0.30) !important;
-    color: var(--primary-orange) !important;
-    background: rgba(255,106,0,0.04) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(255,106,0,0.12) !important;
-}
 
 /* ── 28. Enroll modal sheet — desktop rounder corners ──── */
 @media (min-width: 581px) {
@@ -1979,7 +1922,6 @@ footer::before {
     .faq-header h2,
     .curriculum-header h2 { font-size: 1.7rem !important; }
     .hero-v3-pill { font-size: 11px !important; padding: 5px 10px !important; }
-    .hero-stat-num { font-size: 1.35rem !important; }
 }
 
 /* =============================================
@@ -2175,10 +2117,11 @@ footer::before {
 ========================================= */
 .btt-btn {
     position: fixed;
-    bottom: 24px;
-    right: 20px;
-    width: 44px;
-    height: 44px;
+    /* Same corner slot as .whatsapp-float (footer.css) — only one of the two shows at once. */
+    bottom: 18px;
+    right: 18px;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     background: linear-gradient(135deg, #ff6a00, #ff8c3a);
     color: #fff;
@@ -2186,19 +2129,19 @@ footer::before {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.95rem;
+    font-size: 1.3rem;
     cursor: pointer;
     box-shadow: 0 4px 18px rgba(255, 106, 0, 0.32);
     opacity: 0;
     visibility: hidden;
-    transform: translateY(10px);
-    transition: opacity 260ms ease, visibility 260ms, transform 260ms ease, box-shadow 200ms;
-    z-index: 180;
+    transform: translateY(10px) scale(0.8);
+    transition: opacity 220ms ease, visibility 220ms, transform 220ms ease, box-shadow 200ms;
+    z-index: 1400;
 }
 .btt-btn.visible {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
 }
 .btt-btn:hover {
     box-shadow: 0 6px 26px rgba(255, 106, 0, 0.45);
@@ -2206,19 +2149,6 @@ footer::before {
 }
 .btt-btn:active {
     transform: translateY(0);
-}
-
-/* =========================================
-   HERO — three equal CTA buttons
-========================================= */
-.hero-v3-actions--triple {
-    flex-wrap: wrap;
-}
-@media (min-width: 601px) and (max-width: 1200px) {
-    .hero-v3-actions--triple .hero-v3-btn-primary {
-        padding: 13px 20px;
-        font-size: 0.9rem;
-    }
 }
 
 /* =========================================
@@ -2234,62 +2164,8 @@ footer::before {
     /* Flashcard topic rows */
     .fc-topic-item { min-height: 64px; }
 
-    /* Back-to-top offset from WhatsApp button */
-    .btt-btn { bottom: 80px; }
-}
-
-/* ── Cookie consent banner ── */
-.cookie-consent-banner {
-    position: fixed;
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
-    z-index: 1080;
-    max-width: 720px;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px 20px;
-    padding: 16px 20px;
-    background: #0f172a;
-    color: #e2e8f0;
-    border-radius: var(--radius-card);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
-}
-.cookie-consent-text {
-    flex: 1 1 320px;
-    margin: 0;
-    font-size: 0.85rem;
-    line-height: 1.5;
-}
-.cookie-consent-text a { color: #ffbc00; text-decoration: underline; }
-.cookie-consent-actions {
-    display: flex;
-    gap: 10px;
-    flex-shrink: 0;
-}
-.cookie-consent-btn {
-    border: none;
-    border-radius: 8px;
-    padding: 9px 16px;
-    font-size: 0.82rem;
-    font-weight: 700;
-    cursor: pointer;
-}
-.cookie-consent-decline {
-    background: transparent;
-    color: #cbd5e1;
-    border: 1px solid rgba(255,255,255,0.25);
-}
-.cookie-consent-decline:hover { background: rgba(255,255,255,0.08); }
-.cookie-consent-accept {
-    background: linear-gradient(90deg,#ff6a00,#ffbc00);
-    color: #0f172a;
-}
-.cookie-consent-accept:hover { filter: brightness(1.05); }
-@media (max-width: 480px) {
-    .cookie-consent-banner { flex-direction: column; align-items: stretch; }
-    .cookie-consent-actions { justify-content: flex-end; }
+    /* Same slot as .whatsapp-float on mobile too — both need to clear the tab bar identically
+       since only one of them is ever shown. */
+    .btt-btn { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
 }
 

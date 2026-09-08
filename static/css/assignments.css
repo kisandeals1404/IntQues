@@ -86,6 +86,11 @@
 .asn-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 @media (max-width: 720px) { .asn-grid-2 { grid-template-columns: 1fr; } }
 
+/* Caps a field's width only while .asn-grid-2 is still 2 columns — once it collapses to one
+   column below 720px, the field fills the row instead of leaving dead whitespace beside it. */
+.asn-field--capped { max-width: 260px; }
+@media (max-width: 720px) { .asn-field--capped { max-width: none; } }
+
 /* ── Type selector (question bank form) ── */
 .asn-type-toggle { display: flex; gap: 8px; flex-wrap: wrap; }
 .asn-type-btn {
@@ -161,14 +166,23 @@
 .asn-library-toolbar { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
 .asn-library-search {
     width: 100%;
-    padding: 10px 14px;
-    border: 1.5px solid var(--border-color);
-    border-radius: var(--radius-md);
+    padding: 10px 14px 10px 38px;
+    border: 1.5px solid rgba(15,23,42,0.10);
+    border-radius: 999px;
     font-size: 0.9rem;
     font-family: inherit;
     box-sizing: border-box;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff6a00' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat 14px center;
+    background-size: 15px 15px;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
-.asn-library-search:focus { outline: none; border-color: var(--primary-orange); }
+.asn-library-search::placeholder { color: #94a3b8; }
+.asn-library-search:focus {
+    outline: none;
+    border-color: rgba(255,106,0,0.45);
+    box-shadow: 0 0 0 3px rgba(255,106,0,0.09);
+}
 .asn-tag-pills { display: flex; flex-wrap: wrap; gap: 8px; }
 .asn-tag-pill-filter {
     padding: 4px 12px;
@@ -181,6 +195,20 @@
     cursor: pointer;
 }
 .asn-tag-pill-filter.is-active { border-color: var(--primary-orange); background: rgba(255,106,0,0.10); color: #ea580c; }
+
+/* ── Bulk select-visible / clear actions, next to a library search bar ── */
+.asn-select-actions { display: flex; gap: 14px; }
+.asn-select-action {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--primary-orange);
+    cursor: pointer;
+}
+.asn-select-action:hover { text-decoration: underline; }
+.asn-select-action:disabled { color: var(--text-muted); cursor: not-allowed; text-decoration: none; }
 
 /* ── Fill-in-the-blank accepted-answer rows ── */
 .asn-blank-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
@@ -215,7 +243,11 @@
     border-radius: var(--radius-md);
     background: #fff;
 }
-.asn-qbank-item-text { font-weight: 600; color: var(--text-main); margin-bottom: 4px; }
+/* The unnamed wrapper div around item-text/item-meta is the flexible flex child (see
+   .asn-qbank-item's markup in my-courses.ftl etc.) — needs min-width:0 so a long course/question
+   title can actually shrink and wrap instead of pushing .asn-qbank-item-actions off to the side. */
+.asn-qbank-item > div:first-child { min-width: 0; flex: 1 1 auto; }
+.asn-qbank-item-text { font-weight: 600; color: var(--text-main); margin-bottom: 4px; overflow-wrap: break-word; }
 .asn-qbank-item-meta { font-size: 0.78rem; color: var(--text-muted); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
 /* ── Question picker checklist (assignment builder) ── */
@@ -381,10 +413,26 @@
 
 .asn-empty {
     text-align: center;
-    padding: 64px 24px 56px;
+    padding: 48px 24px;
     color: var(--text-muted);
+    /* Was min-height:46vh centered on the bare page background — meant to stop the card reading
+       as "stranded" above a dead void, but at typical viewport heights that's 350-400px+ of empty
+       space around one small icon and a single line of text, which just moved the "is this
+       broken?" feeling from below the card to inside it. A dashed-border "empty slot" card at a
+       modest, content-driven height reads as a deliberately designed empty state instead. */
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #fafafa;
+    border: 1.5px dashed rgba(15, 23, 42, 0.12);
+    border-radius: 16px;
 }
-.asn-empty i {
+/* Direct-child combinator, not a descendant selector — .asn-empty's CTA button also contains
+   its own <i> (a small "+" glyph), which a plain ".asn-empty i" would incorrectly balloon up
+   to this same 76px circular icon size too. */
+.asn-empty > i {
     width: 76px;
     height: 76px;
     margin: 0 auto 20px;
@@ -414,6 +462,9 @@
     background: #fff;
     border-bottom: 1px solid var(--border-color);
     padding: 14px 0;
+    /* Same navbar-replacement notch clearance as .qplay-topbar in quiz.css — this bar's page
+       also hides the real navbar (body.quiz-play-page). */
+    padding-top: calc(14px + env(safe-area-inset-top, 0px));
 }
 .asn-play-topbar-inner {
     max-width: 820px;
@@ -424,7 +475,16 @@
     justify-content: space-between;
     gap: 16px;
 }
-.asn-play-title { font-weight: 700; color: var(--text-main); font-size: 0.98rem; }
+.asn-play-title {
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: 0.98rem;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 400px;
+}
 .asn-play-timer {
     font-weight: 800;
     font-size: 1.05rem;
@@ -432,11 +492,21 @@
     padding: 6px 14px;
     border-radius: 10px;
     background: var(--surface-subtle);
+    flex-shrink: 0;
 }
 .asn-play-timer.asn-play-timer--warning { color: #d97706; background: rgba(217,119,6,0.1); }
 .asn-play-timer.asn-play-timer--danger  { color: #dc2626; background: rgba(220,38,38,0.12); }
 
+@media (max-width: 640px) {
+    .asn-play-title { max-width: 160px; font-size: 0.84rem; }
+}
+
 .asn-play-body { max-width: 820px; margin: 0 auto; padding: 24px 20px 80px; }
+
+/* Extra bottom clearance when the fixed live-camera badge is present (proctoring on) — its own
+   footprint (up to 108x84px, quiz.css) is taller than the default 80px buffer above, so on a
+   short assignment the badge could otherwise sit on top of the Submit button below. */
+body:has(#proctor-badge) .asn-play-body { padding-bottom: 140px; }
 
 .asn-play-qcard {
     background: #fff;

@@ -42,14 +42,11 @@
         '.pricing-btn-primary',
         '.cp-main-button',
         '.certificate-btn-primary',
-        '.mobile-bottom-cta__button',
         '.demo-cta-btn',
-        '.mbc-seg',
         '.of-btn-enroll',
         '.of-btn-o',
         '.od-btn-enroll',
         '.od-btn-enroll-lg',
-        '.hero-v3-btn-primary',
         '.course-btn-primary',
         '.lcb-btn',
     ];
@@ -453,11 +450,20 @@
     }
 
     /* ─────────────────────────────────────────
-       16. BACK TO TOP — appears after 400px scroll
+       16. BACK-TO-TOP / WHATSAPP — share one corner slot.
+       Near the top of the page, or while scrolling down, the WhatsApp bubble shows (it's the
+       default "contact us" affordance). Once scrolled down past 400px AND the user scrolls
+       upward, swap it for the back-to-top arrow instead — showing both stacked looked cluttered
+       (see .btt-btn / .whatsapp-float in ux-overrides.css / footer.css, which now share the same
+       bottom/right position). The swap is direction-driven but doesn't hide again on idle, so the
+       arrow stays tappable instead of vanishing the instant scrolling stops.
     ───────────────────────────────────────── */
-    function initBackToTop() {
+    function initScrollFab() {
+        var whatsapp = document.querySelector('.whatsapp-float');
+
         var btn = document.createElement('button');
         btn.className = 'btt-btn';
+        btn.id = 'btt-btn';
         btn.setAttribute('aria-label', 'Back to top');
         btn.innerHTML = '<i class="fa-solid fa-chevron-up" aria-hidden="true"></i>';
         btn.addEventListener('click', function () {
@@ -465,13 +471,27 @@
         });
         document.body.appendChild(btn);
 
-        var visible = false;
+        var showingArrow = false;
+        var lastY = window.scrollY;
+
+        function setArrowVisible(show) {
+            if (show === showingArrow) return;
+            showingArrow = show;
+            btn.classList.toggle('visible', show);
+            if (whatsapp) whatsapp.classList.toggle('fab-hidden', show);
+        }
+
         window.addEventListener('scroll', function () {
-            var shouldShow = window.scrollY > 400;
-            if (shouldShow !== visible) {
-                visible = shouldShow;
-                btn.classList.toggle('visible', visible);
+            var y = window.scrollY;
+            var scrollingUp = y < lastY;
+            if (y <= 400) {
+                setArrowVisible(false);
+            } else if (scrollingUp) {
+                setArrowVisible(true);
+            } else if (y > lastY) {
+                setArrowVisible(false);
             }
+            lastY = y;
         }, { passive: true });
     }
 
@@ -493,7 +513,7 @@
         initMouseDrag();
         initHeroWordRotate();
         initOfferingsSearchPlaceholder();
-        initBackToTop();
+        initScrollFab();
     });
 })();
 

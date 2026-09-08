@@ -60,8 +60,16 @@
     border-bottom: 1.5px solid #f1f5f9;
     padding: 16px 0;
     position: sticky;
-    top: 0;
+    /* Sits just below the site's own fixed navbar (68px desktop / 60px mobile, see navbar.css)
+       instead of top:0 — without this offset the sticky trigger point is the true viewport top,
+       so this bar scrolls up and hides behind the (higher z-index) navbar instead of docking
+       under it, taking the Save/Save & Preview buttons out of reach while scrolling the form. */
+    top: calc(68px + env(safe-area-inset-top, 0px));
     z-index: 100;
+}
+
+@media (max-width: 991px) {
+    .rb-header { top: calc(60px + env(safe-area-inset-top, 0px)); }
 }
 
 .rb-draft-banner {
@@ -174,8 +182,11 @@
     border-right: 1.5px solid #f1f5f9;
     padding: 24px 0;
     position: sticky;
-    top: 73px;
-    height: calc(100vh - 73px);
+    /* Docks below the fixed navbar (68px) + the sticky .rb-header above it (~73px) — this only
+       matters ≥901px since the sidebar is hidden below that (see the 900px breakpoint), but it
+       must stay in sync with .rb-header's own top offset above. */
+    top: calc(68px + 73px + env(safe-area-inset-top, 0px));
+    height: calc(100vh - 68px - 73px - env(safe-area-inset-top, 0px));
     overflow-y: auto;
 }
 

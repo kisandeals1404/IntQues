@@ -12,6 +12,12 @@
     align-items: center;
 }
 
+/* Grid items default to min-width:auto (their content's min-content size) — without this, the
+   deck mockup's intrinsic size can stop this column (and the single stacked column on mobile,
+   once it collapses to 1fr below) from shrinking to fit, forcing the section to overflow the
+   viewport instead of reflowing. Same fix as .hero-v3-content/.hero-v3-visual in home.css. */
+.fcs-copy, .fcs-deck-wrap { min-width: 0; }
+
 .fcs-copy p {
     font-size: 1.02rem;
     color: #475569;

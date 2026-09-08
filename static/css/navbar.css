@@ -3,12 +3,19 @@
 ========================================= */
 
 .navbar {
-    background: rgba(255, 255, 255, 0.96);
+    /* Was rgba(...,0.96), then 0.99 — neither was enough. backdrop-filter blurs whatever's
+       behind but doesn't remove it; even 1% remaining transparency still let the dark footer's
+       large white wordmark ghost through once scrolled directly underneath, since a blurred
+       high-contrast shape stays faintly visible at very low opacity. Fully opaque is the only
+       value that guarantees zero bleed-through — backdrop-filter is a no-op now (nothing behind
+       an opaque background can show through it) but left in place in case opacity ever changes. */
+    background: #ffffff;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid rgba(15, 23, 42, 0.07);
     padding: 0;
-    height: 68px;
+    padding-top: env(safe-area-inset-top, 0px);
+    height: calc(68px + env(safe-area-inset-top, 0px));
     display: flex;
     align-items: center;
     z-index: 1300;
@@ -442,7 +449,105 @@
     background: rgba(255, 106, 0, 0.06);
 }
 
+.nav-search-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(15, 23, 42, 0.10);
+    background: #ffffff;
+    color: #475569;
+    font-size: 15px;
+    line-height: 1;
+    text-decoration: none;
+    transition: border-color 200ms ease, color 200ms ease, background 200ms ease;
+}
+
+.nav-search-btn:hover {
+    color: #ff6a00;
+    border-color: rgba(255, 106, 0, 0.30);
+    background: rgba(255, 106, 0, 0.06);
+    text-decoration: none;
+}
+
 .nav-account-menu { min-width: 260px; }
+
+/* =========================================
+   NOTIFICATION BELL
+========================================= */
+.nav-notif-toggle { position: relative; }
+
+.nav-notif-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: #dc2626;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 17px;
+    text-align: center;
+    box-shadow: 0 0 0 2px #ffffff;
+}
+
+.nav-notif-menu { min-width: 340px; max-width: 380px; padding: 14px 0; }
+
+.nav-notif-header { padding: 0 14px 10px; }
+
+.nav-notif-mark-all {
+    border: none;
+    background: none;
+    color: #ff6a00;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 2px 4px;
+}
+
+.nav-notif-mark-all:hover { text-decoration: underline; }
+
+.nav-notif-list {
+    max-height: 360px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-notif-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 14px;
+    text-decoration: none;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: background 150ms ease;
+}
+
+.nav-notif-item:hover { background: rgba(255, 106, 0, 0.05); }
+
+.nav-notif-item.nav-notif-unread {
+    border-left-color: #ff6a00;
+    background: rgba(255, 106, 0, 0.03);
+}
+
+.nav-notif-title { font-size: 0.88rem; font-weight: 700; color: #0f172a; }
+.nav-notif-message { font-size: 0.82rem; color: #475569; }
+.nav-notif-time { font-size: 0.74rem; color: #94a3b8; margin-top: 2px; }
+
+.nav-notif-empty {
+    padding: 24px 14px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
 
 /* =========================================
    MOBILE HAMBURGER — left-aligned
@@ -482,12 +587,44 @@
 }
 
 /* =========================================
+   NARROW DESKTOP NAV (tablets in landscape, iPad Pro 12.9" portrait,
+   and any window from 992-1199px — Bootstrap's own "lg" breakpoint
+   already switches to this full nav at 992px, but at 992-1199px it's a lot
+   of top-level items + up to 4 icon buttons (search/theme/notifications/
+   account-avatar when logged in) in not much room. Unpadded, the
+   Quizzes/Flashcards/Play/Rewards/Assignments/My Courses/Resume row plus
+   those icons wanted ~1104px — 112px more than a 992px viewport has, and
+   nothing scrolls to compensate, so the rightmost icon(s) were simply
+   clipped off-screen and unreachable. First pass here only recovered
+   enough for 3 icons — a logged-in visitor's 4th (account avatar) was
+   still ~34px off-screen, so this also shrinks the icon buttons themselves
+   and their gaps, not just the nav links. ── */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .navbar-nav .nav-link {
+        padding: 6px 6px !important;
+        font-size: 0.85rem;
+    }
+    .nav-dropdown-toggle { gap: 3px; }
+    .nav-brand-text { font-size: 1.15rem; }
+    .nav-right-actions {
+        gap: 4px;
+        margin-left: 0;
+    }
+    .nav-search-btn,
+    .nav-account-toggle {
+        width: 34px;
+        height: 34px;
+    }
+}
+
+/* =========================================
    MOBILE — compact header (drawer handles nav)
 ========================================= */
 @media (max-width: 991px) {
     .navbar {
-        height: 60px !important;
+        height: calc(60px + env(safe-area-inset-top, 0px)) !important;
         padding: 0 !important;
+        padding-top: env(safe-area-inset-top, 0px) !important;
     }
 
     .navbar .container {
@@ -664,11 +801,24 @@
     color: #ff6a00;
 }
 
-/* Drawer footer — My Account */
+/* Drawer footer — My Account / theme toggle */
 .nav-drawer-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     padding: 12px;
+    /* Keeps My Account / theme toggle clear of the iPhone home-indicator gesture area — same
+       env(safe-area-inset-bottom) awareness as the mobile tab bar and floating buttons. */
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
     border-top: 1px solid rgba(15, 23, 42, 0.07);
     flex-shrink: 0;
+}
+
+.nav-drawer-theme-toggle {
+    width: 100%;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
 }
 
 .nav-drawer-account {

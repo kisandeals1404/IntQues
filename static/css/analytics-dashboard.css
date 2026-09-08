@@ -450,3 +450,33 @@
     .an-card { padding: 14px 16px; }
     .an-topic-label { flex-basis: 90px; }
 }
+
+/* ── Onboarding interest picker modal (home-individual.ftl) ────────────── */
+
+.onboarding-chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.onboarding-chip {
+    background: var(--surface-subtle);
+    border: 1.5px solid var(--border-color);
+    color: var(--text-body);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.onboarding-chip:hover {
+    border-color: var(--primary-orange);
+}
+
+.onboarding-chip--active {
+    background: var(--primary-orange);
+    border-color: var(--primary-orange);
+    color: #fff;
+}

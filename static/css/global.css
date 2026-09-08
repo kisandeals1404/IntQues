@@ -114,7 +114,15 @@ html {
     -webkit-text-size-adjust: 100%;
 }
 
-html, body {
+/* body deliberately does NOT get its own overflow-x:hidden here (html's is enough to stop
+   horizontal page scroll) — setting it on body too gives body a non-"visible" overflow-x, which
+   per the CSS overflow computed-value rule forces its overflow-y to "auto" as well, turning body
+   into a scrolling container. Since body also carries `padding-top` below (navbar clearance),
+   every `position:sticky` element site-wide with a `top` value keyed to that same navbar height
+   then got that offset applied TWICE — once from body's own padding, once from the sticky "top"
+   being measured against body's (now inset) padding edge instead of the viewport. Confirmed via
+   live computed-position inspection: .rb-header (top:68px) rendered at y=136 instead of y=68. */
+html {
     overflow-x: hidden;
 }
 
@@ -132,11 +140,21 @@ body {
 
 /* Fixed navbar offset */
 body {
-    padding-top: 68px;
+    padding-top: calc(68px + env(safe-area-inset-top, 0px));
+}
+
+/* Sitewide checkbox/radio theming — browsers paint native checkboxes/radios with a default
+   blue accent, clashing with the orange brand color everywhere one appears (question pickers,
+   student-group pickers, bulk-select tables, …). accent-color re-themes the native control
+   (check, focus ring, and radio dot) without needing to rebuild it as a custom element, and
+   this one rule covers every checkbox/radio in the app instead of the handful of pages that
+   previously set it locally (admin-courses.css, resume-builder.css). */
+input[type="checkbox"], input[type="radio"] {
+    accent-color: var(--primary-orange);
 }
 
 @media (max-width: 991px) {
-    body { padding-top: 60px; }
+    body { padding-top: calc(60px + env(safe-area-inset-top, 0px)); }
 }
 
 /* =========================================
@@ -546,17 +564,30 @@ section > .curr-container {
     align-items: center;
     margin-bottom: var(--space-5);
 }
+/* Flat pill search field with a plain (no button/box behind it) left-aligned icon, matching
+   the homepage/course-browse search bars' visual language instead of a plain bordered form
+   box — the icon is a CSS background-image so this drops onto a bare <input> with no markup
+   changes anywhere it's already used. */
 .admin-search-input {
     flex: 1 1 220px;
     min-width: 0;
-    padding: 9px 14px;
-    border: 1.5px solid var(--border-color);
-    border-radius: var(--radius-sm);
+    padding: 9px 14px 9px 38px;
+    border: 1.5px solid rgba(15,23,42,0.10);
+    border-radius: 999px;
     font-size: var(--text-sm);
     font-family: inherit;
+    color: var(--text-main);
     outline: none;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff6a00' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat 14px center;
+    background-size: 15px 15px;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
-.admin-search-input:focus { border-color: var(--primary-orange); }
+.admin-search-input::placeholder { color: #94a3b8; }
+.admin-search-input:focus {
+    border-color: rgba(255,106,0,0.45);
+    box-shadow: 0 0 0 3px rgba(255,106,0,0.09);
+}
 .admin-search-clear { background: var(--light-bg); color: var(--text-body); }
 
 .admin-pager {
@@ -583,4 +614,82 @@ section > .curr-container {
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
+}
+
+/* =========================================
+   DARK MODE
+   Two guards, matching: system preference (no explicit user choice) via the
+   media query, explicit override via [data-theme] on <html> — see
+   static/js/theme-toggle.js, which sets data-theme AND data-bs-theme
+   together as soon as the page starts loading (no flash of wrong theme).
+   Bootstrap's own components (cards, modals, dropdowns, forms, tables)
+   re-theme automatically via data-bs-theme — this block only redefines
+   this site's own custom tokens, not Bootstrap internals.
+========================================= */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --white: #1a2332;
+        --light-bg: #0f172a;
+        --surface-subtle: #16213a;
+        --site-gradient-start: #0f172a;
+        --site-gradient-end: #131c2e;
+        --text-main: #f1f5f9;
+        --text-body: #cbd5e1;
+        --text-muted: #94a3b8;
+        --text-subtle: #64748b;
+        --border-color: #2d3b52;
+        --border-subtle: rgba(255, 255, 255, 0.08);
+    }
+}
+
+:root[data-theme="dark"] {
+    --white: #1a2332;
+    --light-bg: #0f172a;
+    --surface-subtle: #16213a;
+    --site-gradient-start: #0f172a;
+    --site-gradient-end: #131c2e;
+    --text-main: #f1f5f9;
+    --text-body: #cbd5e1;
+    --text-muted: #94a3b8;
+    --text-subtle: #64748b;
+    --border-color: #2d3b52;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Connectivity banner (connectivity-banner.js) — site-wide, every page ── */
+.net-status-banner {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100%);
+    z-index: 10000;
+    margin-top: 10px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #ffffff;
+    box-shadow: var(--shadow-md, 0 8px 24px rgba(15, 23, 42, 0.09));
+    opacity: 0;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: calc(100vw - 32px);
+    text-align: center;
+}
+.net-status-banner--visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+.net-status-banner--offline {
+    background: #dc2626;
+    animation: net-status-pulse 1.6s ease-in-out infinite;
+}
+.net-status-banner--online { background: #16a34a; }
+
+@keyframes net-status-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.45), var(--shadow-md, 0 8px 24px rgba(15, 23, 42, 0.09)); }
+    50%      { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0), var(--shadow-md, 0 8px 24px rgba(15, 23, 42, 0.09)); }
 }

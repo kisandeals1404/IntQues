@@ -8,7 +8,44 @@
 .cert-title { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; color: var(--text-main); margin: 0 0 28px; display: flex; align-items: center; gap: 12px; }
 .cert-title i { color: var(--primary-orange); }
 
-.cert-empty { color: var(--text-muted); text-align: center; padding: 60px 0; }
+/* .cert-page's own min-height:80vh left this centered one-liner stranded near the top with a
+   large dead void below it (same issue as .asn-empty on the business assignments page) —
+   center it in the remaining space instead so the page reads as an intentional empty state. */
+.cert-empty {
+    color: var(--text-muted);
+    text-align: center;
+    padding: 48px 24px;
+    /* Was min-height:58vh of bare page background around one line of plain text — on a typical
+       viewport that's 400px+ of empty space, reading as broken rather than "you have none yet".
+       A modest, content-driven height with an icon and a dashed "empty slot" card reads as a
+       deliberately designed empty state instead (matches assignments.css's identical fix). */
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #fafafa;
+    border: 1.5px dashed rgba(15, 23, 42, 0.12);
+    border-radius: 16px;
+}
+.cert-empty > i {
+    width: 76px;
+    height: 76px;
+    margin-bottom: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.9rem;
+    background: linear-gradient(135deg, rgba(255,106,0,0.12), rgba(255,140,58,0.06));
+    color: var(--primary-orange);
+}
+.cert-empty p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    max-width: 320px;
+    margin: 0 auto;
+}
 
 .cert-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
 

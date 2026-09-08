@@ -495,7 +495,7 @@
 .ac-hub-icon.red    { background: rgba(220,38,38,0.08);  color: #dc2626; }
 .ac-hub-icon.slate  { background: rgba(100,116,139,0.10); color: #475569; }
 
-.ac-hub-body { flex: 1; }
+.ac-hub-body { flex: 1; min-width: 0; }
 
 .ac-hub-title {
     font-size: 0.97rem;

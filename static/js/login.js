@@ -243,7 +243,12 @@
     function handleLoginSuccess() {
         toast('Login successful. Redirecting…', 'success');
         var next = new URLSearchParams(window.location.search).get('next') || '';
-        window.location.href = (next && next.charAt(0) === '/') ? next : '/';
+        // Must be a same-site relative path — "/" alone doesn't rule out "//evil.com" or
+        // "/\evil.com", both of which browsers resolve as a scheme-relative absolute URL
+        // (an open-redirect an attacker could use to send a victim off-site right after a
+        // real, trust-building login on this domain).
+        var isSafeRelative = next.charAt(0) === '/' && next.charAt(1) !== '/' && next.charAt(1) !== '\\';
+        window.location.href = isSafeRelative ? next : '/';
     }
 
     // ── Step 1: Continue ───────────────────────────────────────

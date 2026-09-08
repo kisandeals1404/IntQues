@@ -97,6 +97,7 @@
     transition: border-color 200ms ease, box-shadow 200ms ease, transform 180ms ease;
     background: #fff;
     user-select: none;
+    min-width: 0;
 }
 
 .qsub-plan:hover {
@@ -261,6 +262,66 @@
     justify-content: center;
     gap: 5px;
 }
+
+/* ── Coupon code ── */
+.qsub-coupon-wrap {
+    max-width: 360px;
+    margin: 0 auto 20px;
+}
+
+.qsub-coupon-row {
+    display: flex;
+    gap: 8px;
+}
+
+.qsub-coupon-input {
+    flex: 1;
+    min-width: 0;
+    padding: 11px 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-family: inherit;
+    text-transform: uppercase;
+    outline: none;
+}
+
+.qsub-coupon-input:focus {
+    border-color: #ff6a00;
+}
+
+.qsub-coupon-btn {
+    padding: 11px 18px;
+    border-radius: 10px;
+    border: 1.5px solid #ff6a00;
+    background: #fff;
+    color: #ff6a00;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 160ms ease, color 160ms ease;
+}
+
+.qsub-coupon-btn:hover:not(:disabled) {
+    background: #ff6a00;
+    color: #fff;
+}
+
+.qsub-coupon-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.qsub-coupon-msg {
+    margin-top: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.qsub-coupon-msg.is-success { color: #16a34a; }
+.qsub-coupon-msg.is-error { color: #dc2626; }
 
 /* ── Active subscription banner ── */
 .qsub-active-banner {

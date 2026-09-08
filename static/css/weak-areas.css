@@ -14,6 +14,11 @@
     margin: 0 auto 32px;
 }
 
+/* See the identical fix in flashcards-showcase.css / quiz-experience.css — the heat map's fixed
+   3-column grid (see .wka-heatmap below) is exactly the kind of content that can otherwise force
+   this column, and the single stacked column on mobile, wider than the viewport. */
+.wka-bars-col, .wka-side-col { min-width: 0; }
+
 .wka-col-title {
     display: block;
     font-size: 11.5px;

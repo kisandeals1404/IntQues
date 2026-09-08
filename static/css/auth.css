@@ -26,7 +26,7 @@
 /* ── Toast notification ─────────────────── */
 .auth-message {
     position: fixed;
-    top: 82px;
+    top: calc(82px + env(safe-area-inset-top, 0px));
     right: 20px;
     z-index: 1200;
     min-width: min(360px, calc(100vw - 32px));
@@ -128,7 +128,11 @@
 }
 
 .auth-brand-panel h2 {
+    /* Global `h1,h2,...{color:var(--dark-900)}` (global.css) targets h2 directly, so it beats
+       the inherited white from .auth-brand-panel regardless of specificity — same bug as
+       .game-title (game.css). Heading was nearly invisible against the dark panel. */
     position: relative;
+    color: #fff;
     font-size: 1.6rem;
     font-weight: 900;
     letter-spacing: -0.03em;

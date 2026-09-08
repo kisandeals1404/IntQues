@@ -59,6 +59,9 @@
     color: var(--white);
 }
 .game-title {
+    /* Global `h1 { color: var(--dark-900) }` (global.css) otherwise wins over this dark hero
+       band's inherited white text — the heading was nearly invisible against the dark background. */
+    color: var(--white);
     font-size: clamp(1.6rem, 3vw, 2.2rem);
     font-weight: 800;
     margin: 0 0 8px;
@@ -103,6 +106,24 @@
 
 .game-field { margin-bottom: 16px; }
 .game-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Below ~400px this row's right column (the "Time per question" select, e.g. "20 seconds")
+   lands directly under the fixed WhatsApp button (footer.css .whatsapp-float, ~74px reserved
+   at the viewport's right edge) at the scroll position most phones load this page at — the
+   button visually covers the select's text even though the select itself has room to spare.
+   Narrowing the row by the button's width, with the columns rebalanced (the left "Number of
+   questions" values are all 1-2 digits and don't need equal width), keeps both fields clear of
+   it regardless of scroll position instead of just at one viewport height. */
+@media (max-width: 400px) {
+    .game-field-row {
+        /* "Number of questions" values are all 1-2 digits (5/10/15/20) and need far less room
+           than "Time per question"'s longest option text ("45 seconds") — a fixed narrow first
+           column leaves the second one nearly its original ~125px even after the padding-right
+           reserved for the button, instead of an even split shrinking both. */
+        grid-template-columns: 70px 1fr;
+        padding-right: 32px;
+    }
+}
 .game-field-label { display: block; font-size: var(--text-sm); font-weight: 600; color: var(--text-body); margin-bottom: 6px; }
 
 .game-select, .game-code-input {
@@ -390,7 +411,7 @@
 .gresult-board-row--me { background: rgba(255,106,0,0.08); }
 .gresult-board-rank { width: 32px; font-weight: 700; color: var(--text-subtle); text-align: center; }
 .gresult-board-rank--top { font-size: var(--text-lg); }
-.gresult-board-name { flex: 1; font-weight: 600; color: var(--text-body); }
+.gresult-board-name { flex: 1; min-width: 0; font-weight: 600; color: var(--text-body); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .gresult-board-stats { color: var(--text-subtle); font-size: var(--text-xs); white-space: nowrap; }
 .gresult-board-score { font-weight: 800; color: var(--primary-orange); min-width: 46px; text-align: right; }
 

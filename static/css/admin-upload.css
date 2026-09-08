@@ -110,3 +110,51 @@
         text-align: center;
     }
 }
+
+/* ── Flashcard topic reorder (admin-flashcards.ftl) ─────────────────────── */
+
+.afc-topic-block[draggable="true"] {
+    cursor: grab;
+}
+
+.afc-topic-block.afc-dragging {
+    opacity: 0.4;
+}
+
+.afc-drag-handle {
+    color: var(--text-muted);
+    cursor: grab;
+    padding: 2px 2px;
+    flex-shrink: 0;
+}
+
+.afc-order-arrows {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.afc-order-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1.1;
+    font-size: 0.7rem;
+}
+
+.afc-order-btn:hover:not(:disabled) {
+    color: #ff6a00;
+}
+
+.afc-order-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+.afc-reorder-actions {
+    display: flex;
+    gap: 10px;
+    padding-top: 12px;
+}

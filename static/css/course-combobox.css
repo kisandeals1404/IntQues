@@ -1,0 +1,90 @@
+/* ── Course/topic search combobox (course-combobox.js) ── */
+
+.course-combobox {
+    position: relative;
+}
+
+/* The actual text input a combobox is attached to — same flat pill + plain left icon look as
+   .admin-search-input/.asn-library-search (search bars elsewhere in the app), replacing what
+   was previously a bare <input> inheriting a plain bordered form-field box.
+   !important throughout: a doubled-class selector here still loses on specificity to rules
+   like .asn-field input[type="text"] (class+attribute+element beats two classes — the element
+   selector is what tips it), and file load order isn't reliable enough to lean on for a tie
+   either. This input's whole look must come from this one component style regardless of
+   whatever generic field/select styling the page it's embedded in already applies. */
+.course-combobox-input {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 10px 14px 10px 38px !important;
+    border: 1.5px solid rgba(15,23,42,0.10) !important;
+    border-radius: 999px !important;
+    font-size: 0.9rem !important;
+    font-family: inherit;
+    color: var(--text-main, #0f172a);
+    outline: none;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff6a00' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat 14px center !important;
+    background-size: 15px 15px !important;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04) !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.course-combobox-input::placeholder { color: #94a3b8; }
+.course-combobox-input:focus {
+    border-color: rgba(255,106,0,0.45) !important;
+    box-shadow: 0 0 0 3px rgba(255,106,0,0.09) !important;
+}
+
+.course-combobox-list {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    /* Above the site-wide mobile tab bar (z-index 1500, see ux-overrides.css) so an open dropdown
+       for a combobox positioned low on the page isn't rendered underneath it; below the nav
+       drawer (1600) so opening the drawer still wins over a stray open combobox. */
+    z-index: 1550;
+    max-height: 280px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+    padding: 6px;
+}
+
+.course-combobox-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    color: #0f172a;
+}
+
+.course-combobox-option:hover,
+.course-combobox-option.is-active {
+    background: #fff2e8;
+}
+
+.course-combobox-name {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.course-combobox-meta {
+    flex-shrink: 0;
+    font-size: 0.76rem;
+    color: #64748b;
+    white-space: nowrap;
+}
+
+.course-combobox-empty {
+    padding: 12px;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    text-align: center;
+}

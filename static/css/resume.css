@@ -10,8 +10,13 @@
     border-bottom: 1.5px solid #f1f5f9;
     padding: 14px 0;
     position: sticky;
-    top: 0;
+    /* Docks below the site's fixed navbar instead of top:0 — see the identical fix/comment on
+       .rb-header in resume-builder.css for why top:0 alone hides this behind the navbar. */
+    top: calc(68px + env(safe-area-inset-top, 0px));
     z-index: 100;
+}
+@media (max-width: 991px) {
+    .rv-toolbar { top: calc(60px + env(safe-area-inset-top, 0px)); }
 }
 .rv-toolbar-inner {
     display: flex; align-items: center; justify-content: space-between;
@@ -425,6 +430,7 @@
 /* ── Right main column ── */
 .rv-main-col {
     flex: 1;
+    min-width: 0;
     padding: 18px 22px 24px;
     background: #fff;
 }
@@ -674,7 +680,11 @@
     margin-right: auto;
 }
 .rv-paywall-strip-left {
-    display: flex; align-items: center; gap: 10px; flex: 1;
+    /* flex-basis 0 (the old bare `flex:1`) let this shrink to near nothing once the
+       download button's own min-content width ate most of a narrow row, squeezing the
+       title/sub text into a one-word-per-line column instead of wrapping the button
+       below it. A real basis + min-width makes the whole row wrap onto two lines first. */
+    display: flex; align-items: center; gap: 10px; flex: 1 1 200px; min-width: 200px;
 }
 .rv-paywall-check {
     font-size: 1.1rem; color: #16a34a; flex-shrink: 0;
@@ -1123,7 +1133,12 @@
 /* ── Toolbar ── */
 .rg-toolbar {
     background: #fff; border-bottom: 1.5px solid #f1f5f9;
-    padding: 14px 0; position: sticky; top: 0; z-index: 100;
+    padding: 14px 0; position: sticky;
+    /* See .rv-toolbar above / .rb-header in resume-builder.css — docks below the fixed navbar. */
+    top: calc(68px + env(safe-area-inset-top, 0px)); z-index: 100;
+}
+@media (max-width: 991px) {
+    .rg-toolbar { top: calc(60px + env(safe-area-inset-top, 0px)); }
 }
 .rg-toolbar-inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .rg-breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: #64748b; }
@@ -1287,7 +1302,15 @@
     .rv-style-picker,
     .whatsapp-float,
     nav, footer,
-    .mobile-bottom-cta,
+    .mobile-tab-bar,
+    /* The mobile nav drawer sits off-canvas at left:-280px, invisibly clipped by
+       overflow-x:hidden on screen — but print rendering doesn't respect that clip the same
+       way, so this fixed, off-screen element was still contributing to the print layout's
+       bounding box. That inflated the whole printable canvas well past A4 width, leaving the
+       (correctly A4-sized) resume paper centered off to one side and cut off in the actual
+       PDF/print output instead of filling the page edge-to-edge. */
+    .nav-drawer,
+    .nav-drawer-overlay,
     .rv-print-hidden { display: none !important; }
 
     .rv-page-main { background: #fff; }
@@ -1310,10 +1333,18 @@
     }
     .rv-paper--locked::before {
         content: "PREVIEW ONLY — intques.com/resume/builder        PREVIEW ONLY — intques.com/resume/builder        PREVIEW ONLY — intques.com/resume/builder";
-        position: fixed;
+        /* Was position:fixed + width:250vw — "vw" resolves against the browser's layout
+           viewport (the on-screen window size), not the physical A4 page, and Chromium's print
+           pipeline apparently sizes its printable canvas to fit every fixed-position element's
+           full extent. At a typical desktop viewport that inflated the canvas to ~2280px wide
+           (measured), leaving the correctly-A4-sized resume paper centered off to one side and
+           cut off in the actual PDF/print output. position:absolute + a %-based width scopes
+           the watermark to .rv-paper--locked's own box (already position:relative above)
+           instead of the viewport, so it scales with the page it's meant to cover. */
+        position: absolute;
         top: 50%;
         left: 50%;
-        width: 250vw;
+        width: 250%;
         transform: translate(-50%, -50%) rotate(-32deg);
         transform-origin: center;
         font-size: 26pt;

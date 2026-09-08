@@ -109,7 +109,31 @@
     -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
 }
 
-.hero-v3 .container {
+/* Full-width search row — its own block above the two-column intro grid, not squeezed into
+   the copy column (see hero.ftl). Shares .container's max-width so it lines up with the grid
+   below it, but isn't itself a grid — .hero-v3 .container would otherwise also match this
+   element and force it into the 2-column layout below.
+   z-index must beat .hero-v3-intro's (below): both are position:relative siblings with their
+   own stacking context, so the autosuggest dropdown's own z-index (see .hero-v3-search-suggest)
+   only wins locally — against the later .hero-v3-intro sibling it still lost and rendered the
+   dropdown behind the headline/showcase instead of over them.
+   The compound selector below (not plain .hero-v3-search-row) is deliberate: global.css has
+   `section > .container { position:relative; z-index:1 }` at specificity (0,1,1), which beats a
+   plain single-class selector (0,1,0) regardless of file/cascade order and was silently forcing
+   this element's z-index back down to 1 — tying it with .hero-v3-intro and letting DOM order
+   (intro comes later) paint the headline over the dropdown. .container.hero-v3-search-row is
+   (0,2,0), which reliably outranks it. Confirmed via live computed-style inspection, not just
+   source reading — a prior fix using the plain class here looked correct on paper but measured
+   z-index:1 in the browser. */
+.container.hero-v3-search-row {
+    position: relative;
+    isolation: isolate;
+    z-index: 50;
+    max-width: 1200px;
+    margin: 0 auto 32px;
+}
+
+.container.hero-v3-intro {
     position: relative;
     z-index: 1;
     display: grid;
@@ -122,19 +146,29 @@
 
 .hero-v3-content {
     /* Staggered per-child entrance — each element cascades in */
+    /* Grid items default to min-width:auto (their content's min-content size), which can force
+       this whole 2-column grid — and everything stacked in its single column on mobile — wider
+       than the viewport if either column's content doesn't want to shrink. .hero-v3 clips that
+       overflow with overflow:hidden rather than reflowing it, which is what caused text/buttons
+       to render past the right edge instead of wrapping. min-width:0 lets this column shrink to
+       the actual available space like a normal block. */
+    min-width: 0;
 }
 
 .hero-v3-content > * {
     animation: fadeUp 620ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
 }
 
-/* Child 1: badge  2: h1  3: desc  4: stats  5: actions  6: pills */
-.hero-v3-content > *:nth-child(1) { animation-delay: 180ms; }
-.hero-v3-content > *:nth-child(2) { animation-delay: 290ms; }
-.hero-v3-content > *:nth-child(3) { animation-delay: 400ms; }
-.hero-v3-content > *:nth-child(4) { animation-delay: 500ms; }
-.hero-v3-content > *:nth-child(5) { animation-delay: 590ms; }
-.hero-v3-content > *:nth-child(6) { animation-delay: 670ms; }
+/* Child 1: badge  2: h1  3: desc  4: pills — the search row lives outside .hero-v3-content now
+   (its own full-width row above the intro grid), with its own entrance animation below. */
+.hero-v3-content > *:nth-child(1) { animation-delay: 220ms; }
+.hero-v3-content > *:nth-child(2) { animation-delay: 330ms; }
+.hero-v3-content > *:nth-child(3) { animation-delay: 440ms; }
+.hero-v3-content > *:nth-child(4) { animation-delay: 550ms; }
+
+.hero-v3-search-row {
+    animation: fadeUp 560ms cubic-bezier(0.2, 0.9, 0.2, 1) 100ms both;
+}
 
 /* Rotating word — inline style transitions set by JS */
 .h1-rotate {
@@ -221,123 +255,97 @@
     max-width: 500px;
 }
 
-/* ── Stats strip ────────────────────────────── */
-.hero-stats-row {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    margin-bottom: 36px;
-    background: #ffffff;
-    border: 1px solid rgba(15,23,42,0.08);
-    border-radius: 16px;
-    padding: 16px 0;
-    box-shadow: 0 2px 12px rgba(15,23,42,0.05);
-    max-width: 480px;
-}
-
-.hero-stat-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-}
-
-.hero-stat-num {
-    font-size: 1.45rem;
-    font-weight: 900;
-    color: #0f172a;
-    letter-spacing: -0.03em;
-    line-height: 1;
-}
-
-.hero-stat-lbl {
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: #94a3b8;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-}
-
-.hero-stat-sep {
-    width: 1px;
-    height: 36px;
-    background: rgba(15,23,42,0.08);
-    flex-shrink: 0;
-}
-
-/* ── CTA buttons ─────────────────────────────── */
-.hero-v3-actions {
-    display: flex;
-    gap: 14px;
-    align-items: center;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-}
-
-.hero-v3-btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    padding: 15px 28px;
-    background: linear-gradient(135deg, #ff6a00, #ff7a1a);
-    color: #ffffff;
-    border-radius: var(--radius-card);
-    text-decoration: none;
-    font-weight: 800;
-    font-size: 0.97rem;
-    letter-spacing: 0.01em;
-    box-shadow: 0 8px 24px rgba(255,106,0,0.28), 0 2px 6px rgba(255,106,0,0.16);
-    transition: transform 220ms ease, box-shadow 220ms ease;
+/* ── Search bar — the primary entry point, full-width row of its own ── */
+.hero-v3-search {
     position: relative;
-    overflow: hidden;
-}
-
-.hero-v3-btn-primary::after {
-    content: '';
-    position: absolute;
-    left: -40%;
-    top: 0;
-    width: 35%;
-    height: 100%;
-    background: linear-gradient(120deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.20) 50%, rgba(255,255,255,0) 100%);
-    transform: skewX(-20deg) translateX(-100%);
-    transition: transform 0.9s ease;
-}
-
-.hero-v3-btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 16px 40px rgba(255,106,0,0.34), 0 4px 10px rgba(255,106,0,0.18);
-    color: #ffffff;
-}
-
-.hero-v3-btn-primary:hover::after {
-    transform: skewX(-20deg) translateX(500%);
-}
-
-.hero-v3-btn-outline {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 9px;
-    padding: 14px 24px;
-    background: rgba(255,255,255,0.85);
-    backdrop-filter: blur(8px);
-    color: #0f172a;
-    border: 1.5px solid rgba(15,23,42,0.14);
-    border-radius: var(--radius-card);
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 0.97rem;
-    transition: border-color 200ms ease, background 200ms ease, transform 200ms ease, box-shadow 200ms ease;
-    box-shadow: 0 2px 8px rgba(15,23,42,0.06);
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 0;
+    background: #ffffff;
+    border: 1.5px solid rgba(15,23,42,0.10);
+    border-radius: 999px;
+    padding: 14px 20px;
+    box-shadow: 0 2px 12px rgba(15,23,42,0.05), 0 8px 28px rgba(15,23,42,0.04);
+    transition: border-color 200ms ease, box-shadow 200ms ease;
 }
-
-.hero-v3-btn-outline:hover {
-    border-color: rgba(255,106,0,0.35);
-    background: #fffcf8;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(15,23,42,0.09);
+.hero-v3-search:focus-within {
+    border-color: rgba(255,106,0,0.45);
+    box-shadow: 0 0 0 4px rgba(255,106,0,0.09), 0 8px 28px rgba(15,23,42,0.06);
+}
+/* Plain icon — no background/border box behind it, just the glyph. */
+.hero-v3-search-icon {
+    flex-shrink: 0;
+    color: #ff6a00;
+    font-size: 0.95rem;
+}
+.hero-v3-search-input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 0.95rem;
+    font-weight: 500;
     color: #0f172a;
+    font-family: inherit;
+    padding: 0;
+}
+.hero-v3-search-input::placeholder { color: #94a3b8; font-weight: 400; }
+.hero-v3-search-input::-webkit-search-cancel-button { display: none; }
+
+.hero-v3-search-suggest {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    z-index: 20;
+    max-height: 320px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1.5px solid rgba(15,23,42,0.09);
+    border-radius: 16px;
+    box-shadow: 0 16px 40px rgba(15,23,42,0.14);
+    padding: 8px;
+    text-align: left;
+}
+.hero-v3-search-suggest[hidden] { display: none; }
+.hvss-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+.hvss-item:hover, .hvss-item.is-active { background: rgba(255,106,0,0.06); }
+.hvss-item-icon {
+    flex-shrink: 0;
+    width: 32px; height: 32px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,106,0,0.10);
+    color: #ea580c;
+    font-size: 0.85rem;
+}
+.hvss-item-text { flex: 1; min-width: 0; }
+.hvss-item-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.hvss-item-meta { font-size: 0.76rem; color: #94a3b8; font-weight: 500; }
+.hvss-empty {
+    padding: 14px 12px;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    text-align: center;
 }
 
 /* ── Trust pills ─────────────────────────────── */
@@ -372,222 +380,12 @@
     opacity: 0.80;
 }
 
-/* ── Search bar ──────────────────────────────── */
-
-/* Full-width wrapper that sits between decorations and the two-column grid */
-.hero-search-outer {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    justify-content: center;
-    padding: 0 20px;
-    margin-bottom: 48px;
-    /* No animation — search bar must always be visible regardless of CSS/animation state */
-}
-
-.hero-search {
-    width: 100%;
-    max-width: 600px;
-}
-
-/* Main pill form */
-.hero-search-form {
-    display: flex;
-    align-items: center;
-    background: #ffffff;
-    border: 2px solid rgba(15,23,42,0.10);
-    border-radius: 18px;
-    box-shadow:
-        0 2px 8px rgba(15,23,42,0.06),
-        0 8px 32px rgba(15,23,42,0.08);
-    overflow: hidden;
-    transition: border-color 200ms ease, box-shadow 250ms ease;
-    position: relative;
-}
-
-.hero-search-form:focus-within {
-    box-shadow:
-        0 2px 8px rgba(15,23,42,0.06),
-        0 8px 32px rgba(15,23,42,0.10);
-}
-
-/* Suppress all browser focus rings inside the form */
-.hero-search-form *:focus {
-    outline: none;
-}
-
-/* Search icon */
-.hero-search-icon {
-    flex-shrink: 0;
-    color: #ff6a00;
-    font-size: 15px;
-    margin-left: 18px;
-    pointer-events: none;
-}
-
-/* Text input */
-.hero-search-input {
-    flex: 1;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: #0f172a;
-    font-family: inherit;
-    padding: 18px 14px;
-    min-width: 0;
-}
-
-.hero-search-input::placeholder {
-    color: #94a3b8;
-    font-weight: 400;
-}
-
-.hero-search-input::-webkit-search-cancel-button { display: none; }
-
-/* Submit button */
-.hero-search-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 20px;
-    margin: 5px;
-    outline: none;
-    background: linear-gradient(135deg, #ff6a00 0%, #ff8c3a 100%);
-    color: #ffffff;
-    border: none;
-    border-radius: var(--radius-card);
-    font-weight: 800;
-    font-size: 0.875rem;
-    font-family: inherit;
-    cursor: pointer;
-    white-space: nowrap;
-    flex-shrink: 0;
-    box-shadow: none;
-    transition: transform 200ms ease, box-shadow 200ms ease, background 180ms ease;
-    letter-spacing: 0.01em;
-}
-
-.hero-search-btn:hover {
-    background: linear-gradient(135deg, #e05500 0%, #ff7a1a 100%);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 22px rgba(255,106,0,0.38);
-}
-
-.hero-search-btn:active { transform: translateY(0); }
-
-.hero-search-btn i {
-    font-size: 11px;
-    transition: transform 250ms cubic-bezier(0.34,1.56,0.64,1);
-}
-
-.hero-search-btn:hover i { transform: translateX(4px); }
-
-/* Quick-tag pills row */
-.hero-search-tags {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 13px;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    -webkit-overflow-scrolling: touch;
-}
-
-.hero-search-tags::-webkit-scrollbar { display: none; }
-
-.hero-search-tag-label {
-    font-size: 0.74rem;
-    color: #94a3b8;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    flex-shrink: 0;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-.hero-search-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 5px 13px;
-    flex-shrink: 0;
-    white-space: nowrap;
-    background: #ffffff;
-    border: 1.5px solid rgba(15,23,42,0.10);
-    border-radius: 999px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: #334155;
-    cursor: pointer;
-    font-family: inherit;
-    box-shadow: 0 1px 4px rgba(15,23,42,0.05);
-    transition: background 150ms ease, border-color 150ms ease,
-                color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
-}
-
-.hero-search-tag i {
-    font-size: 10px;
-    color: #ff6a00;
-    flex-shrink: 0;
-}
-
-.hero-search-tag:hover {
-    background: rgba(255,106,0,0.06);
-    border-color: rgba(255,106,0,0.30);
-    color: #ff6a00;
-    transform: translateY(-1px);
-    box-shadow: 0 3px 10px rgba(255,106,0,0.12);
-}
-
-/* ── Social proof ────────────────────────────── */
-.hero-v3-social-proof {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-}
-
-.hero-v3-avatars { display: flex; }
-
-.hero-v3-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 2.5px solid #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: 900;
-    color: #0f172a;
-    margin-right: -9px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.10);
-}
-
-.hero-v3-avatar:nth-child(1) { background: #fee2e2; }
-.hero-v3-avatar:nth-child(2) { background: #dcfce7; }
-.hero-v3-avatar:nth-child(3) { background: #dbeafe; }
-.hero-v3-avatar:nth-child(4) { background: #fef3c7; }
-
-.hero-v3-proof-text {
-    padding-left: 16px;
-    font-size: 0.83rem;
-    color: #64748b;
-    font-weight: 600;
-    line-height: 1.5;
-}
-
-.hero-v3-proof-text strong { color: #0f172a; }
-
 /* ── Visual side — hosts the animated .hero-showcase component
       (static/css/hero-showcase.css); this just centers/animates it in */
 .hero-v3-visual {
     animation: fadeUp 560ms cubic-bezier(0.2,0.9,0.2,1) 140ms both;
     position: relative;
+    min-width: 0;
 }
 
 /* =========================================
@@ -1071,20 +869,22 @@
 }
 
 @media (max-width: 991px) {
-    .hero-v3 .container {
+    /* Compound selectors here (not plain .hero-v3-intro/.hero-v3-search-row) — the base rules
+       above are now .container.hero-v3-intro / .container.hero-v3-search-row at specificity
+       (0,2,0) to outrank global.css's `section > .container` (0,1,1); a plain single-class
+       override here would lose to that higher-specificity base rule and never apply. */
+    .container.hero-v3-intro {
         grid-template-columns: 1fr;
         gap: 44px;
         text-align: center;
     }
+    .container.hero-v3-search-row { margin-bottom: 24px; }
     .hero-v3-desc {
         max-width: 560px;
         margin-left: auto;
         margin-right: auto;
     }
-    .hero-stats-row { max-width: 100%; }
     .hero-v3-pills { justify-content: center; }
-    .hero-v3-actions { justify-content: center; }
-    .hero-v3-social-proof { justify-content: center; }
     .hero-v3-visual {
         max-width: 480px;
         margin: 0 auto;
@@ -1102,23 +902,11 @@
 }
 
 @media (max-width: 600px) {
-    .hero-search-outer { margin-bottom: 32px; padding: 0 16px; }
-    .hero-search-btn-text { display: none; }
-    .hero-search-btn { padding: 12px 16px; }
     .hero-v3 { padding: 48px 0 36px; }
     .hero-v3-content h1 { font-size: clamp(2rem, 8vw, 2.8rem); }
-    .hero-stats-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 14px 0;
-        padding: 16px 8px;
-    }
-    .hero-stat-item { padding: 4px 0; }
-    .hero-stat-sep { display: none; } /* separators don't fit a 2x2 grid on mobile */
-    .hero-stat-item:nth-child(5), .hero-stat-item:nth-child(7) { border-top: 1px solid rgba(15,23,42,0.08); padding-top: 14px; }
-    .hero-v3-btn-primary,
-    .hero-v3-btn-outline { width: 100%; justify-content: center; font-size: 1rem; padding: 15px 20px; }
-    .hero-v3-actions { flex-direction: column; gap: 10px; width: 100%; }
+    .hero-v3-search { padding: 12px 16px; }
+    .hero-v3-search-input { font-size: 0.9rem; }
+    .container.hero-v3-search-row { margin-bottom: 20px; }
 }
 
 @media (max-width: 480px) {

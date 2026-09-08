@@ -411,6 +411,7 @@
         text-align: left;
         padding: 0 0 32px;
     }
+    .about-step:last-child { padding-bottom: 0; }
 
     .about-step-num {
         width: 44px;
@@ -419,7 +420,23 @@
         margin-bottom: 0;
         margin-right: 18px;
         flex-shrink: 0;
+        position: relative;
     }
+
+    /* Replaces the horizontal .about-step-divider (hidden below) with a vertical line running
+       through each number circle's center, connecting it to the next step — the same "connected
+       timeline" fix applied to the home page's How It Works section. */
+    .about-step-num::after {
+        content: '';
+        position: absolute;
+        top: 44px;
+        bottom: -32px;
+        left: 50%;
+        width: 2px;
+        transform: translateX(-50%);
+        background: linear-gradient(180deg, rgba(255,106,0,0.35), rgba(255,106,0,0.12));
+    }
+    .about-step:last-child .about-step-num::after { display: none; }
 
     .about-step-divider {
         display: none;

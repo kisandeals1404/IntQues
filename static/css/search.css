@@ -1,0 +1,153 @@
+/* ── Global search page (search.ftl) ────────────────────────────────────── */
+
+.search-page {
+    min-height: calc(100vh - 70px);
+    background: var(--surface-subtle);
+    padding: 40px 0 80px;
+}
+
+.search-container {
+    max-width: 680px;
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    border: 1.5px solid var(--border-color);
+    border-radius: 999px;
+    padding: 6px 8px 6px 20px;
+    margin-bottom: 32px;
+}
+
+.search-form-icon {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.search-form-input {
+    flex: 1;
+    /* min-width: 0 lets this actually shrink below its placeholder's intrinsic width inside the
+       flex row (the default `auto` floor was fighting text-overflow below); without it, a long
+       placeholder on a narrow phone just got hard-clipped mid-word instead of ellipsized. */
+    min-width: 0;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    color: var(--text-main);
+    background: transparent;
+    padding: 10px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.search-form-btn {
+    background: var(--primary-orange);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 22px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.search-form-btn:hover {
+    background: var(--primary-orange-dark);
+}
+
+/* Was min-height:58vh centered on the bare page background — on a typical viewport that's
+   400px+ of empty space around one icon and one line of text, reading as broken rather than
+   as an intentional "nothing to show yet" state. A modest, content-driven height with a dashed
+   "empty slot" card reads as deliberate instead (same fix as assignments/certificates.css). */
+.search-empty {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-muted);
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #fafafa;
+    border: 1.5px dashed rgba(15, 23, 42, 0.12);
+    border-radius: 16px;
+}
+
+.search-empty-icon {
+    font-size: 2.2rem;
+    opacity: 0.35;
+    margin-bottom: 14px;
+    display: block;
+}
+
+.search-section {
+    margin-bottom: 28px;
+}
+
+.search-section-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-section-title i {
+    color: var(--primary-orange);
+}
+
+.search-results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #fff;
+    border: 1.5px solid var(--border-color);
+    border-radius: 14px;
+    padding: 16px 18px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.12s;
+}
+
+.search-result-item:hover {
+    border-color: var(--primary-orange);
+    box-shadow: 0 4px 16px rgba(255, 106, 0, 0.1);
+    transform: translateY(-1px);
+    color: inherit;
+    text-decoration: none;
+}
+
+.search-result-name {
+    flex: 1;
+    min-width: 0;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.search-result-meta {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.search-result-arrow {
+    color: var(--primary-orange);
+    flex-shrink: 0;
+}
+
+@media (max-width: 576px) {
+    .search-result-item { flex-wrap: wrap; }
+    .search-result-meta { width: 100%; order: 3; }
+}

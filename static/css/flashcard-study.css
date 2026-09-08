@@ -686,6 +686,12 @@
         border-radius: 0;
     }
 
+    /* Fixed nav-row above occupies ~74px + safe-area at the bottom edge —
+       lift the toast clear of it instead of overlapping the buttons. */
+    .fc-chapter-toast {
+        bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+    }
+
     .fc-nav-prev {
         height: 50px;
         padding: 0 22px;
@@ -698,9 +704,141 @@
         height: 50px;
     }
 
-    /* Lift WhatsApp float above the sticky nav bar; hide redundant BTT */
+    /* Lift WhatsApp float above the sticky nav bar; hide redundant BTT and the site-wide mobile
+       tab bar (this screen's own .fc-nav-row is the bottom bar during an active study session —
+       stacking both would double up on screen real estate mid-swipe). */
     body.fc-study-active .whatsapp-float {
         bottom: calc(80px + env(safe-area-inset-bottom, 0px));
     }
     body.fc-study-active .btt-btn { display: none !important; }
+    body.fc-study-active .mobile-tab-bar { display: none !important; }
+    body.fc-study-active { padding-bottom: 0 !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SMART REVIEW (flashcard-review.ftl) — deliberately its own card style,
+   not reused from .fc-card: the swipe-mode card shows question+answer
+   stacked and always visible, but review needs the answer hidden until
+   the learner deliberately reveals it (that's the whole point of
+   spaced-repetition self-testing).
+═══════════════════════════════════════════════════════════════════════ */
+
+.fcr-panel {
+    width: 100%;
+    max-width: 560px;
+    margin: 32px auto;
+}
+
+.fcr-card {
+    background: #fff;
+    border: 1.5px solid #f0e8e0;
+    border-radius: 20px;
+    padding: 32px 28px;
+    min-height: 220px;
+    cursor: pointer;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+}
+
+.fcr-topic-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #ff6a00;
+    background: rgba(255,106,0,0.08);
+    border-radius: 999px;
+    padding: 3px 12px;
+    margin-bottom: 14px;
+}
+
+.fcr-q-label, .fcr-a-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #a8988a;
+    margin-bottom: 8px;
+}
+
+.fcr-q-text {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1c1917;
+    line-height: 1.5;
+}
+
+.fcr-divider {
+    height: 1px;
+    background: #f0e8e0;
+    margin: 20px 0;
+}
+
+.fcr-a-text {
+    font-size: 1rem;
+    color: #44403c;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.fcr-reveal-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 18px;
+    padding: 13px 20px;
+    background: #ff6a00;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.fcr-reveal-btn:hover { background: #e65f00; color: #fff; }
+
+.fcr-rate-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.fcr-rate-btn {
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+}
+
+.fcr-rate-btn--again {
+    background: #fff7ed;
+    border-color: #fed7aa;
+    color: #9a3412;
+}
+.fcr-rate-btn--again:hover { background: #ffedd5; }
+
+.fcr-rate-btn--good {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+    color: #15803d;
+}
+.fcr-rate-btn--good:hover { background: #dcfce7; }
+
+.fcr-done-inner {
+    text-align: center;
+    padding: 40px 24px;
+}
+
+@media (max-width: 576px) {
+    .fcr-card { padding: 24px 20px; min-height: 180px; }
+    .fcr-q-text { font-size: 1.05rem; }
 }
