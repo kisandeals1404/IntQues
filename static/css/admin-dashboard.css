@@ -779,6 +779,7 @@
     padding: 10px 8px 9px;
     text-align: center;
     transition: background 150ms ease;
+    min-width: 0;
 }
 .admin-module-card:hover .admin-module-stat-chip {
     background: #f1f5f9;
@@ -798,7 +799,9 @@
     letter-spacing: 0.05em;
     display: block;
     margin-top: 3px;
-    white-space: nowrap;
+    /* long labels ("Active Business Plans", "Expiring in 7 Days") used to force their grid
+       track past the card's width with nowrap — 4-chip rows now wrap onto 2 lines instead */
+    white-space: normal;
 }
 
 /* Color stat numbers by card type */
@@ -877,12 +880,16 @@
     grid-column: 1 / -1;
 }
 .admin-form-label {
+    display: block;
+    margin-bottom: 6px;
     font-size: 0.78rem;
     font-weight: 700;
     color: #475569;
     letter-spacing: 0.01em;
 }
 .admin-form-input {
+    width: 100%;
+    box-sizing: border-box;
     padding: 9px 13px;
     border: 1.5px solid #e2e8f0;
     border-radius: 10px;

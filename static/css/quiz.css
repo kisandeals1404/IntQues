@@ -37,63 +37,11 @@
    QUIZ LISTING PAGE
 ════════════════════════════════════════ */
 
-/* Initial letter placeholder — sized for full 16:9 thumbnail */
-.qz-thumb-initial {
-    font-size: 3.5rem;
-    font-weight: 900;
-    color: rgba(255,255,255,0.92);
-    letter-spacing: -0.03em;
-    line-height: 1;
-    text-shadow: 0 2px 12px rgba(0,0,0,0.2);
-    transition: transform 0.35s cubic-bezier(0.2,0.9,0.3,1);
-}
-.of-card:hover .qz-thumb-initial { transform: scale(1.08); }
-
 /* ── Quiz listing page uses offerings.css layout.
-   These styles extend it with quiz-specific visuals. ─── */
-
-/* ── Per-technology gradients (used by .qz-thumb) ── */
-.qc-style-java       { background: linear-gradient(135deg, #e76f00, #ffb347); }
-.qc-style-js         { background: linear-gradient(135deg, #f5c518, #e8a804); color: #1a1200; }
-.qc-style-python     { background: linear-gradient(135deg, #3572a5, #5b9bd5); }
-.qc-style-react      { background: linear-gradient(135deg, #0d9cb5, #61dafb); color: #003147; }
-.qc-style-angular    { background: linear-gradient(135deg, #c3002f, #ff4d6d); }
-.qc-style-vue        { background: linear-gradient(135deg, #41b883, #35495e); }
-.qc-style-nodejs     { background: linear-gradient(135deg, #2d8a2d, #5cba5c); }
-.qc-style-typescript { background: linear-gradient(135deg, #007acc, #4098cc); }
-.qc-style-html       { background: linear-gradient(135deg, #e34f26, #f06529); }
-.qc-style-css        { background: linear-gradient(135deg, #264de4, #4e7ef5); }
-.qc-style-php        { background: linear-gradient(135deg, #6a73c1, #9fa8e0); }
-.qc-style-docker     { background: linear-gradient(135deg, #1d6fa5, #2496ed); }
-.qc-style-aws        { background: linear-gradient(135deg, #e8820c, #ff9900); color: #1a0d00; }
-.qc-style-linux      { background: linear-gradient(135deg, #2c2c2c, #4a4a4a); }
-.qc-style-git        { background: linear-gradient(135deg, #c0392b, #f05032); }
-.qc-style-sql        { background: linear-gradient(135deg, #2c6496, #4a90c4); }
-.qc-style-spring     { background: linear-gradient(135deg, #4c8c2b, #6db33f); color: #1a3008; }
-.qc-style-kotlin     { background: linear-gradient(135deg, #6a4cff, #9c7dff); }
-.qc-style-swift      { background: linear-gradient(135deg, #e8523a, #f0785d); }
-.qc-style-cpp        { background: linear-gradient(135deg, #004f99, #2976c5); }
-.qc-style-csharp     { background: linear-gradient(135deg, #400fa0, #6a3fcf); }
-.qc-style-go         { background: linear-gradient(135deg, #009dce, #00aee8); }
-.qc-style-rust       { background: linear-gradient(135deg, #8a1a04, #cc4415); }
-.qc-style-dsa        { background: linear-gradient(135deg, #5b21b6, #7c3aed); }
-.qc-style-interview  { background: linear-gradient(135deg, #0f766e, #0d9488); }
-.qc-style-android    { background: linear-gradient(135deg, #3ddc84, #2a9d5c); color: #0a2918; }
-.qc-style-default    { background: linear-gradient(135deg, #ff6a00, #ffb347); }
-
-/* ── Quiz image thumbnail (when image URL is set) ── */
-
-.qz-thumb--img {
-    padding: 0;
-    background: #f1f5f9;
-}
-.qz-thumb--img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    border-radius: inherit;
-}
+   These styles extend it with quiz-specific visuals. Course-thumbnail
+   gradient/icon styling (formerly .qz-thumb / .qc-style-*) now lives in
+   offerings.css as .of-thumb-grad / .of-course-style-*, shared with
+   flashcards.ftl. ─── */
 
 /* ── Quiz card description ──────────────────────── */
 

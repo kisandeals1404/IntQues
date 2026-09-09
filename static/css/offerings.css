@@ -192,6 +192,88 @@
 }
 .of-card:hover .of-thumb img { transform: scale(1.06); }
 
+/* ── Gradient thumbnail placeholder (course name as text, no upload needed) ──
+   Shared by quizzes.ftl and flashcards.ftl — one course-name-keyed gradient
+   per tech (java/python/react/…), a brand icon, and the full course name
+   wrapped as text so nothing gets truncated. Replaces per-course uploaded
+   images, which varied wildly in quality and often looked cluttered shrunk
+   to card size. */
+.of-thumb-grad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #fff;
+    text-align: center;
+    padding: 16px 18px;
+}
+.of-thumb-grad i {
+    font-size: 2.6rem;
+    filter: drop-shadow(0 2px 12px rgba(0,0,0,0.18));
+    transition: transform 0.35s cubic-bezier(0.2,0.9,0.3,1);
+}
+.of-card:hover .of-thumb-grad i { transform: scale(1.1); }
+
+.of-thumb-course-name {
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.18);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+}
+
+/* Per-technology gradients, keyed by CourseInfo#getStyleKey(). Selector is compounded with
+   .of-thumb (not just .of-course-style-*) and !important is needed to outrank ux-overrides.css's
+   `.of-thumb { background: ... !important }` "polished placeholder" rule, which otherwise wins
+   the tie against a same-specificity, non-important .of-course-style-* rule regardless of source
+   order (that rule intentionally only means "there is no image here yet"). */
+.of-thumb.of-course-style-java       { background: linear-gradient(135deg, #e76f00, #ffb347) !important; }
+.of-thumb.of-course-style-js         { background: linear-gradient(135deg, #f5c518, #e8a804) !important; color: #1a1200; }
+.of-thumb.of-course-style-python     { background: linear-gradient(135deg, #3572a5, #5b9bd5) !important; }
+.of-thumb.of-course-style-react      { background: linear-gradient(135deg, #0d9cb5, #61dafb) !important; color: #003147; }
+.of-thumb.of-course-style-angular    { background: linear-gradient(135deg, #c3002f, #ff4d6d) !important; }
+.of-thumb.of-course-style-vue        { background: linear-gradient(135deg, #41b883, #35495e) !important; }
+.of-thumb.of-course-style-nodejs     { background: linear-gradient(135deg, #2d8a2d, #5cba5c) !important; }
+.of-thumb.of-course-style-typescript { background: linear-gradient(135deg, #007acc, #4098cc) !important; }
+.of-thumb.of-course-style-html       { background: linear-gradient(135deg, #e34f26, #f06529) !important; }
+.of-thumb.of-course-style-css        { background: linear-gradient(135deg, #264de4, #4e7ef5) !important; }
+.of-thumb.of-course-style-php        { background: linear-gradient(135deg, #6a73c1, #9fa8e0) !important; }
+.of-thumb.of-course-style-docker     { background: linear-gradient(135deg, #1d6fa5, #2496ed) !important; }
+.of-thumb.of-course-style-aws        { background: linear-gradient(135deg, #e8820c, #ff9900) !important; color: #1a0d00; }
+.of-thumb.of-course-style-linux      { background: linear-gradient(135deg, #2c2c2c, #4a4a4a) !important; }
+.of-thumb.of-course-style-git        { background: linear-gradient(135deg, #c0392b, #f05032) !important; }
+.of-thumb.of-course-style-sql        { background: linear-gradient(135deg, #2c6496, #4a90c4) !important; }
+.of-thumb.of-course-style-spring     { background: linear-gradient(135deg, #4c8c2b, #6db33f) !important; color: #1a3008; }
+.of-thumb.of-course-style-kotlin     { background: linear-gradient(135deg, #6a4cff, #9c7dff) !important; }
+.of-thumb.of-course-style-swift      { background: linear-gradient(135deg, #e8523a, #f0785d) !important; }
+.of-thumb.of-course-style-cpp        { background: linear-gradient(135deg, #004f99, #2976c5) !important; }
+.of-thumb.of-course-style-csharp     { background: linear-gradient(135deg, #400fa0, #6a3fcf) !important; }
+.of-thumb.of-course-style-go         { background: linear-gradient(135deg, #009dce, #00aee8) !important; }
+.of-thumb.of-course-style-rust       { background: linear-gradient(135deg, #8a1a04, #cc4415) !important; }
+.of-thumb.of-course-style-dsa        { background: linear-gradient(135deg, #5b21b6, #7c3aed) !important; }
+.of-thumb.of-course-style-interview  { background: linear-gradient(135deg, #0f766e, #0d9488) !important; }
+.of-thumb.of-course-style-android    { background: linear-gradient(135deg, #3ddc84, #2a9d5c) !important; color: #0a2918; }
+.of-thumb.of-course-style-default    { background: linear-gradient(135deg, #ff6a00, #ffb347) !important; }
+
+/* Light-bg gradients need dark text/icon for contrast */
+.of-course-style-js .of-thumb-course-name,
+.of-course-style-aws .of-thumb-course-name,
+.of-course-style-react .of-thumb-course-name,
+.of-course-style-spring .of-thumb-course-name,
+.of-course-style-android .of-thumb-course-name { text-shadow: none; }
+
+/* List view: smaller icon, name still shown (unlike the old .qz-thumb-label
+   which hid in list view — name is the only content now, so keep it) */
+.of-list.list-view .of-thumb-grad { padding: 10px 12px; gap: 4px; }
+.of-list.list-view .of-thumb-grad i { font-size: 1.8rem; }
+.of-list.list-view .of-thumb-course-name { font-size: 0.8rem; -webkit-line-clamp: 2; }
+
 /* ── Card body ────────────────────────────────────────────────── */
 .of-card-body {
     padding: 16px 18px 18px;
