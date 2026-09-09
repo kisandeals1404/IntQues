@@ -654,16 +654,28 @@
 .fc-swipe-fullscreen-close { display: none; }
 
 @media (max-width: 767px) {
+    /* overflow:hidden alone doesn't reliably stop iOS Safari's rubber-band scroll — the page
+       could still visibly shift/bounce during a swipe even with it set. position:fixed removes
+       body from the scrollable flow entirely, which is what actually holds it still. The JS
+       toggling this class (enterSwipeFullscreen/exitSwipeFullscreen in flashcard-study.ftl)
+       captures scrollY into --fc-scroll-lock-y beforehand and restores real scroll on exit,
+       since a fixed body otherwise forgets where the page was and jumps to the top. */
     body.fc-swipe-fullscreen {
         overflow: hidden;
         touch-action: none;
+        position: fixed;
+        top: calc(-1 * var(--fc-scroll-lock-y, 0px));
+        left: 0;
+        right: 0;
+        width: 100%;
     }
     body.fc-swipe-fullscreen .navbar,
     body.fc-swipe-fullscreen .mobile-tab-bar,
     body.fc-swipe-fullscreen .fc-study-hero,
     body.fc-swipe-fullscreen #fc-mode-toggle,
     body.fc-swipe-fullscreen .fc-kbd-hint,
-    body.fc-swipe-fullscreen .footer-section {
+    body.fc-swipe-fullscreen .footer-section,
+    body.fc-swipe-fullscreen .fc-nav-row {
         display: none !important;
     }
     body.fc-swipe-fullscreen #fc-panel-swipe {
@@ -675,13 +687,11 @@
         flex-direction: column;
         justify-content: center;
         /* Top padding clears the absolutely-positioned close button (40px tall,
-           top:14px); bottom padding clears .fc-nav-row's own fixed bar (~90px,
-           see the "Sticky bottom nav bar" rule below) — centering the card+hint
-           stack within what's actually left between them, rather than either
-           overlapping the fixed nav or dumping all the slack as dead space under
-           the button (flex-start) or below the hint (no bottom clearance). */
+           top:14px). No bottom nav bar to clear anymore — Prev/Next is hidden here
+           since swipe up/down already covers navigation; the swipe-hint text is the
+           last visible element, so a modest bottom margin is enough. */
         padding: calc(70px + env(safe-area-inset-top, 0px)) 16px
-                 calc(100px + env(safe-area-inset-bottom, 0px));
+                 calc(16px + env(safe-area-inset-bottom, 0px));
         height: 100dvh;
     }
     body.fc-swipe-fullscreen .fc-card-viewport {
