@@ -549,6 +549,12 @@ h2 { font-size: clamp(1.35rem, 2.6vw, 2.2rem); line-height:1.08; }
     .hp-description        { font-size: 0.95rem !important; }
     .hero-premium-v2       { padding: 24px 12px !important; }
     .container             { padding-left: 10px !important; padding-right: 10px !important; }
+    /* Exception: flashcard-study.css already reserves 90px each side here specifically so
+       the absolutely-positioned back button and counter pill don't overlap the centered
+       topic title (see its own "safe zone" comment) — the blanket .container tightening
+       above was clobbering that at exactly this breakpoint since both rules carry
+       !important; a compound selector outranks the single-class one. */
+    .container.fc-study-hero-inner { padding-left: 90px !important; padding-right: 90px !important; }
 }
 
 /* ── 8. Live course code preview — scrollable on small screens*/
@@ -2167,5 +2173,250 @@ footer::before {
     /* Same slot as .whatsapp-float on mobile too — both need to clear the tab bar identically
        since only one of them is ever shown. */
     .btt-btn { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* =========================================
+   DARK MODE — shared chrome & components
+   ========================================================================
+   :root[data-theme="dark"] (global.css) already redefines --white/--light-bg/
+   --surface-subtle/--text-main/--text-body/--text-muted/--border-color for
+   dark mode, and body itself correctly picks them up (background: var(--white),
+   color: var(--text-body) in global.css) — toggling the theme does visibly
+   change the page background. But virtually every component that sits ON TOP
+   of body — the navbar, every .admin-card/.of-card, form inputs, tables —
+   hardcodes a light hex color (#fff, #f8fafc, #0f172a, ...) instead of using
+   those variables, so in practice almost nothing actually re-themes: the dark
+   body only ever shows through as a sliver behind fully-opaque white surfaces.
+   This section overrides the highest-leverage shared classes — the ones that
+   appear on nearly every page (nav, admin/business cards, buttons, forms,
+   tables) — using the SAME variables the toggle already drives, rather than
+   introducing new one-off dark colors. It is deliberately NOT a full site-wide
+   conversion (that's several thousand hardcoded declarations across 37 CSS
+   files) — page-specific surfaces (hero sections, the quiz/exam player, resume
+   builder, marketing pages) still render in their light-mode colors under
+   dark mode. Loaded last in the bundle (see pom.xml) so these safely win over
+   every page-specific stylesheet without touching those files directly.
+   ========================================================================= */
+:root[data-theme="dark"] {
+    /* ── Base headings ──
+       global.css's h1-h6 rule hardcodes color:var(--dark-900), a static #0f172a
+       never redefined for dark mode (unlike the --text-* tokens) — any heading
+       without its own more-specific color rule (e.g. plain "My Assignments" on
+       /assignments) stayed near-black on the dark background. Pages whose
+       headings already carry a themed class (most of them, via rules below)
+       are unaffected since those rules have higher specificity. */
+    h1, h2, h3, h4, h5, h6 { color: var(--text-main); }
+
+    /* ── Top nav ── */
+    .navbar { background: var(--white); border-bottom-color: var(--border-color); }
+    .navbar-nav .nav-link { color: var(--text-body) !important; }
+    .nav-drawer, .nav-dropdown-menu, .nav-account-toggle, .nav-search-btn {
+        background: var(--white);
+        border-color: var(--border-color);
+        color: var(--text-body);
+    }
+
+    /* ── Mobile bottom tab bar ── */
+    .mobile-tab-bar { background: var(--white); border-top-color: var(--border-color); }
+
+    /* ── Shared "white card" surfaces (admin/business pages) ── */
+    .admin-card, .dash-card, .admin-module-card, .pd-section-white {
+        background: var(--white);
+        border-color: var(--border-color);
+    }
+    .admin-card-header, .admin-table td, .dash-table th {
+        border-color: var(--border-color);
+        color: var(--text-body);
+    }
+    .admin-hub-title, .admin-table td, .admin-page-title { color: var(--text-main); }
+    .admin-hub-subtitle, .admin-table th, .dash-table th { color: var(--text-muted); }
+    /* Both `.admin-table th` and `.dash-table th` hardcode background:#f8fafc in their
+       base stylesheets (admin-courses.css, admin-dashboard.css) — left un-themed it
+       painted a near-white bar behind barely-visible muted-gray header text. */
+    .admin-table th, .dash-table th {
+        background: var(--surface-subtle);
+        border-bottom-color: var(--border-color);
+    }
+    .admin-module-stat-chip, .dash-enroll-count--zero { background: var(--surface-subtle); }
+    .admin-module-card:hover .admin-module-stat-chip,
+    .dash-table tr:hover td { background: var(--surface-subtle); }
+    .admin-main, .admin-hub-main, .dash-main { background: var(--light-bg); }
+
+    /* ── Buttons ── */
+    .admin-btn-outline, .dash-btn--outline {
+        background: var(--white);
+        color: var(--text-body);
+        border-color: var(--border-color);
+    }
+    .admin-btn-outline:hover { background: var(--surface-subtle); }
+
+    /* ── Form fields ── */
+    .admin-form-field input,
+    .admin-form-field select,
+    .admin-form-field textarea {
+        background: var(--white);
+        color: var(--text-main);
+        border-color: var(--border-color);
+    }
+
+    /* ── Assignments page / quiz history & leaderboard rows (shared .qhist-item) ──
+       Its border already used var(--border-color) but background stayed a
+       hardcoded #fff — the row's own text (e.g. .qlb-name) already resolved to
+       light via var(--text-main), so it went invisible against the untouched
+       white row background. */
+    .qhist-page { background: var(--light-bg); }
+    .qhist-item { background: var(--white); }
+    .asn-empty { background: var(--surface-subtle); border-color: var(--border-color); }
+
+    /* ── Consumer card grid (flashcards/quizzes catalogs) ── */
+    .of-body { background: var(--light-bg); }
+    .of-card { background: var(--white); border-color: var(--border-color); }
+    .of-name { color: var(--text-main); }
+    .of-card:hover .of-name { color: var(--text-main); }
+    .of-desc, .qz-card-desc { color: var(--text-muted); }
+    .of-search-wrap { background: var(--white); border-color: var(--border-color); }
+    .of-search-input { color: var(--text-main); }
+    .quiz-empty { background: var(--white); border-color: var(--border-color); }
+
+    /* ── Flashcard study (swipe/read/listen) ──
+       .fc-card-bottom's background was themed but the answer text/footer inside it
+       were left at their original hardcoded light-mode colors, which read as
+       near-invisible dark-gray-on-dark-navy text. */
+    .fc-card-bottom { background: var(--white); }
+    .fc-answer-text { color: var(--text-body); }
+    .fc-card-foot { background: var(--white); border-top-color: var(--border-color); }
+    .fc-card-foot-topic { color: var(--text-muted); }
+
+    /* ── Quiz practice/exam player ── */
+    .qplay-topbar { background: var(--white); border-bottom-color: var(--border-color); }
+    .qp-drawer { background: var(--white); }
+    .qp-drawer-title, .qplay-tb-course { color: var(--text-main); }
+
+    /* ── Resume builder ── */
+    .rb-header, .rb-sidebar, .rb-section, .rb-section-header {
+        background: var(--white);
+        border-color: var(--border-color);
+    }
+    .rb-section-title { color: var(--text-main); }
+    .rb-label { color: var(--text-body); }
+    .rb-input { background: var(--white); color: var(--text-main); border-color: var(--border-color); }
+    /* Page canvas behind the header/sidebar/sections — was left at its hardcoded
+       near-white, so the (already dark-themed) cards sat on a jarring light-gray
+       backdrop instead of the rest of the app's dark background. */
+    .rb-page-main { background: var(--light-bg); }
+    .rb-btn-sample, .rb-btn-preview, .rb-btn-import {
+        background: var(--white);
+        border-color: var(--border-color);
+    }
+    .rb-btn-preview { color: var(--text-main); }
+    .rb-btn-sample { color: var(--text-body); }
+
+    /* ── Account hub page ── */
+    .account-page-main { background: var(--light-bg); }
+    .ac-hub-card { background: var(--white); border-color: var(--border-color); }
+    .ac-hub-title { color: var(--text-main); }
+    .ac-hub-desc { color: var(--text-muted); }
+
+    /* ── Global search page & course-combobox (games "Create a Game" course
+       search, and anywhere else this shared combobox is embedded) ── */
+    .search-form { background: var(--white); }
+    .search-empty { background: var(--surface-subtle); }
+    .cert-empty { background: var(--surface-subtle); }
+    .course-combobox-input {
+        background-color: var(--white) !important;
+        border-color: var(--border-color) !important;
+    }
+
+    /* ── Admin/business search bars & assignment-style form fields ──
+       Both hardcode `background: #fff` in their base stylesheet while their text
+       correctly follows var(--text-main) (which turns light in dark mode) — that
+       combination made typed/placeholder text invisible (light text on white) across
+       admin-users, business team, and business quiz-course forms. */
+    .admin-search-input {
+        background-color: var(--white);
+        border-color: var(--border-color);
+    }
+    .admin-search-input::placeholder { color: var(--text-muted); }
+    .asn-field input[type="text"],
+    .asn-field input[type="email"],
+    .asn-field input[type="number"],
+    .asn-field input[type="datetime-local"],
+    .asn-field select,
+    .asn-field textarea {
+        background: var(--white);
+        border-color: var(--border-color);
+    }
+    /* Same hardcoded background:#fff pattern — team member/invite rows and
+       question-bank/course list rows all reuse this one class. */
+    .asn-qbank-item { background: var(--white); border-color: var(--border-color); }
+    /* "Back to X" pill nav links (dashboard sub-pages) — legible as-is (fixed slate
+       text on white), but a bright white pill stands out jarringly against the rest
+       of an otherwise fully dark page. */
+    .dash-nav-link {
+        background: var(--white);
+        color: var(--text-body);
+        border-color: var(--border-color);
+    }
+    .dash-nav-link:hover {
+        background: var(--surface-subtle);
+        color: var(--text-main);
+        border-color: var(--border-color);
+    }
+
+    /* ── Flashcards topics page (course → topic list) ── */
+    .fc-topics-section { background: var(--light-bg); }
+    .fc-topic-item {
+        background: var(--white);
+        border-color: var(--border-color);
+    }
+    .fc-topic-item--done { background: var(--white); }
+    .fc-topic-item--locked { background: var(--surface-subtle); }
+    .fc-topic-name { color: var(--text-main); }
+    .fc-topic-meta { color: var(--text-muted); }
+    .fc-topic-bar { background: var(--surface-subtle); }
+    .fc-review-banner {
+        background: var(--white);
+        border-color: var(--border-color);
+    }
+    .fc-review-banner-title { color: var(--text-main); }
+    .fc-review-banner-sub { color: var(--text-muted); }
+
+    /* ── Quiz mode-select page (Practice vs Exam) ── */
+    .qmode-page, .qmode-cards-section { background: var(--light-bg); }
+    .qmode-card { background: var(--white); border-color: var(--border-color); }
+    .qmode-card-title { color: var(--text-main); }
+    .qmode-card-desc { color: var(--text-muted); }
+    .qmode-card-features li { color: var(--text-body); }
+    .qmode-count-box { background: var(--surface-subtle); border-color: var(--border-color); }
+    .qmode-count-label { color: var(--text-muted); }
+    .qmode-count-pill { background: var(--white); border-color: var(--border-color); color: var(--text-muted); }
+    .qmode-exam-kpi-val { color: var(--text-main); }
+    .qmode-exam-kpi-unit, .qmode-exam-kpi-lbl { color: var(--text-muted); }
+    .qmode-exam-kpi-sep { background: var(--border-color); }
+
+    /* ── Quiz player "gate"/finish card (Ready to Begin?, exam results) ── */
+    .qplay-finish { background: var(--white); border-color: var(--border-color); }
+    .qplay-finish-heading { color: var(--text-main); }
+    .qplay-finish-sub { color: var(--text-muted); }
+    .qplay-finish-stat { background: var(--surface-subtle); border-color: var(--border-color); }
+    .qplay-finish-stat-n { color: var(--text-main); }
+    .qplay-finish-stat-l { color: var(--text-muted); }
+
+    /* ── Quiz player question card & answer options ──
+       State colors (.selected/.correct/.wrong tinted backgrounds) are left as-is —
+       they're transient feedback, not steady-state UI, and changing them risks
+       muddying the correct/wrong signal for little benefit. */
+    .qplay-qcard { background: var(--white); border-color: var(--border-color); }
+    .qplay-qnumber { color: var(--text-muted); }
+    .qplay-qtotal { color: var(--text-subtle); }
+    .qplay-qtext { color: var(--text-main); }
+    .qplay-option { background: var(--white); border-color: var(--border-color); }
+    .qplay-opt-letter { background: var(--surface-subtle); border-color: var(--border-color); color: var(--text-muted); }
+    .qplay-opt-text { color: var(--text-body); }
+    .qplay-nav-btn--review:not(.marked) {
+        background: var(--white);
+        border-color: var(--border-color);
+        color: var(--text-muted);
+    }
 }
 

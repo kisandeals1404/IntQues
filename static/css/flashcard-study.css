@@ -329,6 +329,12 @@
     outline: none;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    /* Without this, a touch drag on the card is ambiguous to the browser — it starts
+       scrolling the page at the same time our own touchmove/touchend handlers are
+       deciding whether it's a card-swipe, so the gesture looked like "just scrolling"
+       instead of changing cards. This hands vertical drags on the card entirely to our
+       JS; .fc-card-bottom below opts back into native scrolling for long answers. */
+    touch-action: none;
 }
 
 /* ── Card question header ────────────────────────────────────────────── */
@@ -400,6 +406,10 @@
     background: #fff;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    /* Opts back into native vertical scrolling for long answers — the parent .fc-card
+       hands touch-action to JS (see above) but this nested scrollable area still needs
+       its own scroll to work normally. */
+    touch-action: pan-y;
 }
 
 .fc-answer-label {
@@ -629,6 +639,96 @@
 .fc-chapter-toast.is-visible {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FULLSCREEN SWIPE MODE (mobile only)
+   Swipe mode's whole point is a vertical drag gesture — sharing the
+   viewport with a page that scrolls the same direction meant the gesture
+   just scrolled the page instead of changing cards. Below 768px, entering
+   Swipe mode (see the fc-swipe-fullscreen toggle in syncModeUI(),
+   flashcard-study.ftl) takes over the full viewport instead, so there's no
+   scrollable page left underneath to compete with the swipe. Pairs with
+   the touch-action:none on #fc-card above, which hands the gesture to JS.
+═══════════════════════════════════════════════════════════════════════ */
+.fc-swipe-fullscreen-close { display: none; }
+
+@media (max-width: 767px) {
+    body.fc-swipe-fullscreen {
+        overflow: hidden;
+        touch-action: none;
+    }
+    body.fc-swipe-fullscreen .navbar,
+    body.fc-swipe-fullscreen .mobile-tab-bar,
+    body.fc-swipe-fullscreen .fc-study-hero,
+    body.fc-swipe-fullscreen #fc-mode-toggle,
+    body.fc-swipe-fullscreen .fc-kbd-hint,
+    body.fc-swipe-fullscreen .footer-section {
+        display: none !important;
+    }
+    body.fc-swipe-fullscreen #fc-panel-swipe {
+        position: fixed;
+        inset: 0;
+        z-index: 1700;
+        background: #f7f3ef;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        /* Top padding clears the absolutely-positioned close button (40px tall,
+           top:14px); bottom padding clears .fc-nav-row's own fixed bar (~90px,
+           see the "Sticky bottom nav bar" rule below) — centering the card+hint
+           stack within what's actually left between them, rather than either
+           overlapping the fixed nav or dumping all the slack as dead space under
+           the button (flex-start) or below the hint (no bottom clearance). */
+        padding: calc(70px + env(safe-area-inset-top, 0px)) 16px
+                 calc(100px + env(safe-area-inset-bottom, 0px));
+        height: 100dvh;
+    }
+    body.fc-swipe-fullscreen .fc-card-viewport {
+        height: min(600px, 68vh);
+    }
+    /* The X is drawn from two rotated bars (below) rather than the fa-xmark glyph —
+       an icon font's ink isn't always centered within its own character box the same
+       way across browsers/devices, so glyph-based centering could look right in one
+       renderer and off in another. Two bars centered via translate(-50%,-50%) are
+       centered by construction, not by trusting font metrics. */
+    body.fc-swipe-fullscreen .fc-swipe-fullscreen-close {
+        display: block;
+        position: absolute;
+        top: max(14px, env(safe-area-inset-top, 0px));
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border-radius: 50%;
+        border: none;
+        background: rgba(15, 23, 42, 0.55);
+        z-index: 1701;
+    }
+    body.fc-swipe-fullscreen .fc-swipe-fullscreen-close i {
+        display: none;
+    }
+    body.fc-swipe-fullscreen .fc-swipe-fullscreen-close::before,
+    body.fc-swipe-fullscreen .fc-swipe-fullscreen-close::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 16px;
+        height: 2px;
+        background: #fff;
+        border-radius: 1px;
+    }
+    body.fc-swipe-fullscreen .fc-swipe-fullscreen-close::before {
+        transform: translate(-50%, -50%) rotate(45deg);
+    }
+    body.fc-swipe-fullscreen .fc-swipe-fullscreen-close::after {
+        transform: translate(-50%, -50%) rotate(-45deg);
+    }
+    body.fc-swipe-fullscreen .fc-swipe-fullscreen-close:active {
+        background: rgba(15, 23, 42, 0.75);
+    }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════

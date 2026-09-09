@@ -124,12 +124,19 @@
 }
 
 /* ── Course progress bars on listing cards ───────────────────────────── */
+/* Lives inside .of-card-footer (see flashcards.ftl's courseCard macro) — its own
+   flex `gap` already spaces this from its siblings, so no margin of its own here.
+   width:100% keeps it from shrinking to near-nothing as an unsized flex child in
+   list view's row-turned-column footer (that shrink is what used to truncate
+   "1,000 cards" down to "1" with the "100%" pill crammed right against it). */
 .fc-course-progress-wrap {
-    margin-top: 10px;
+    width: 100%;
 }
 .fc-course-progress-label {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    column-gap: 6px;
     font-size: 0.72rem;
     color: #6b7280;
     margin-bottom: 5px;
