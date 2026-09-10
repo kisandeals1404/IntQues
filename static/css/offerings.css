@@ -806,7 +806,13 @@
     box-shadow:
         0 2px 8px rgba(15,23,42,0.06),
         0 8px 32px rgba(15,23,42,0.08);
-    overflow: hidden;
+    /* Was overflow:hidden (just to clip content to the rounded corners) — but the
+       suggestions dropdown (course-combobox.js, positioned absolute below the bar) is a
+       descendant of this wrap too, and overflow:hidden clipped it away entirely since it
+       renders outside the bar's own (short, single-line) height. Nothing else here relies on
+       the clipping — the input/icon/clear-button all sit fully within the bar's own bounds
+       regardless. */
+    overflow: visible;
     transition: border-color 200ms ease, box-shadow 250ms ease;
 }
 /* Suppress all browser focus rings inside the search bar */
@@ -825,6 +831,32 @@
     font-size: 15px;
     margin-left: 18px;
     pointer-events: none;
+}
+/* Swaps in for .of-search-icon while a suggest request is in flight — same pattern as
+   #search-form-spinner on the /search page (search.css): the icon itself becomes the loading
+   indicator. Reuses course-combobox.css's spin keyframes (already loaded via pageStyles). */
+.of-search-spinner {
+    flex-shrink: 0;
+    width: 15px;
+    height: 15px;
+    margin-left: 18px;
+    border: 2px solid rgba(255,106,0,0.18);
+    border-top-color: #ff6a00;
+    border-radius: 50%;
+    animation: course-combobox-spin 700ms linear infinite;
+}
+/* The widget's own built-in spinner (course-combobox.css) sits in the input's right-hand
+   slot — redundant here now that the left-hand icon itself doubles as the loading indicator,
+   matching /search's experience exactly. */
+.of-search-wrap .course-combobox-spinner {
+    display: none;
+}
+/* CourseCombobox.init() (course-combobox.js) wraps #of-search in a `.course-combobox` div —
+   without this, that new wrapper (not the input) becomes the flex child here, and the input
+   inside it collapses to its natural width instead of filling the bar like it used to. */
+.of-search-wrap .course-combobox {
+    flex: 1;
+    min-width: 0;
 }
 .of-search-input {
     flex: 1;

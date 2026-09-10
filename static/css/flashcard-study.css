@@ -311,6 +311,10 @@
     position: relative;
     overflow: visible;     /* lets shadow bleed outside */
     height: min(460px, 62vh);
+    /* The toss keyframes below (anim-out-up/anim-in-up/etc., see PAGE-TURN ANIMATIONS) move
+       THIS element, not .fc-card itself — kept as its own wrapper (rather than animating
+       .fc-card directly) purely so a future change to .fc-card's own overflow/border-radius
+       never has to worry about interacting with an in-flight transform here. */
 }
 
 /* ── The card ────────────────────────────────────────────────────────── */
@@ -335,6 +339,11 @@
        instead of changing cards. This hands vertical drags on the card entirely to our
        JS; .fc-card-bottom below opts back into native scrolling for long answers. */
     touch-action: none;
+    /* touch-action:none stops the page from scrolling under a card-swipe, but browser-chrome
+       gestures (Chrome for Android's pull-to-refresh, iOS Safari's rubber-band bounce) are a
+       separate mechanism that can still trigger on a downward swipe starting here — this is
+       the dedicated property for suppressing those specifically. */
+    overscroll-behavior: none;
 }
 
 /* ── Card question header ────────────────────────────────────────────── */
@@ -410,6 +419,9 @@
        hands touch-action to JS (see above) but this nested scrollable area still needs
        its own scroll to work normally. */
     touch-action: pan-y;
+    /* Scrolling past this area's own top/bottom edge must not chain into a page scroll or
+       pull-to-refresh underneath it — same reasoning as .fc-card's overscroll-behavior. */
+    overscroll-behavior: contain;
 }
 
 .fc-answer-label {
@@ -466,33 +478,42 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   SLIDE ANIMATIONS
+   CARD-STACK TOSS — swiping between cards reads like a stack of index
+   cards: the current card gets tossed off-screen in the swipe direction
+   (a little rotation, like it was flicked) and the next one, which was
+   already sitting underneath, pops up into place. Simpler and more
+   flashcard-idiomatic than a 3D page flip (and sidesteps the cross-browser
+   3D-transform quirks that came with one) — same animateTransition()
+   plumbing in flashcard-study.ftl, just plain 2D transforms here.
 ═══════════════════════════════════════════════════════════════════════ */
-@keyframes fc-slide-out-up {
-    from { transform: translateY(0);     opacity: 1; }
-    to   { transform: translateY(-108%); opacity: 0; }
+@keyframes fc-toss-out-up {
+    0%   { transform: translateY(0)     rotate(0deg)   scale(1);    opacity: 1; }
+    100% { transform: translateY(-120%) rotate(-4deg)  scale(0.92); opacity: 0; }
 }
-@keyframes fc-slide-in-up {
-    from { transform: translateY(108%); opacity: 0; }
-    to   { transform: translateY(0);    opacity: 1; }
+@keyframes fc-toss-out-down {
+    0%   { transform: translateY(0)     rotate(0deg)   scale(1);    opacity: 1; }
+    100% { transform: translateY(120%)  rotate(4deg)   scale(0.92); opacity: 0; }
 }
-@keyframes fc-slide-out-down {
-    from { transform: translateY(0);    opacity: 1; }
-    to   { transform: translateY(108%); opacity: 0; }
-}
-@keyframes fc-slide-in-down {
-    from { transform: translateY(-108%); opacity: 0; }
-    to   { transform: translateY(0);     opacity: 1; }
+/* Same "pop up from underneath" settle regardless of swipe direction — the incoming card was
+   already the next one in the stack, so there's no directional information to show here. */
+@keyframes fc-toss-in {
+    0%   { transform: scale(0.94); opacity: 0; }
+    100% { transform: scale(1);    opacity: 1; }
 }
 @keyframes fc-card-enter {
     from { transform: translateY(16px); opacity: 0; }
     to   { transform: translateY(0);    opacity: 1; }
 }
 
-.fc-card.anim-out-up   { animation: fc-slide-out-up   0.22s cubic-bezier(0.4,0,1,1) forwards; }
-.fc-card.anim-in-up    { animation: fc-slide-in-up    0.24s cubic-bezier(0,0,0.2,1) forwards; }
-.fc-card.anim-out-down { animation: fc-slide-out-down 0.22s cubic-bezier(0.4,0,1,1) forwards; }
-.fc-card.anim-in-down  { animation: fc-slide-in-down  0.24s cubic-bezier(0,0,0.2,1) forwards; }
+/* These four target .fc-card-viewport (the wrapper), not .fc-card — see the comment on
+   .fc-card-viewport above. animateTransition() in flashcard-study.ftl toggles these classes
+   on the viewport element accordingly. */
+.fc-card-viewport.anim-out-up   { animation: fc-toss-out-up   0.22s cubic-bezier(0.45,0,0.8,1)  forwards; }
+.fc-card-viewport.anim-in-up    { animation: fc-toss-in       0.26s cubic-bezier(0.2,0.6,0.3,1) forwards; }
+.fc-card-viewport.anim-out-down { animation: fc-toss-out-down 0.22s cubic-bezier(0.45,0,0.8,1)  forwards; }
+.fc-card-viewport.anim-in-down  { animation: fc-toss-in       0.26s cubic-bezier(0.2,0.6,0.3,1) forwards; }
+/* anim-enter is still .fc-card's own — a plain 2D translateY+opacity entrance for the very
+   first card on page load. */
 .fc-card.anim-enter    { animation: fc-card-enter     0.38s cubic-bezier(0,0,0.2,1) forwards; }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -663,6 +684,7 @@
     body.fc-swipe-fullscreen {
         overflow: hidden;
         touch-action: none;
+        overscroll-behavior: none;
         position: fixed;
         top: calc(-1 * var(--fc-scroll-lock-y, 0px));
         left: 0;

@@ -891,22 +891,7 @@ body.quiz-exam-lockdown .whatsapp-float {
     padding: 32px;
     box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 6px 24px rgba(15,23,42,0.05);
     margin-bottom: 14px;
-    cursor: grab;
 }
-.qplay-qcard:active { cursor: grabbing; }
-
-/* Swipe-between-questions transition (quiz-play.ftl) — mirrors flashcard-study.ftl's
-   anim-out-up/anim-in-up pair. Only fires on the deliberate "committed swipe" case; the
-   live drag-follow itself is done via inline transform/opacity, not these keyframes. */
-@keyframes qplay-qcard-out-up   { to { transform: translateY(-60px); opacity: 0; } }
-@keyframes qplay-qcard-out-down { to { transform: translateY(60px);  opacity: 0; } }
-@keyframes qplay-qcard-in-up    { from { transform: translateY(40px);  opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-@keyframes qplay-qcard-in-down  { from { transform: translateY(-40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-.qplay-qcard.qanim-out-up   { animation: qplay-qcard-out-up   0.2s cubic-bezier(0.4,0,1,1) forwards; }
-.qplay-qcard.qanim-out-down { animation: qplay-qcard-out-down 0.2s cubic-bezier(0.4,0,1,1) forwards; }
-.qplay-qcard.qanim-in-up    { animation: qplay-qcard-in-up    0.24s cubic-bezier(0,0,0.2,1) forwards; }
-.qplay-qcard.qanim-in-down  { animation: qplay-qcard-in-down  0.24s cubic-bezier(0,0,0.2,1) forwards; }
 
 @media (max-width: 640px) {
     .qplay-qcard { padding: 20px 16px; }
@@ -987,11 +972,20 @@ body.quiz-exam-lockdown .whatsapp-float {
     font-family: inherit;
     transition: border-color 0.13s, background 0.13s, box-shadow 0.13s;
     position: relative;
+    -webkit-tap-highlight-color: transparent;
 }
-.qplay-option:not(:disabled):hover {
-    border-color: #ff6a00;
-    background: #fff7ed;
-    box-shadow: 0 0 0 3px rgba(255,106,0,0.07);
+/* Real-mouse-hover only — a touch tap on a coarse-pointer device (phone/tablet) also matches
+   a plain :hover selector, and since this looks identical to .selected below, an unlucky tap
+   position could look "stuck selected" after the finger lifts and the next question loads a
+   fresh (unselected) option in the same screen slot. Gating on (hover: hover) means this rule
+   never applies on touch at all — the real .selected/.correct/.wrong classes below still work
+   exactly the same on every device. */
+@media (hover: hover) and (pointer: fine) {
+    .qplay-option:not(:disabled):hover {
+        border-color: #ff6a00;
+        background: #fff7ed;
+        box-shadow: 0 0 0 3px rgba(255,106,0,0.07);
+    }
 }
 .qplay-option.selected        { border-color: #ff6a00; background: #fff7ed; }
 .qplay-option.correct         { border-color: #16a34a; background: #f0fdf4; animation: qplay-pop 380ms ease; }
@@ -1039,12 +1033,18 @@ body.quiz-exam-lockdown .whatsapp-float {
     line-height: 1.6;
     font-weight: 500;
     flex: 1;
+    /* Without this a flex item won't shrink below its content's natural width — a long option
+       combined with the nowrap label sibling below could force the whole row past the button's
+       bounds instead of wrapping normally. */
+    min-width: 0;
+    overflow-wrap: break-word;
 }
 
 /* Answer label — shown after pick/lock */
 .qplay-opt-label {
     display: inline-flex;
     align-items: center;
+    gap: 4px;
     font-size: 0.62rem;
     font-weight: 800;
     padding: 2px 8px;
@@ -1058,6 +1058,21 @@ body.quiz-exam-lockdown .whatsapp-float {
 .qplay-opt-label--correct { background: #dcfce7; color: #15803d; }
 .qplay-opt-label--wrong   { background: #fee2e2; color: #991b1b; }
 .qplay-opt-label--reveal  { background: #dcfce7; color: #15803d; }
+
+/* On a narrow phone screen "Your Answer"/"Correct Answer" next to a long option's text has no
+   room and was overflowing past the option's edge — collapse to an icon-only badge (✓/✗, still
+   colored green/red, full text kept for screen readers via the label's own aria-label) instead. */
+@media (max-width: 480px) {
+    .qplay-opt-label {
+        gap: 0;
+        padding: 3px;
+        width: 18px;
+        height: 18px;
+        justify-content: center;
+        font-size: 0.72rem;
+    }
+    .qplay-opt-label-text { display: none; }
+}
 
 /* ── Feedback — learning note ─────────────────────── */
 

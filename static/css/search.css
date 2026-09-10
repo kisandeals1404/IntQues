@@ -11,6 +11,7 @@
 }
 
 .search-form {
+    position: relative; /* anchors #search-suggest-list below the bar — see its own rule */
     display: flex;
     align-items: center;
     gap: 10px;
@@ -21,9 +22,51 @@
     margin-bottom: 32px;
 }
 
+/* Suggestions-as-you-type dropdown — reuses course-combobox.css's option/empty-state look
+   (course-combobox.js isn't used here directly since this needs two grouped sections —
+   Quizzes and Flashcards — from one query against /api/search, not one flat list from a
+   single-product suggest endpoint). */
+#search-suggest-list {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 1550;
+    max-height: 340px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1.5px solid var(--border-color);
+    border-radius: 14px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+    padding: 6px;
+}
+
+.search-suggest-group-title {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    padding: 8px 10px 4px;
+}
+
 .search-form-icon {
     color: var(--text-muted);
     font-size: 0.95rem;
+}
+
+/* Swaps in for #search-form-icon while a suggest request is in flight — the magnifying glass
+   itself becomes the loading indicator (same spot, same size) rather than adding a second
+   element elsewhere in the bar. Reuses course-combobox.css's spin keyframes (already loaded —
+   see pageStyles in search.ftl) instead of redefining them. */
+.search-form-spinner {
+    flex-shrink: 0;
+    width: 15px;
+    height: 15px;
+    border: 2px solid rgba(255,106,0,0.18);
+    border-top-color: var(--primary-orange);
+    border-radius: 50%;
+    animation: course-combobox-spin 700ms linear infinite;
 }
 
 .search-form-input {

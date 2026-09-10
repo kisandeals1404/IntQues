@@ -4,6 +4,33 @@
     position: relative;
 }
 
+/* Small spinner shown in the input's own right-hand slot while a suggest request is in
+   flight — the same slot a "clear" (×) button occupies when idle, mutually exclusive with it
+   (see course-combobox.js's onLoadingChange and each page's own wiring), same pattern as
+   Google/Algolia-style search boxes. Fades rather than snapping in/out so a very fast
+   response (typically well under the eye's flicker threshold) doesn't read as a flash. */
+.course-combobox-spinner {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    width: 15px;
+    height: 15px;
+    margin-top: -7.5px;
+    border: 2px solid rgba(255,106,0,0.18);
+    border-top-color: #ff6a00;
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 120ms ease;
+    animation: course-combobox-spin 700ms linear infinite;
+}
+.course-combobox-spinner.is-visible {
+    opacity: 1;
+}
+@keyframes course-combobox-spin {
+    to { transform: rotate(360deg); }
+}
+
 /* The actual text input a combobox is attached to — same flat pill + plain left icon look as
    .admin-search-input/.asn-library-search (search bars elsewhere in the app), replacing what
    was previously a bare <input> inheriting a plain bordered form-field box.
