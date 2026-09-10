@@ -243,7 +243,11 @@
 
 .account-edit-form .form-label {
     font-weight: 700;
-    color: var(--secondary-dark);
+    /* --secondary-dark is a fixed near-black (#1a1a1a) with no dark-mode variant — it's meant
+       for text on intentionally-light cards (see .account-detail-value below), but this label
+       sits directly on the page's own dark-mode background, where it was rendering as
+       near-invisible near-black-on-near-black. --text-main is the theme-aware token. */
+    color: var(--text-main);
 }
 
 .account-edit-form .form-control {

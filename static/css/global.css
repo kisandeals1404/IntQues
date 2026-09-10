@@ -594,15 +594,63 @@ section > .curr-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
     padding: var(--space-5) 0;
+    flex-wrap: wrap;
 }
 .admin-pager-status {
     font-size: var(--text-sm);
     color: var(--text-muted);
     padding: 0 8px;
 }
-.admin-pager-disabled { opacity: 0.45; pointer-events: none; }
+.admin-pager-disabled { opacity: 0.4; pointer-events: none; }
+
+/* Self-contained (no .admin-btn dependency) so the same <@pager> macro renders identically on
+   admin/business pages and on the public quizzes/flashcards listing pages, which don't load
+   admin-courses.css (where .admin-btn lives). */
+.admin-pager-nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border-color);
+    color: var(--text-body);
+    background: var(--white);
+    font-size: 0.82rem;
+    text-decoration: none;
+    transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
+}
+.admin-pager-nav:hover { border-color: #ff6a00; color: #ff6a00; }
+.admin-pager-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 6px;
+    border-radius: 8px;
+    color: var(--text-body);
+    font-size: 0.84rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 150ms ease, color 150ms ease;
+}
+.admin-pager-num:hover { background: var(--light-bg); }
+.admin-pager-num--active {
+    background: #ff6a00;
+    color: #fff;
+}
+.admin-pager-num--active:hover { background: #ff6a00; }
+.admin-pager-ellipsis {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    color: var(--text-muted);
+    font-size: 0.84rem;
+}
 
 /* =========================================
    MOTION ACCESSIBILITY

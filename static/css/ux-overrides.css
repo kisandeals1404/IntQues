@@ -301,6 +301,46 @@
 #testimonials { background: radial-gradient(circle at 10% 80%, rgba(99,102,241,0.04) 0%, transparent 55%), #fff; }
 #faq          { background: linear-gradient(180deg, #f9fafc 0%, #fff 100%); }
 
+/* #faq's background above is intentionally fixed-light regardless of site theme, but the
+   dark-mode ":root[data-theme='dark'] h1,h2,..." rule further down (out-specificities
+   .faq-header h2's own faq.css color via CSS nesting) was still swapping its heading to the
+   dark-mode light text color — rendering near-invisible light-on-light. Pin it back to dark
+   text to match its always-light background. */
+.faq-header h2 { color: #0f172a !important; }
+
+/* business.ftl (/business) is a fixed-light marketing/sales page throughout its content
+   sections (hero, features, comparison, how-it-works, pricing — all white/cream backgrounds
+   regardless of site theme, same reasoning as #faq above), but the same dark-mode heading rule
+   was swapping literally every h1/h2/h3 on the page to light-on-light text. The dark CTA band
+   (.bz-final-cta) and footer are unaffected by this fix since they're not listed here — their
+   headings were already correctly light-on-dark and must stay theme-aware. */
+.bz-hero h1,
+.bz-section-header h2,
+.bz-feature-card h3,
+.bz-how-step h3 { color: #0f172a !important; }
+
+/* about.ftl (/about) — same fixed-light-page pattern as /business above. */
+.about-section-title,
+.about-belief-card h3,
+.about-step-body h3 { color: #0f172a !important; }
+
+/* quiz-play.ftl's "Exit Quiz?" confirm modal (.qm-modal) is a fixed-white dialog regardless of
+   theme (unlike .iq-confirm-modal elsewhere, which IS theme-aware) — same pattern once more. */
+.qm-title { color: #0f172a !important; }
+
+/* quizzes.ftl / flashcards.ftl: "Recommended for you" sits in .of-body's fixed-light page
+   background and never had its own color rule at all (unlike the "Quizzes"/"Flashcards" h1
+   next to it), so it fell through entirely to the dark-mode blanket rule. */
+.of-section-title { color: #0f172a !important; }
+
+/* signup.ftl / login.ftl: .auth-shell--form is a fixed-white card regardless of theme (same
+   reasoning as #faq/.bz-hero above). .auth-header h1 has its own #0f172a rule in auth.css but
+   the dark-mode blanket heading rule still beat it via nesting specificity; the step-2 OTP
+   headings (plain <h2> inside .auth-header, e.g. "Enter your login code") had no color rule at
+   all and fell through completely. Both rendered near-invisible light-on-white. */
+.auth-header h1,
+.auth-header h2 { color: #0f172a !important; }
+
 /* =========================================
    SMOOTH SCROLL SNAP (optional but nice)
 ========================================= */
@@ -2215,6 +2255,19 @@ footer::before {
         border-color: var(--border-color);
         color: var(--text-body);
     }
+    /* The container `color` above doesn't reach these — .nav-drawer-link/.nav-di-name etc. each
+       carry their own explicit (non-inherited) color in navbar.css, which always wins over an
+       ancestor's inherited color regardless of specificity. Left unfixed, every dropdown panel
+       and the mobile drawer rendered near-black/dark-slate text on the now-dark background —
+       real nav items ("All Quizzes", "Exam History"...) were essentially unreadable, on every
+       page, since this menu is global. */
+    .nav-drawer-link, .nav-drawer-close, .nav-drawer-icon, .nav-drawer-account { color: var(--text-body); }
+    .nav-drawer-account { border-color: var(--border-color); }
+    .nav-drawer-link:hover, .nav-drawer-link.active,
+    .nav-drawer-link:hover .nav-drawer-icon, .nav-drawer-link.active .nav-drawer-icon,
+    .nav-drawer-close:hover, .nav-drawer-account:hover { color: #ff6a00; }
+    .nav-di-name { color: var(--text-main); }
+    .nav-dropdown-item:hover .nav-di-name { color: #ff6a00; }
 
     /* ── Mobile bottom tab bar ── */
     .mobile-tab-bar { background: var(--white); border-top-color: var(--border-color); }

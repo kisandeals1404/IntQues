@@ -952,3 +952,26 @@
     .fcr-card { padding: 24px 20px; min-height: 180px; }
     .fcr-q-text { font-size: 1.05rem; }
 }
+
+/* ── "+N points" toast (flashcard study) ─────────────────────────────── */
+.fc-points-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 90px;
+    transform: translate(-50%, 12px);
+    background: var(--primary-orange);
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.92rem;
+    padding: 10px 20px;
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-orange-md);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2000;
+    transition: opacity 220ms ease, transform 220ms ease;
+}
+.fc-points-toast--show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}

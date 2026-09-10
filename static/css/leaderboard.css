@@ -1,0 +1,256 @@
+/* ── Leaderboard page ─────────────────────────────────────────────────── */
+
+.lbrd-page {
+    min-height: calc(100vh - 80px);
+    background: linear-gradient(180deg, #fffbf7 0%, #ffffff 60%);
+    padding: 40px 0 80px;
+}
+
+:root[data-theme="dark"] .lbrd-page {
+    background: linear-gradient(180deg, var(--site-gradient-start) 0%, var(--site-gradient-end) 60%);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .lbrd-page {
+        background: linear-gradient(180deg, var(--site-gradient-start) 0%, var(--site-gradient-end) 60%);
+    }
+}
+
+.lbrd-hdr {
+    margin-bottom: 22px;
+}
+
+.lbrd-hdr h1 {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.lbrd-hdr h1 i { color: #f59e0b; }
+
+.lbrd-hdr p {
+    color: var(--text-muted);
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* ── Your stats strip ── */
+
+.lbrd-mystats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.lbrd-mystat {
+    background: var(--white);
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 16px 10px;
+    text-align: center;
+}
+
+.lbrd-mystat-value {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--text-main);
+}
+
+.lbrd-mystat-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+/* ── Period tabs ── */
+
+.lbrd-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 1.5px solid var(--border-color);
+}
+
+.lbrd-tab {
+    padding: 10px 16px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 2.5px solid transparent;
+    margin-bottom: -1.5px;
+}
+
+.lbrd-tab:hover { color: var(--text-main); text-decoration: none; }
+
+.lbrd-tab.active {
+    color: var(--primary-orange);
+    border-bottom-color: var(--primary-orange);
+}
+
+/* ── Ranked list ── */
+
+.lbrd-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.lbrd-item {
+    background: var(--white);
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.lbrd-item--me {
+    border-color: var(--primary-orange);
+    background: rgba(255, 106, 0, 0.04);
+}
+
+.lbrd-rank {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 800;
+    background: var(--surface-subtle);
+    color: var(--text-muted);
+}
+
+.lbrd-rank--1 { background: #fef3c7; color: #b45309; }
+.lbrd-rank--2 { background: #e5e7eb; color: #4b5563; }
+.lbrd-rank--3 { background: #fed7aa; color: #c2410c; }
+
+.lbrd-info { flex: 1 1 auto; min-width: 0; }
+
+.lbrd-name {
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: 0.97rem;
+}
+
+.lbrd-you-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--primary-orange);
+    margin-left: 6px;
+    letter-spacing: 0.03em;
+}
+
+.lbrd-meta {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.lbrd-points {
+    flex-shrink: 0;
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: var(--primary-orange);
+    text-align: right;
+}
+
+.lbrd-points span {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    display: block;
+    text-transform: uppercase;
+}
+
+.lbrd-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0 10px;
+    color: var(--text-subtle);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.lbrd-divider::before,
+.lbrd-divider::after {
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
+    background: var(--border-color);
+}
+
+.lbrd-empty {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--text-muted);
+    min-height: 30vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+}
+
+.lbrd-empty i {
+    font-size: 2.2rem;
+    opacity: 0.35;
+}
+
+/* ── How-to-earn footer ── */
+
+.lbrd-howto {
+    margin-top: 32px;
+    padding: 20px;
+    background: var(--surface-subtle);
+    border-radius: var(--radius-lg);
+}
+
+.lbrd-howto-title {
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+}
+
+.lbrd-howto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.lbrd-howto-item {
+    font-size: 0.85rem;
+    color: var(--text-body);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lbrd-howto-item i {
+    color: var(--primary-orange);
+    width: 16px;
+    text-align: center;
+}
+
+@media (max-width: 560px) {
+    .lbrd-mystats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .lbrd-mystat { padding: 12px 6px; }
+    .lbrd-mystat-value { font-size: 1.2rem; }
+    .lbrd-item { padding: 12px 14px; gap: 12px; }
+    .lbrd-points { font-size: 1rem; }
+}

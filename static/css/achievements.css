@@ -71,3 +71,11 @@
 .ach-earn-label { font-size: var(--text-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #b45309; }
 .ach-earn-title { font-weight: 800; color: #78350f; font-size: var(--text-lg); }
 .ach-earn-link { margin-left: auto; font-size: var(--text-sm); font-weight: 600; color: #b45309; text-decoration: none; white-space: nowrap; }
+
+/* Points-earned variant — same layout, orange brand accent instead of badge-gold, so it reads as
+   a distinct "points" moment rather than another achievement banner. */
+.points-earn-banner { background: linear-gradient(135deg, #ffe8d6, #ffd0a8); }
+.points-earn-icon { background: var(--primary-orange); }
+.points-earn-banner .ach-earn-label,
+.points-earn-banner .ach-earn-link { color: var(--primary-orange-dark); }
+.points-earn-banner .ach-earn-title { color: #7c2d12; }

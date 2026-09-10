@@ -891,7 +891,22 @@ body.quiz-exam-lockdown .whatsapp-float {
     padding: 32px;
     box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 6px 24px rgba(15,23,42,0.05);
     margin-bottom: 14px;
+    cursor: grab;
 }
+.qplay-qcard:active { cursor: grabbing; }
+
+/* Swipe-between-questions transition (quiz-play.ftl) — mirrors flashcard-study.ftl's
+   anim-out-up/anim-in-up pair. Only fires on the deliberate "committed swipe" case; the
+   live drag-follow itself is done via inline transform/opacity, not these keyframes. */
+@keyframes qplay-qcard-out-up   { to { transform: translateY(-60px); opacity: 0; } }
+@keyframes qplay-qcard-out-down { to { transform: translateY(60px);  opacity: 0; } }
+@keyframes qplay-qcard-in-up    { from { transform: translateY(40px);  opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes qplay-qcard-in-down  { from { transform: translateY(-40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.qplay-qcard.qanim-out-up   { animation: qplay-qcard-out-up   0.2s cubic-bezier(0.4,0,1,1) forwards; }
+.qplay-qcard.qanim-out-down { animation: qplay-qcard-out-down 0.2s cubic-bezier(0.4,0,1,1) forwards; }
+.qplay-qcard.qanim-in-up    { animation: qplay-qcard-in-up    0.24s cubic-bezier(0,0,0.2,1) forwards; }
+.qplay-qcard.qanim-in-down  { animation: qplay-qcard-in-down  0.24s cubic-bezier(0,0,0.2,1) forwards; }
 
 @media (max-width: 640px) {
     .qplay-qcard { padding: 20px 16px; }
@@ -979,10 +994,23 @@ body.quiz-exam-lockdown .whatsapp-float {
     box-shadow: 0 0 0 3px rgba(255,106,0,0.07);
 }
 .qplay-option.selected        { border-color: #ff6a00; background: #fff7ed; }
-.qplay-option.correct         { border-color: #16a34a; background: #f0fdf4; }
-.qplay-option.wrong           { border-color: #dc2626; background: #fef2f2; }
-.qplay-option.reveal-correct  { border-color: #16a34a; background: #f0fdf4; }
+.qplay-option.correct         { border-color: #16a34a; background: #f0fdf4; animation: qplay-pop 380ms ease; }
+.qplay-option.wrong           { border-color: #dc2626; background: #fef2f2; animation: qplay-shake 380ms ease; }
+.qplay-option.reveal-correct  { border-color: #16a34a; background: #f0fdf4; animation: qplay-pop 380ms ease; }
 .qplay-option:disabled        { cursor: default; }
+
+@keyframes qplay-pop {
+    0%   { transform: scale(1); }
+    35%  { transform: scale(1.035); }
+    100% { transform: scale(1); }
+}
+@keyframes qplay-shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(2px); }
+}
 
 .qplay-opt-letter {
     width: 30px;
@@ -1042,12 +1070,19 @@ body.quiz-exam-lockdown .whatsapp-float {
     flex-direction: column;
     overflow: hidden;
     border: 1.5px solid transparent;
+    cursor: pointer;
 }
 
 .qplay-feedback--correct,
 .qplay-feedback--wrong,
 .qplay-feedback--skip {
     display: flex;
+    animation: qplay-fb-in 300ms cubic-bezier(0.2,0.8,0.2,1);
+}
+
+@keyframes qplay-fb-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 .qplay-feedback--correct { border-color: #bbf7d0; }
@@ -1065,10 +1100,44 @@ body.quiz-exam-lockdown .whatsapp-float {
 .qplay-feedback--wrong   .qplay-fb-verdict-row { background: #fef2f2; }
 .qplay-feedback--skip    .qplay-fb-verdict-row { background: #f8fafc; }
 
-.qplay-fb-icon { font-size: 0.95rem; flex-shrink: 0; }
+.qplay-fb-icon {
+    font-size: 0.95rem;
+    flex-shrink: 0;
+    animation: qplay-icon-pop 420ms cubic-bezier(0.34,1.56,0.64,1);
+}
 .qplay-feedback--correct .qplay-fb-icon { color: #16a34a; }
 .qplay-feedback--wrong   .qplay-fb-icon { color: #dc2626; }
 .qplay-feedback--skip    .qplay-fb-icon { color: #94a3b8; }
+
+@keyframes qplay-icon-pop {
+    0%   { transform: scale(0.4); opacity: 0; }
+    60%  { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Auto-advance countdown bar — drains over AUTO_ADVANCE_MS (quiz-play.ftl); tapping
+   anywhere on .qplay-feedback cancels it (see the click listener in quiz-play.ftl). */
+.qplay-fb-autonext {
+    height: 3px;
+    background: rgba(15,23,42,0.06);
+    overflow: hidden;
+}
+.qplay-fb-autonext-bar {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: currentColor;
+    transform-origin: left;
+    animation: qplay-autonext-drain 5s linear forwards;
+}
+.qplay-feedback--correct .qplay-fb-autonext-bar { color: #16a34a; }
+.qplay-feedback--wrong   .qplay-fb-autonext-bar { color: #dc2626; }
+.qplay-feedback--skip    .qplay-fb-autonext-bar { color: #94a3b8; }
+
+@keyframes qplay-autonext-drain {
+    from { transform: scaleX(1); }
+    to   { transform: scaleX(0); }
+}
 
 .qplay-fb-verdict-row strong {
     font-size: 0.88rem;

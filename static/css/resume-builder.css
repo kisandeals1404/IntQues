@@ -107,7 +107,7 @@
 .rb-breadcrumb a { color: #64748b; text-decoration: none; }
 .rb-breadcrumb a:hover { color: #ff6a00; }
 .rb-breadcrumb-sep { color: #cbd5e1; }
-.rb-breadcrumb-current { font-weight: 700; color: #0f172a; }
+.rb-breadcrumb-current { font-weight: 700; color: var(--text-main, #0f172a); }
 
 .rb-header-actions { display: flex; align-items: center; gap: 10px; }
 
@@ -157,6 +157,61 @@
 }
 .rb-btn-import:hover { border-color: #0284c7; background: #f0f9ff; }
 .rb-btn-import:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Import / View Sample / Choose Template — collapsed behind a "More" trigger on mobile so the
+   header isn't 5 controls deep before any real content; restored to the original inline row on
+   desktop where there's room (see the >700px override below). */
+.rb-more-wrap { position: relative; }
+
+.rb-btn-more {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 44px; height: 44px;
+    background: #fff; color: #475569;
+    border: 1.5px solid #e2e8f0; border-radius: 10px;
+    cursor: pointer; font-size: 1rem;
+    transition: border-color 160ms ease, color 160ms ease;
+}
+.rb-btn-more:hover,
+.rb-btn-more[aria-expanded="true"] { border-color: #ff6a00; color: #ff6a00; }
+
+.rb-more-menu {
+    position: absolute; top: calc(100% + 6px); left: 0;
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(15,23,42,0.14);
+    padding: 6px; min-width: 210px; z-index: 40;
+    display: flex; flex-direction: column; gap: 2px;
+}
+.rb-more-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 8px;
+    background: none; border: none; text-align: left;
+    color: #334155; font-size: 0.86rem; font-weight: 600;
+    text-decoration: none; cursor: pointer; width: 100%;
+    font-family: inherit;
+}
+.rb-more-item:hover { background: #f8fafc; color: #ff6a00; }
+.rb-more-item i { width: 18px; color: #94a3b8; flex-shrink: 0; text-align: center; }
+.rb-more-item:hover i { color: #ff6a00; }
+.rb-more-item:disabled { opacity: 0.6; cursor: not-allowed; }
+
+@media (min-width: 701px) {
+    .rb-btn-more { display: none; }
+    /* Neutralize the JS-controlled [hidden] state entirely — desktop always shows these
+       inline, dropdown behavior only exists below the 700px breakpoint. */
+    .rb-more-menu[hidden] { display: flex !important; }
+    .rb-more-menu {
+        position: static; box-shadow: none; border: none; padding: 0; min-width: 0;
+        flex-direction: row; align-items: center; gap: 10px;
+    }
+    .rb-more-item {
+        width: auto;
+        background: #fff; color: #475569;
+        border: 1.5px solid #e2e8f0; border-radius: 10px;
+        padding: 8px 14px; font-size: 0.85rem;
+    }
+    .rb-more-item:hover { border-color: #ff6a00; color: #ff6a00; background: #fff; }
+    .rb-more-item i { color: inherit; width: auto; }
+}
 
 .rb-save-status {
     font-size: 0.82rem; font-weight: 600;
