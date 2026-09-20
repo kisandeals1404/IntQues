@@ -30,7 +30,10 @@
     z-index: 0;
     border-radius: 50%;
     filter: blur(70px);
-    background: radial-gradient(circle, rgba(255,106,0,0.16) 0%, transparent 70%);
+    background:
+        radial-gradient(circle at 30% 28%, rgba(255,106,0,0.24) 0%, transparent 55%),
+        radial-gradient(circle at 76% 72%, rgba(124,58,237,0.16) 0%, transparent 58%),
+        radial-gradient(circle at 50% 50%, rgba(236,72,153,0.10) 0%, transparent 65%);
     animation: hsGlowPulse 6s ease-in-out infinite;
     pointer-events: none;
 }

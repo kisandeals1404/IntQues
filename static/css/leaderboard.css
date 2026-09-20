@@ -253,4 +253,8 @@
     .lbrd-mystat-value { font-size: 1.2rem; }
     .lbrd-item { padding: 12px 14px; gap: 12px; }
     .lbrd-points { font-size: 1rem; }
+    /* .lbrd-tabs has no flex-wrap, so its default nowrap lets the three period tabs overflow
+       (not wrap) past the viewport edge on narrow phones or with larger system font sizes —
+       flex:1 here mirrors the same fix already used for .qmode-count-pill in quiz.css. */
+    .lbrd-tab { flex: 1; text-align: center; padding: 10px 8px; }
 }

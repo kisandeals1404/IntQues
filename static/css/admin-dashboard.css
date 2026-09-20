@@ -4,8 +4,27 @@
 
 .dash-main {
     padding: 36px 0 80px;
-    background: #f1f5f9;
+    /* A soft brand-tinted mesh top-left/top-right, fading into the same flat gray the page
+       used before — a muted echo of the homepage hero's multi-hue mesh (home.css .hero-v3),
+       kept much fainter since this sits behind dense stacked white cards/tables rather than
+       big display type. Fixed (not scroll) so it doesn't visibly move/repeat as the page
+       scrolls. */
+    background:
+        radial-gradient(1100px 520px at 12% -8%, rgba(255, 106, 0, 0.06), transparent 60%),
+        radial-gradient(900px 460px at 100% -6%, rgba(124, 58, 237, 0.045), transparent 62%),
+        #f1f5f9;
+    background-attachment: fixed, fixed, scroll;
     min-height: calc(100vh - 58px);
+}
+
+/* Gentle one-time entrance — content settles in rather than popping in instantly. Respects
+   prefers-reduced-motion via the global override in global.css/ux-animations.css. */
+.dash-main > .container {
+    animation: dash-content-in 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes dash-content-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ── Page header ──────────────────────────────────── */
@@ -226,9 +245,12 @@
 /* ── Section card ─────────────────────────────────── */
 .dash-card {
     background: #fff;
-    border: 1px solid rgba(15,23,42,0.08);
+    border: 1px solid rgba(15,23,42,0.06);
     border-radius: 18px;
-    box-shadow: 0 1px 6px rgba(15,23,42,0.05);
+    /* Matches .admin-card's two-layer shadow (admin-courses.css) — same card language, same
+       file both are meant to feel like one design system rather than two similar-but-different
+       ones. */
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 14px 32px rgba(15, 23, 42, 0.06);
     margin-bottom: 24px;
     overflow: hidden;
 }
@@ -465,13 +487,28 @@
 }
 
 /* ── Empty state ──────────────────────────────────── */
+/* Icon moved into a soft tinted circle badge (matches .iq-empty-state in global.css — same
+   visual language, without needing to touch the ~18 admin templates that already use this exact
+   markup shape: <div class="dash-empty"><i>…</i><p>…</p></div>). One CSS-only change upgrades
+   every admin empty state at once instead of a template-by-template migration. */
 .dash-empty {
     text-align: center;
-    padding: 48px 24px;
-    color: #94a3b8;
+    padding: 52px 24px;
+    color: var(--text-muted, #64748b);
 }
-.dash-empty i { font-size: 2rem; margin-bottom: 12px; display: block; opacity: 0.45; }
-.dash-empty p { font-size: 0.9rem; margin: 0; }
+.dash-empty i {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 14px;
+    border-radius: var(--radius-full, 999px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: var(--primary-orange, #ff6a00);
+    background: linear-gradient(135deg, rgba(255, 106, 0, 0.10), rgba(255, 140, 58, 0.05));
+}
+.dash-empty p { font-size: 0.9rem; margin: 0; line-height: 1.6; }
 
 /* ── Td name ──────────────────────────────────────── */
 .dash-td-name strong { display: block; font-weight: 700; color: #0f172a; white-space: nowrap; }
@@ -511,6 +548,14 @@
     border-bottom: 1px solid rgba(255,255,255,0.07);
     box-shadow: 0 2px 18px rgba(0,0,0,0.22);
     padding-top: env(safe-area-inset-top, 0px);
+}
+/* Thin brand-gradient top edge — same touch as .pd-hero::before (admin-courses.css), the
+   one line of color on an otherwise solid-dark bar that's visible on every admin page. */
+.admin-top-nav::before {
+    content: '';
+    display: block;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ff6a00 25%, #ff3d81 50%, #7c3aed 75%, transparent);
 }
 
 .admin-top-inner {
@@ -576,6 +621,20 @@
     scrollbar-width: none;
     gap: 2px;
     padding: 0 6px;
+    /* Scroll-shadow trick: a `background-attachment: local` layer scrolls WITH the content, so
+       it only becomes visible once there's actually somewhere to scroll to and hides itself
+       flush against a solid-color layer when the tabs are fully in view — no JS needed to detect
+       overflow. On a phone with more admin sections than fit, this is otherwise a silent
+       horizontal-scroll with no hint anything is off-screen. Colors match .admin-top-nav's solid
+       #0f172a background so the fade blends in rather than showing a visible seam. */
+    background:
+        linear-gradient(to right, #0f172a 30%, rgba(15,23,42,0)) left,
+        linear-gradient(to left, #0f172a 30%, rgba(15,23,42,0)) right,
+        linear-gradient(to right, rgba(0,0,0,0.35), rgba(0,0,0,0)) left,
+        linear-gradient(to left, rgba(0,0,0,0.35), rgba(0,0,0,0)) right;
+    background-repeat: no-repeat;
+    background-size: 24px 100%, 24px 100%, 10px 100%, 10px 100%;
+    background-attachment: local, local, scroll, scroll;
 }
 .admin-nav-tabs::-webkit-scrollbar { display: none; }
 
@@ -594,6 +653,12 @@
     flex-shrink: 0;
     transition: color 140ms ease, background 140ms ease;
 }
+/* The `display: inline-flex` above is an author rule, which beats the UA stylesheet's
+   `[hidden] { display: none }` regardless of specificity — admin-nav.ftl's overflow script
+   sets `hidden` on tabs that don't fit, and without this they'd stay visible. */
+.admin-nav-tab[hidden] {
+    display: none;
+}
 .admin-nav-tab:hover { color: #fff; background: rgba(255,255,255,0.08); text-decoration: none; }
 .admin-nav-tab.is-active { color: #ff8c3a; background: rgba(255,106,0,0.14); font-weight: 700; }
 .admin-nav-tab--soon { color: rgba(255,255,255,0.28); cursor: default; }
@@ -610,6 +675,63 @@
     color: rgba(255,255,255,0.28);
     line-height: 1.4;
 }
+
+/* ── "More" overflow menu (admin-nav.js in admin-nav.ftl) — tabs that don't fit the nav's
+   width land here instead of being reachable only by horizontal-scrolling past them. ── */
+.admin-nav-more {
+    position: relative;
+    height: 100%;
+    flex-shrink: 0;
+}
+.admin-nav-more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 38px;
+    margin: 10px 4px;
+    padding: 0 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: rgba(255,255,255,0.68);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 140ms ease, background 140ms ease;
+}
+.admin-nav-more-btn i { font-size: 0.7em; transition: transform 160ms ease; }
+.admin-nav-more-btn:hover { color: #fff; background: rgba(255,255,255,0.10); }
+.admin-nav-more-btn[aria-expanded="true"] { color: #ff8c3a; background: rgba(255,106,0,0.14); }
+.admin-nav-more-btn[aria-expanded="true"] i { transform: rotate(180deg); }
+
+.admin-nav-more-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    min-width: 190px;
+    background: #16213a;
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 12px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+    padding: 6px;
+    z-index: 1400;
+}
+.admin-nav-more-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    border-radius: 8px;
+    white-space: nowrap;
+}
+.admin-nav-more-item:hover { color: #fff; background: rgba(255,255,255,0.08); text-decoration: none; }
+.admin-nav-more-item.is-active { color: #ff8c3a; background: rgba(255,106,0,0.14); }
 
 /* ── View Site link ────────────────────────────────── */
 .admin-view-site {
@@ -640,6 +762,8 @@
     .admin-view-site span { display: none; }
     .admin-nav-tab { padding: 0 10px; }
     .admin-view-site { padding: 0 12px; }
+    .admin-nav-more-btn span { display: none; }
+    .admin-nav-more-btn { padding: 0 10px; }
 }
 
 /* =====================================================
@@ -648,7 +772,14 @@
 
 .admin-hub-main {
     padding: 48px 0 80px;
-    background: #f1f5f9;
+    /* The hub is admin's closest thing to a "home page" — a bit more of the homepage hero's
+       mesh (home.css .hero-v3) than the data-dense pages get, since its module-card grid has
+       more breathing room to carry it. */
+    background:
+        radial-gradient(1200px 560px at 10% -10%, rgba(255, 106, 0, 0.07), transparent 60%),
+        radial-gradient(1000px 500px at 100% -8%, rgba(124, 58, 237, 0.055), transparent 62%),
+        #f1f5f9;
+    background-attachment: fixed, fixed, scroll;
     min-height: calc(100vh - 58px);
 }
 
@@ -909,3 +1040,68 @@
     .admin-form-grid { grid-template-columns: 1fr; }
     .admin-form-field--full { grid-column: 1; }
 }
+
+/* ── Mobile App section sub-nav ─────────────────────────── */
+.admin-subnav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-color, #e2e8f0);
+}
+.admin-subnav-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #64748b;
+    background: #f1f5f9;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.admin-subnav-tab:hover { background: #e2e8f0; color: #334155; text-decoration: none; }
+.admin-subnav-tab.is-active { background: rgba(255,106,0,0.12); color: #ea580c; }
+
+/* ── Health status indicators ───────────────────────────── */
+.health-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px; }
+.health-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    background: #fff;
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 12px;
+}
+.health-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+.health-dot--ok { background: #22c55e; box-shadow: 0 0 0 4px rgba(34,197,94,0.15); }
+.health-dot--warn { background: #f59e0b; box-shadow: 0 0 0 4px rgba(245,158,11,0.15); }
+.health-dot--bad { background: #ef4444; box-shadow: 0 0 0 4px rgba(239,68,68,0.15); }
+.health-label { font-size: 0.78rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; }
+.health-value { font-size: 0.95rem; color: #0f172a; font-weight: 700; margin-top: 2px; }
+
+/* ── Simple on/off switch (maintenance, feature flags) ──── */
+.admin-switch { position: relative; display: inline-block; width: 46px; height: 26px; flex-shrink: 0; }
+.admin-switch input { opacity: 0; width: 0; height: 0; }
+.admin-switch-track {
+    position: absolute; inset: 0; background: #cbd5e1; border-radius: 999px; cursor: pointer;
+    transition: background 150ms ease;
+}
+.admin-switch-track::before {
+    content: ''; position: absolute; left: 3px; top: 3px; width: 20px; height: 20px;
+    background: #fff; border-radius: 50%; transition: transform 150ms ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.admin-switch input:checked + .admin-switch-track { background: #22c55e; }
+.admin-switch input:checked + .admin-switch-track::before { transform: translateX(20px); }
+.admin-switch input:focus-visible + .admin-switch-track { box-shadow: 0 0 0 3px rgba(34,197,94,0.3); }
+
+/* Dashboards previously got a wider container (max-width:1600px) above 1440px, on the theory
+   that data-dense pages should use extra monitor width instead of wasting it as margin — but for
+   a KPI-card grid like this (a handful of stat tiles, not a wide table), stretching the container
+   just spreads the cards thin edge-to-edge instead of reading as an intentional layout. Reverted
+   per explicit feedback: keep the same 1200px `.container` every other page uses, at every width. */

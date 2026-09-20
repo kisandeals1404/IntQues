@@ -888,6 +888,33 @@
 .of-search-clear:hover { background: #e2e8f0; color: #0f172a; }
 .of-search-clear[hidden] { display: none !important; }
 
+/* "Request a course" upsell — sits directly below the search bar on /quizzes and /flashcards
+   (see quizzes.ftl / flashcards.ftl), pointing Quiz Pro subscribers (and prospects) at
+   /course-requests. Deliberately lighter-weight than .of-search-wrap so it reads as a follow-on
+   suggestion, not a second input. */
+.of-request-course-cta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgba(255,106,0,0.06);
+    border: 1px solid rgba(255,106,0,0.16);
+    color: #9a3412;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 150ms ease, border-color 150ms ease;
+}
+.of-request-course-cta:hover { background: rgba(255,106,0,0.11); border-color: rgba(255,106,0,0.28); }
+.of-request-course-cta i:first-child { color: #ff6a00; flex-shrink: 0; }
+.of-request-course-cta strong { font-weight: 700; }
+.of-request-course-cta i.fa-arrow-right { font-size: 0.75rem; flex-shrink: 0; }
+@media (max-width: 560px) {
+    .of-request-course-cta i.fa-arrow-right { display: none; }
+}
+
 /* Hide cards that don't match search */
 .of-card[data-hidden="true"] { display: none; }
 

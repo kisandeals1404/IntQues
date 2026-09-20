@@ -92,7 +92,6 @@
     var SECTION_HEADERS = [
         '.testimonials-header',
         '.faq-header',
-        '.stats-strip',
     ];
 
     var GRID_SELECTORS = [

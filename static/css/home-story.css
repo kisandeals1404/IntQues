@@ -439,9 +439,18 @@
     text-align: center;
     padding: clamp(56px, 8vw, 88px) 32px;
     border-radius: var(--radius-2xl, 24px);
-    background: linear-gradient(135deg, #ff6a00 0%, #ff8c3a 55%, #ffb347 100%);
+    background: linear-gradient(115deg, #ff6a00 0%, #ff3d81 55%, #7c3aed 100%);
+    background-size: 220% auto;
+    animation: fctaGradientShift 9s ease infinite;
     max-width: 980px;
     margin: 0 auto;
+}
+@keyframes fctaGradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .fcta-panel { animation: none; }
 }
 
 .fcta-glow {

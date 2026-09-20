@@ -26,6 +26,7 @@
     transition: var(--transition-fast);
 }
 .ach-card--earned { opacity: 1; filter: none; box-shadow: var(--shadow-sm); }
+.ach-card--earned:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
 
 .ach-card-icon {
     width: 64px; height: 64px;

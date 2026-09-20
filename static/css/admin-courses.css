@@ -3,7 +3,14 @@
 .admin-main {
     padding-top: 36px;
     padding-bottom: 72px;
-    background: #f1f5f9;
+    /* Same muted mesh echo as .dash-main/.admin-hub-main (admin-dashboard.css) — all admin
+       shells share one background language now instead of some pages having it and others
+       being flat gray. */
+    background:
+        radial-gradient(1100px 520px at 12% -8%, rgba(255, 106, 0, 0.06), transparent 60%),
+        radial-gradient(900px 460px at 100% -6%, rgba(124, 58, 237, 0.045), transparent 62%),
+        #f1f5f9;
+    background-attachment: fixed, fixed, scroll;
     min-height: calc(100vh - 58px);
 }
 
@@ -83,26 +90,41 @@
 
 .admin-card {
     background: #fff;
-    border: 1px solid rgba(15, 23, 42, 0.08);
+    border: 1px solid rgba(15, 23, 42, 0.06);
     border-radius: 18px;
     margin-bottom: 24px;
     overflow: hidden;
-    box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05);
+    /* Two-layer shadow (a tight contact shadow + a soft, wide ambient one) reads as genuine
+       depth/lift rather than the single flat 2px blur this had before — the same technique
+       --shadow-card/--shadow-lg already use elsewhere, just tuned slightly softer here since
+       these cards stack many-deep down a page (business-assignment-new.ftl has 6+). */
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 14px 32px rgba(15, 23, 42, 0.06);
 }
 
+/* Deliberately no color accent here (tried a gradient wash, then a left accent bar — both
+   read as decoration rather than design). Actual premium dashboards (Stripe, Linear, Notion,
+   Vercel) mostly leave section headers monochrome and save color for things you interact
+   with — buttons, links, status badges — not page furniture. Clean typography + a crisp
+   neutral border does the "premium" work here instead. */
 .admin-card-header {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 18px 24px;
-    border-bottom: 1px solid rgba(15, 23, 42, 0.07);
+    padding: 19px 24px;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
 }
 
 .admin-card-header h2 {
     margin: 0;
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-weight: 800;
     color: #0f172a;
+    letter-spacing: -0.015em;
+}
+
+.admin-card-header h2 i:first-child {
+    color: var(--primary-orange, #ff6a00);
+    margin-right: 2px;
 }
 
 .admin-card-body {
@@ -255,6 +277,16 @@
     padding: 5px 12px;
     font-size: 0.8rem;
     border-radius: var(--radius-sm);
+}
+
+/* Opt-in larger size for a page's one true final call-to-action (e.g. "Create & Send
+   Assignment") — deliberately a separate modifier rather than changing .admin-btn itself, which
+   is the default size for the many small/secondary buttons across every admin/business screen. */
+.admin-btn-lg {
+    min-height: 56px;
+    padding: 15px 30px;
+    font-size: 1.02rem;
+    border-radius: var(--radius-lg, 14px);
 }
 
 .admin-btn-outline {
@@ -420,6 +452,9 @@
 
     .admin-form-actions {
         justify-content: stretch;
+        /* two full-width nowrap buttons in one row (e.g. Preview + Create & Send Assignment)
+           forced the whole page ~575px wide on a 390px phone — stack them instead */
+        flex-wrap: wrap;
     }
 
     .admin-form-actions .admin-btn {

@@ -128,7 +128,16 @@
 }
 
 .search-section {
+    /* Resets the 72px top+bottom padding every bare <section> gets from global.css's marketing-page
+       rhythm — this is a compact utility list, not a marketing section. */
+    padding: 0;
     margin-bottom: 28px;
+}
+
+/* Also drop global.css's decorative section::before tint — it's meant for marketing sections,
+   not this plain results list. */
+.search-section::before {
+    content: none;
 }
 
 .search-section-title {

@@ -1,0 +1,100 @@
+/* =========================================
+   IQ TOAST — shared toast-notification component
+   Used by form-validation.js (site-wide) and available as window.IqToast for any other
+   script that wants a floating, auto-dismissing notification instead of (or alongside) an
+   in-page InlineAlert banner.
+========================================= */
+
+#iq-toast-region {
+    position: fixed;
+    top: calc(76px + env(safe-area-inset-top, 0px));
+    right: 16px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: min(380px, calc(100vw - 32px));
+    pointer-events: none;
+}
+
+@media (max-width: 991px) {
+    #iq-toast-region { top: calc(68px + env(safe-area-inset-top, 0px)); }
+}
+
+.iq-toast {
+    pointer-events: auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 13px 14px;
+    border-radius: var(--radius-lg, 14px);
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 10px 32px rgba(15, 23, 42, 0.14), 0 2px 8px rgba(15, 23, 42, 0.06);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-main, #1e293b);
+    animation: iqToastIn 260ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+.iq-toast.is-leaving {
+    animation: iqToastOut 200ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+@keyframes iqToastIn {
+    from { opacity: 0; transform: translateX(16px) scale(0.98); }
+    to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes iqToastOut {
+    from { opacity: 1; transform: translateX(0); max-height: 200px; margin-bottom: 0; }
+    to   { opacity: 0; transform: translateX(16px); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .iq-toast { animation: none; }
+}
+
+.iq-toast-icon {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    color: #fff;
+    margin-top: 1px;
+}
+.iq-toast--error .iq-toast-icon { background: #ef4444; }
+.iq-toast--success .iq-toast-icon { background: #22c55e; }
+.iq-toast--info .iq-toast-icon { background: #3b82f6; }
+.iq-toast--warning .iq-toast-icon { background: #f59e0b; }
+
+.iq-toast-body { flex: 1; min-width: 0; line-height: 1.45; }
+
+.iq-toast-close {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    padding: 2px;
+    margin: -2px -2px 0 0;
+    color: var(--text-subtle, #94a3b8);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: color 140ms ease, background 140ms ease;
+}
+.iq-toast-close:hover { color: var(--text-main, #1e293b); background: rgba(15, 23, 42, 0.06); }
+
+/* Brief highlight on whatever element a toast's opts.scrollTo points at — an outline (not
+   box-shadow) so it reads consistently regardless of the target's own border-radius/background,
+   and doesn't affect layout on elements that aren't positioned. */
+.iq-toast-target-pulse {
+    animation: iqToastTargetPulse 1.6s ease-out;
+    border-radius: var(--radius-md, 10px);
+}
+@keyframes iqToastTargetPulse {
+    0%   { outline: 3px solid rgba(239, 68, 68, 0.45); outline-offset: 3px; }
+    70%  { outline: 3px solid rgba(239, 68, 68, 0.45); outline-offset: 3px; }
+    100% { outline: 3px solid rgba(239, 68, 68, 0); outline-offset: 3px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .iq-toast-target-pulse { animation: none; outline: 3px solid rgba(239, 68, 68, 0.45); outline-offset: 3px; }
+}

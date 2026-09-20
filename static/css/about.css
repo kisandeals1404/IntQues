@@ -99,14 +99,14 @@
     align-items: center;
     gap: 8px;
     padding: 14px 28px;
-    background: linear-gradient(135deg, #ff6a00, #ff7a1a);
+    background: var(--primary-gradient, linear-gradient(135deg, #ff6a00, #ff8c3a));
     color: #fff;
     border-radius: var(--radius-card);
     font-weight: 800;
     font-size: 0.95rem;
     text-decoration: none;
-    box-shadow: 0 8px 24px rgba(255,106,0,0.28);
-    transition: transform 220ms ease, box-shadow 220ms ease;
+    box-shadow: var(--shadow-orange-md, 0 8px 24px rgba(255,106,0,0.28));
+    transition: var(--transition-smooth, transform 220ms ease, box-shadow 220ms ease);
 }
 .about-cta-primary:hover {
     color: #fff;

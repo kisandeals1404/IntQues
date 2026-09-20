@@ -848,45 +848,6 @@ html { scroll-padding-top: 80px; }
     animation: fadeUp 400ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
 }
 
-/* ─ Stats panel — animated top accent ──────── */
-.stats-panel {
-    border: 1px solid rgba(255,106,0,0.14) !important;
-    position: relative;
-    overflow: hidden;
-}
-.stats-panel::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #ff6a00 25%, #ffbc00 60%, #ff6a00 85%, transparent);
-    background-size: 200% auto;
-    animation: shimmerSlide 3s linear infinite;
-    border-radius: 20px 20px 0 0;
-    pointer-events: none;
-}
-
-/* ─ Stat numbers — gradient text + entrance ─ */
-.stat-number {
-    background: linear-gradient(135deg, #ff6a00 0%, #ffcb47 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    opacity: 0;
-    transform: translateY(14px) scale(0.92);
-    transition: opacity 480ms cubic-bezier(0.2, 0.9, 0.2, 1),
-                transform 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.stat-number.is-counted {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-}
-/* Stagger each stat item's number */
-.stat-item:nth-child(1) .stat-number { transition-delay: 0ms; }
-.stat-item:nth-child(2) .stat-number { transition-delay: 100ms; }
-.stat-item:nth-child(3) .stat-number { transition-delay: 200ms; }
-.stat-item:nth-child(4) .stat-number { transition-delay: 300ms; }
-
 /* ─ Hero live badge — pulsing dot glow ───── */
 .hero-v3-live-dot {
     box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.22);
@@ -1091,7 +1052,6 @@ footer::before {
     .pop-card::after            { display: none; }
     /* .of-hdr no longer animated — rule removed */
     .live-course-banner        { animation: none !important; }
-    .stats-panel::before       { animation: none; }
     footer::before             { animation: none; }
     #main-content              { animation: none; }
 }
@@ -1111,14 +1071,21 @@ footer::before {
     animation: shimmerSlide 5s linear infinite;
 }
 
-/* ── 3. Hero live badge — elevated glow ──────── */
+/* ── 3. Hero live badge — bold gradient chip (part of the "bold & vibrant" hero pass —
+   see home.css .hero-v3 for the matching background mesh) ──────── */
 .hero-v3-live-badge {
-    background: linear-gradient(135deg, #ffffff 0%, #fffbf5 100%) !important;
-    border: 1px solid rgba(255,106,0,0.18) !important;
+    background: linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
     box-shadow:
-        0 2px 14px rgba(255,106,0,0.12),
-        0 1px 4px rgba(15,23,42,0.06),
-        inset 0 1px 0 rgba(255,255,255,1) !important;
+        0 6px 20px rgba(255,61,129,0.30),
+        0 2px 8px rgba(255,106,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.25) !important;
+}
+.hero-v3-live-dot {
+    /* Kept green (not white) — it's the "this is live" signal, and green pops harder
+       against the new vivid orange/magenta badge than it did against plain white. */
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.45) !important;
 }
 
 /* ── 4. Hero float cards — premium glass ──────── */
@@ -1131,18 +1098,6 @@ footer::before {
         0 8px 32px rgba(15,23,42,0.11),
         0 2px 8px rgba(15,23,42,0.06),
         inset 0 1px 0 rgba(255,255,255,0.98) !important;
-}
-
-/* ── 6. Stats panel — layered gradient + depth ── */
-.stats-panel {
-    background: linear-gradient(160deg, #101828 0%, #162038 50%, #0d1526 100%) !important;
-    box-shadow:
-        0 4px 24px rgba(15,23,42,0.22),
-        0 1px 4px rgba(15,23,42,0.14),
-        inset 0 1px 0 rgba(255,255,255,0.04) !important;
-}
-.stat-item:not(:last-child) {
-    border-right: 1px solid rgba(255,255,255,0.055) !important;
 }
 
 /* ── 7. Why section — richer layered dark bg ──── */
@@ -1643,34 +1598,23 @@ footer::before {
    Hero, section headers, cards, nav, forms
 ============================================= */
 
-/* ── 3. Hero trust pills — white card feel ─── */
+/* ── 3. Hero trust pills — bold color-coded chips, not five identical gray pills ─── */
 .hero-v3-pill {
-    background: #ffffff !important;
-    border: 1px solid rgba(15,23,42,0.09) !important;
     box-shadow: 0 1px 4px rgba(15,23,42,0.05) !important;
     padding: 6px 14px !important;
     font-size: 12px !important;
-    color: #334155 !important;
     letter-spacing: 0.01em !important;
-    transition: border-color 180ms ease, color 180ms ease, transform 200ms ease !important;
+    transition: border-color 180ms ease, color 180ms ease, transform 200ms ease, box-shadow 180ms ease !important;
 }
+.hero-v3-pill:nth-child(5n+1) { background: rgba(255,106,0,0.10) !important; border: 1px solid rgba(255,106,0,0.24) !important; color: #c2410c !important; }
+.hero-v3-pill:nth-child(5n+2) { background: rgba(124,58,237,0.10) !important; border: 1px solid rgba(124,58,237,0.24) !important; color: #6d28d9 !important; }
+.hero-v3-pill:nth-child(5n+3) { background: rgba(236,72,153,0.10) !important; border: 1px solid rgba(236,72,153,0.24) !important; color: #be185d !important; }
+.hero-v3-pill:nth-child(5n+4) { background: rgba(6,182,212,0.10) !important; border: 1px solid rgba(6,182,212,0.24) !important; color: #0e7490 !important; }
+.hero-v3-pill:nth-child(5n+5) { background: rgba(34,197,94,0.10) !important; border: 1px solid rgba(34,197,94,0.24) !important; color: #15803d !important; }
+.hero-v3-pill::before { background: currentColor !important; opacity: 0.75 !important; }
 .hero-v3-pill:hover {
-    border-color: rgba(255,106,0,0.28) !important;
-    color: var(--primary-orange) !important;
     transform: translateY(-2px) !important;
-}
-
-/* ── 4. Stats panel — richer dark gradient ─── */
-.stat-number {
-    font-size: clamp(2.4rem, 5vw, 3.4rem) !important;
-}
-.stat-label {
-    font-size: 0.70rem !important;
-    letter-spacing: 0.10em !important;
-    color: rgba(255,255,255,0.68) !important;
-}
-.stat-item {
-    padding: 12px 28px !important;
+    box-shadow: 0 4px 12px rgba(15,23,42,0.10) !important;
 }
 
 /* ── 5. Section h2 headings — more impact ─── */
@@ -1867,13 +1811,6 @@ footer::before {
     background: rgba(255,106,0,0.03) !important;
 }
 
-/* ── 25. Section alternating background rhythm ─
-   wiq-section already uses #f8fafc; here we make
-   the hero stats strip feel part of the hero flow */
-.stats-strip {
-    padding-bottom: 0 !important;
-}
-
 /* ── 26. Why IntQues section — subtle radial ── */
 .wiq-section {
     background:
@@ -1886,13 +1823,6 @@ footer::before {
 /* ── 28. Enroll modal sheet — desktop rounder corners ──── */
 @media (min-width: 581px) {
     .em-sheet { border-radius: 28px !important; }
-}
-
-/* ── 29. Mobile overrides ─────────────────────── */
-@media (max-width: 640px) {
-    /* Restore tighter stat item padding on small screens */
-    .stat-item { padding: 12px 16px !important; }
-    .stat-number { font-size: clamp(1.9rem, 8vw, 2.6rem) !important; }
 }
 
 /* =============================================
@@ -2209,9 +2139,13 @@ footer::before {
 
     /* Flashcard topic rows */
     .fc-topic-item { min-height: 64px; }
+}
 
-    /* Same slot as .whatsapp-float on mobile too — both need to clear the tab bar identically
-       since only one of them is ever shown. */
+/* Same slot as .whatsapp-float on mobile too — both need to clear the tab bar identically since
+   only one of them is ever shown. Breakpoint must match the tab bar's own (max-width: 768px):
+   at exactly 768px (iPad mini portrait) the bar is showing, and a 767px cut-off left this button
+   at bottom:18px, hidden behind it. */
+@media (max-width: 768px) {
     .btt-btn { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
 }
 
@@ -2473,3 +2407,653 @@ footer::before {
     }
 }
 
+
+/* ===== MOBILE UX fixes ===== (<=767px only; owned by the mobile audit — desktop/tablet unaffected) */
+@media (max-width: 767px) {
+    /* "VS" badge sat on top of the first card's label ("TRADITIONAL LEARNIN|G" clipped).
+       Make it an in-flow grid item that straddles the gap between the two stacked cards. */
+    .cmp-grid { gap: 20px; }
+    .cmp-vs { position: relative; left: auto; top: auto; transform: none; justify-self: center; margin: -26px 0; }
+
+    /* Closed off-canvas drawer's 32px box-shadow bled onto the left edge of every page as a grey band. */
+    .nav-drawer:not(.open) { box-shadow: none; }
+
+    /* Bootstrap modals (z 1055): the fixed tab bar (z 1500), WhatsApp and back-to-top buttons
+       floated ABOVE the dimmed backdrop and looked tappable behind the dialog. */
+    body.modal-open .mobile-tab-bar { z-index: 1040; }
+    body.modal-open .whatsapp-float,
+    body.modal-open .btt-btn { display: none; }
+    .modal-footer .admin-btn, .modal-footer .btn { min-height: 44px; }
+    .onboarding-chip { min-height: 44px; }
+
+    /* Course/quiz cards: 16:9 banner made each card ~1 screen tall; a wider, shorter banner
+       lets people scan more than one course per screen. */
+    .of-thumb { aspect-ratio: 21 / 9; }
+
+    /* Footer: was ~950px of single-column centred links with 24px-tall tap targets, and the
+       legal row ("Cookie Policy") sat directly under the fixed WhatsApp button / tab bar.
+       Two-column link lists, 44px targets, and the dark footer now runs to the very bottom
+       (the body's tab-bar padding used to show as a white strip under it). */
+    .footer-section { padding: 44px 0 0; margin-bottom: calc(-70px - env(safe-area-inset-bottom, 0px)); }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px 16px; margin-bottom: 28px; text-align: center; }
+    .footer-brand, .footer-links:last-child { grid-column: 1 / -1; }
+    .footer-links li { margin-bottom: 0; }
+    .footer-links a, .footer-bottom-links a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 10px; }
+    .footer-links:last-child li:nth-last-child(-n+2) { display: none; } /* Privacy/Terms are repeated in the bottom row */
+    .footer-bottom { padding-bottom: calc(150px + env(safe-area-inset-bottom, 0px)); }
+    .footer-bottom-links { flex-wrap: wrap; justify-content: center; gap: 0 4px; }
+
+    /* iOS Safari zooms the whole page on focus of any text field under 16px (and never zooms back
+       out) — dozens of inputs/selects across the site were 13.7–15.2px. */
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"]),
+    select, textarea { font-size: 16px !important; }
+
+    /* /games: page reserved 76px for a fixed navbar that is sticky on mobile => white gap above
+       the hero; and the 70px|1fr "Number of questions" column wrapped its label onto 3 lines. */
+    .game-home-page { padding-top: 0; }
+    .game-lobby-page { padding-top: 24px; }
+    .gplay-wrap { padding-top: 24px; }
+    .gresult-page { padding-top: 24px; }
+
+    /* Quiz/exam player: icon-only controls were 30-39px. */
+    .qplay-tb-palette-btn { min-width: 44px; min-height: 44px; }
+    .qp-close-btn { min-width: 44px; min-height: 44px; }
+    .qplay-nav-btn--skip, .qplay-nav-btn--review { min-width: 44px; }
+    .qplay-finish-btns a, .qplay-finish-btns button { min-height: 44px; }
+    .qp-leg { font-size: 0.7rem; }
+    .qplay-finish-stat-l, .qplay-qtag { font-size: 0.7rem; }
+
+    /* Flashcard study/review header: the absolutely-positioned back button and "1 / 30" counter
+       were pinned to left:0/right:0 of a full-width container, so they sat flush against (and were
+       clipped by) the screen edges. */
+    .fc-study-hero-inner .fc-study-back { left: 12px; }
+    .fc-study-hero-inner .fc-study-counter { right: 12px; }
+    /* same flush-to-edge bug on the flashcard topics + quiz mode hero back/leaderboard pills */
+    .fc-hero-back, .qmode-hero-back { left: 12px; }
+    .qmode-hero-back--right { left: auto; right: 12px; }
+
+    /* Resume builder: the sticky action bar was ~170px tall (title row + full-width Save & Preview
+       + a second row for Save / More) — ~20% of the viewport permanently covered while filling in
+       the form. One 60px row now: [More] [Save] [Save & Preview]. */
+    .rb-header { padding: 8px 0; }
+    .rb-header .rb-breadcrumb { display: none; }
+    .rb-header .rb-header-actions { gap: 8px; }
+    .rb-header #rbSavePreviewBtn { order: 0; flex: 1 1 auto; min-width: 0; white-space: nowrap; }
+    /* status/error text still gets its own full-width line, but only when there is any */
+    .rb-header .rb-save-status:empty { display: none; }
+
+    /* Tiny uppercase labels on the flashcard swipe card */
+    .fc-card-q-label, .fc-answer-label { font-size: 0.7rem; }
+
+    /* Login/signup status toast is top-anchored (auth.css); keep it above the nav/tab bar layers. */
+    .auth-message { z-index: 1600; }
+    .login-who-change, .login-text-btn, .link-btn { min-height: 44px; min-width: 44px; padding-left: 8px; padding-right: 8px; }
+    .login-text-btn { display: inline-flex; align-items: center; justify-content: center; }
+
+    /* Tap targets under 44px found across the crawl (search icon 37x33, drawer close 36x36,
+       dashboard filter/back links 34-38px, small admin-style buttons used on user pages). */
+    .nav-mobile-account { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+    .navbar-brand { min-height: 44px; display: inline-flex; align-items: center; }
+    .nav-drawer-close { min-width: 44px; min-height: 44px; }
+    .admin-btn-sm, .dash-nav-link, .ac-sub-page-back, .an-filter-select, .rb-photo-btn,
+    .rv-sample-cta, .rg-btn-sample, .rg-thumb-preview-btn, .ac-sub-btn { min-height: 44px; }
+    .of-btn-o { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+
+    /* Home page was 13px wider than the phone: the "IntQues" comparison card starts translateX(28px)
+       before its scroll-reveal fires and the flashcard-deck glow bleeds -8% either side. Chrome/
+       Android answers a too-wide page by zooming the WHOLE page out (layout viewport 404px on a
+       390px phone), which also pushed the fixed tab bar 30px below the screen. Reveal vertically
+       on phones instead, and keep the glow inside its column. */
+    .reveal-left, .reveal-right { transform: translateY(20px); }
+    /* Flex-row inputs kept their intrinsic ~180px min width and pushed neighbours off-screen at 320px
+       (refer page: copy button 72px past the edge; course search bar +2px). */
+    .refer-link-input, .of-search-input { min-width: 0; }
+    .of-search-wrap .of-search-input { width: 100%; }
+    .refer-link-row .refer-copy-btn { min-height: 44px; flex-shrink: 0; }
+    .fcs-deck-glow { inset: -12% 0; }
+
+    .form-select, .form-control:not(textarea), .rb-input, .admin-search-input, .qsub-coupon-input { min-height: 44px; }
+
+    .qmode-hero-back, .fc-hero-back { min-width: 44px; min-height: 44px; justify-content: center; }
+    .an-weakspot-cta-btn, .rv-sp-select { min-height: 44px; }
+    /* text-only "back" / breadcrumb links: enlarge the hit area without moving the text */
+    .rv-breadcrumb a, .rg-breadcrumb a, a.ac-sub-page-back,
+    a[href="/my-account"][style*="0.86rem"], a[href="/leaderboard"][style*="font-size:.82rem"] { display: inline-flex; align-items: center; min-height: 44px; }
+
+    /* -- mobile-fixes-append-here -- */
+}
+@media (max-width: 480px) {
+    /* My Account hub: each card was ~190px tall (icon stacked above text above pill) => six cards
+       = two full screens of scrolling. Icon-left / text-right rows are ~half the height. */
+    .account-detail-value { font-size: 0.9rem; } /* long emails wrapped mid-word ("…example.co / m") */
+    .ac-hub-grid { gap: 10px; }
+    .ac-hub-card { display: grid; grid-template-columns: 44px 1fr; column-gap: 14px; row-gap: 4px; padding: 14px 16px; border-radius: 16px; align-items: start; }
+    .ac-hub-card .ac-hub-icon { grid-row: 1 / span 2; width: 44px; height: 44px; margin: 0; }
+    .ac-hub-card .ac-hub-foot { grid-column: 2; margin-top: 0; min-height: 28px; }
+    .game-field-row { grid-template-columns: 1fr; padding-right: 0; gap: 0; }
+}
+/* Short phones (iPhone SE class, 320x568): the hero's primary CTA sat below the first screen. */
+@media (max-width: 767px) and (max-height: 700px) {
+    .hero-v3 { padding-top: 24px; }
+    .hero-v3-desc { font-size: 0.95rem; line-height: 1.5; margin-bottom: 16px; }
+    .container.hero-v3-search-row { margin-bottom: 14px; }
+}
+
+
+/* ===== ADMIN UX fixes ===== (everything below is scoped to body.admin-body — public/user pages unaffected) */
+
+/* The floating WhatsApp support CTA is a customer-facing widget; on admin pages it only ever sat on top
+   of table cells / form fields (worst on phones, where it covered the Action column). */
+body.admin-body .whatsapp-float { display: none !important; }
+
+/* Wide tables scroll inside their wrapper — add edge shadows so it's obvious there's more to the
+   right/left (previously the Action column was silently clipped, e.g. Users "Grant Unlimited"/"Delete"). */
+body.admin-body .dash-table-wrap,
+body.admin-body .admin-table-wrap {
+    -webkit-overflow-scrolling: touch;
+    background:
+        linear-gradient(to right, var(--white, #fff) 30%, rgba(255,255,255,0)) left center,
+        linear-gradient(to left, var(--white, #fff) 30%, rgba(255,255,255,0)) right center,
+        linear-gradient(to right, rgba(15,23,42,0.16), rgba(15,23,42,0)) left center,
+        linear-gradient(to left, rgba(15,23,42,0.16), rgba(15,23,42,0)) right center;
+    background-repeat: no-repeat;
+    background-size: 32px 100%, 32px 100%, 12px 100%, 12px 100%;
+    background-attachment: local, local, scroll, scroll;
+}
+
+/* Long exception messages (Mongo cluster dumps, stack-ish text) used to render fully expanded inside
+   the <summary>, making single rows hundreds of px tall. Clamp to one line; opening the <details>
+   reveals the full message plus the stack snippet. */
+body.admin-body .dash-table details > summary {
+    display: block;
+    max-width: 340px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+}
+body.admin-body .dash-table details[open] > summary { white-space: normal; overflow: visible; text-overflow: clip; }
+body.admin-body .dash-table details > pre { max-height: 260px; overflow: auto; }
+
+/* Filter chips are <button>s (coupons status filter): reset the global button border/size, and pad the
+   row so it isn't flush against the card edge. */
+body.admin-body button.admin-subnav-tab {
+    border: 1px solid transparent;
+    font-family: inherit;
+    line-height: 1.2;
+    cursor: pointer;
+    min-height: 36px;
+}
+body.admin-body button.admin-subnav-tab:hover { border-color: rgba(15,23,42,0.08); }
+body.admin-body button.admin-subnav-tab.is-active { border-color: rgba(255,106,0,0.25); }
+body.admin-body .dash-card > .admin-subnav { margin: 0; padding: 14px 24px; }
+
+/* Inline-styled two-column admin grids (mobile overview cards, maintenance settings + preview) stay
+   two columns at phone width and crush their content — stack them. */
+@media (max-width: 820px) {
+    body.admin-body [style*="grid-template-columns:1fr 1fr"],
+    body.admin-body [style*="grid-template-columns:1.3fr 1fr"] { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 768px) {
+    /* Mobile-app sub-nav: one swipeable row instead of a 4-5 line wall of pills above the content. */
+    body.admin-body .admin-subnav:not(.dash-card > .admin-subnav) {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+    body.admin-body .admin-subnav::-webkit-scrollbar { display: none; }
+    body.admin-body .admin-subnav-tab { flex-shrink: 0; min-height: 40px; }
+
+    /* Course tables (quizzes / flashcards): action buttons were stacked one-per-row and clipped. */
+    body.admin-body .admin-table td > div[style*="flex-wrap"] { min-width: 232px; }
+    body.admin-body .admin-table td:first-child { white-space: normal; overflow-wrap: anywhere; min-width: 96px; }
+}
+
+/* Touch targets on admin action buttons */
+@media (pointer: coarse) {
+    body.admin-body .dash-btn,
+    body.admin-body .admin-btn-sm { min-height: 40px; }
+}
+
+/* Referral commission form: the helper paragraph rendered at body-copy size (~17px) and dominated the card. */
+body.admin-body .dash-card form > p.asn-hint { font-size: 0.82rem; line-height: 1.6; color: var(--text-muted, #64748b); }
+
+/* Per-course question list: on phones only the truncated Question column was visible — Edit/Delete sat
+   off-screen behind a horizontal scroll. Reflow each row into a compact card. */
+@media (max-width: 768px) {
+    body.admin-body .aqz-course-table thead { display: none; }
+    body.admin-body .aqz-course-table,
+    body.admin-body .aqz-course-table tbody { display: block; width: 100%; }
+    body.admin-body .aqz-course-table tr {
+        display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+        padding: 14px 16px; border-bottom: 1px solid rgba(15,23,42,0.07);
+    }
+    body.admin-body .aqz-course-table td { display: block; padding: 0 !important; border: 0 !important; font-size: 0.8rem; }
+    body.admin-body .aqz-course-table td:first-child {
+        flex: 1 0 100%; max-width: none !important; white-space: normal !important;
+        overflow: visible !important; text-overflow: clip !important; font-size: 0.9rem; line-height: 1.45;
+    }
+    body.admin-body .aqz-course-table td:last-child { margin-left: auto; }
+}
+
+/* Admin "More" overflow menu: icons have different glyph widths, so item labels started at ragged x offsets. */
+body.admin-body .admin-nav-more-item i { width: 1.3em; text-align: center; flex-shrink: 0; }
+
+/* Anchored/scrolled-to admin sections (edit forms, panels) landed underneath the 60px sticky admin nav. */
+body.admin-body [id] { scroll-margin-top: 84px; }
+
+@media (max-width: 768px) {
+    /* The card reflow above sets display:flex on rows, which would otherwise override [hidden] (collapsed topic/preview rows). */
+    body.admin-body .aqz-course-table tr[hidden] { display: none; }
+    /* Flashcard topic rows (built by admin-flashcards.ftl's JS with inline styles): let name + buttons wrap instead of
+       pushing "Delete Topic" past the card edge. */
+    body.admin-body .afc-topic-block > div:first-child { flex-wrap: wrap !important; }
+    body.admin-body .afc-topic-block > div:first-child > div:first-child { flex: 1 1 100% !important; }
+    body.admin-body .afc-topic-block > div:first-child > div:last-child { flex-wrap: wrap; flex-shrink: 1 !important; }
+}
+
+/* Phone/tablet-width (<=900px): .dash-table rows become labelled cards (labels come from the <th>s via admin-nav.ftl's
+   data-label script). Replaces the sideways scroll that hid the Action column (Users, Coupons, Help/Course
+   requests, Errors, Audit log, Mobile-app errors/history, Plans ...). */
+@media (max-width: 900px) {
+    body.admin-body .dash-table-wrap:has(.dash-table--cards) { overflow-x: visible; background: none; }
+    body.admin-body .dash-table--cards,
+    body.admin-body .dash-table--cards tbody { display: block; width: 100%; }
+    body.admin-body .dash-table--cards thead { display: none; }
+    body.admin-body .dash-table--cards tr {
+        display: block; padding: 12px 18px; border-bottom: 1px solid rgba(15,23,42,0.08);
+    }
+    body.admin-body .dash-table--cards td {
+        display: block; position: relative; padding: 5px 0 5px 104px !important; min-height: 28px;
+        border: 0 !important; background: none !important; white-space: normal !important;
+        max-width: none !important; overflow-wrap: anywhere; text-align: left;
+    }
+    body.admin-body .dash-table--cards td[data-label]::before {
+        content: attr(data-label); position: absolute; left: 0; top: 7px; width: 92px;
+        font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #94a3b8;
+    }
+    body.admin-body .dash-table--cards td.dash-cell-empty { display: none; }
+    body.admin-body .dash-table--cards td.dash-cell-actions { padding-left: 0 !important; padding-top: 10px !important; }
+    body.admin-body .dash-table--cards td.dash-cell-actions::before { display: none; }
+    body.admin-body .dash-table--cards td.dash-cell-actions > div,
+    body.admin-body .dash-table--cards td.dash-cell-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    body.admin-body .dash-table--cards td.dash-cell-actions > form[style*="contents"] { display: contents; }
+    body.admin-body .dash-table--cards details > summary { max-width: 100%; }
+    body.admin-body .dash-table--cards td[style*="min-width"] { min-width: 0 !important; }
+}
+@media (max-width: 900px) {
+    body.admin-body .dash-table--cards td[data-label="#"] { display: none; }
+}
+
+
+/* ===== BUSINESS UX fixes ===== (business / trainer / recruitment / university pages) */
+
+/* Closed off-canvas nav drawer's 32px box-shadow bled onto the left edge of every desktop page as a
+   grey band (the mobile rules above only covered <=767px). */
+.nav-drawer:not(.open) { box-shadow: none; }
+
+/* /business marketing page: the two pricing-teaser CTAs inherited .bz-plan-btn's width:100% (meant for
+   plan cards) and rendered as two full-width stacked bars. Size them to their content, side by side. */
+.bz-pricing-teaser-ctas .bz-plan-btn { width: auto; min-width: 240px; padding: 13px 26px; }
+@media (max-width: 575px) {
+    .bz-pricing-teaser-ctas { flex-direction: column; align-items: stretch; }
+    .bz-pricing-teaser-ctas .bz-plan-btn { width: 100%; min-width: 0; }
+}
+
+/* Coupon field: the (uppercase-transformed) long placeholder was clipped mid-word. */
+.bz-coupon-input::placeholder { text-transform: none; letter-spacing: normal; }
+
+/* Native "Choose File" widgets (roster / question / flashcard / quiz-course imports) rendered as raw
+   grey system buttons that overhung the card padding on phones. */
+#sgUploadFile, #bqUploadFile, #bqcUploadFile, #bfcUploadFile {
+    flex: 1 1 220px; min-width: 0; max-width: 100%; box-sizing: border-box;
+    padding: 6px; font-family: inherit; font-size: 0.86rem; color: var(--text-muted, #64748b);
+    background: #fff; border: 1.5px dashed rgba(15, 23, 42, 0.18); border-radius: 12px; cursor: pointer;
+}
+#sgUploadFile::file-selector-button, #bqUploadFile::file-selector-button,
+#bqcUploadFile::file-selector-button, #bfcUploadFile::file-selector-button {
+    margin-right: 12px; padding: 8px 14px; border: 0; border-radius: 9px; cursor: pointer;
+    background: rgba(255, 106, 0, 0.10); color: #c2410c; font: inherit; font-weight: 700;
+}
+#sgUploadFile:hover::file-selector-button, #bqUploadFile:hover::file-selector-button,
+#bqcUploadFile:hover::file-selector-button, #bfcUploadFile:hover::file-selector-button {
+    background: rgba(255, 106, 0, 0.18);
+}
+
+/* Shared search box (team / groups / courses / assignments lists): on phones the 220px flex-basis pushed
+   the Search button onto its own row under the field. Let the field shrink so both stay on one line. */
+@media (max-width: 575px) {
+    .admin-search-form .admin-search-input { flex: 1 1 120px; }
+    .admin-search-form .admin-btn { flex: 0 0 auto; min-height: 40px; }
+}
+
+/* Analytics dashboards (business overview, trainer, recruitment, university) */
+@media (min-width: 1100px) {
+    /* 12 KPI cards in an auto-fit grid came out 5 + 5 + 2 — an orphaned last row. 6 x 2 is even. */
+    .an-root--biz .an-kpi-grid--twelve { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+    /* Icon left, number + label right: halves the height of each KPI tile so 12 tiles are ~6 short rows
+       instead of 6 tall ones, and the charts start much sooner. */
+    .an-root--biz .an-kpi-grid { gap: 10px; }
+    .an-root--biz .an-kpi-card {
+        display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 10px; row-gap: 0;
+        align-items: center; padding: 12px;
+    }
+    .an-root--biz .an-kpi-card .an-kpi-icon { grid-row: 1 / span 2; margin: 0; width: 34px; height: 34px; }
+    .an-root--biz .an-kpi-card .an-kpi-value { font-size: 1.25rem; }
+    .an-root--biz .an-kpi-card .an-kpi-label { font-size: 0.72rem; line-height: 1.25; }
+    .an-root--biz .an-empty { min-height: 0; padding: 18px 14px; gap: 8px; }
+    .an-root--biz .an-empty::before { width: 40px; height: 40px; font-size: 1.1rem; }
+    /* Filter bar: the primary action sat orphaned & right-aligned on its own row. */
+    .an-root--biz .an-filter-bar > .admin-btn { margin-left: 0 !important; width: 100%; justify-content: center; min-height: 44px; }
+    .an-root--biz .an-filter-select { min-height: 40px; }
+    .an-root--biz .dash-header-actions { width: 100%; }
+    .an-root--biz .dash-header-actions .dash-nav-link { min-height: 40px; }
+}
+
+/* Assignment results-overview stat captions ("GRADED", "AVG SCORE") were 9.6px in #94a3b8 (2.6:1). */
+body:not(.admin-body) .admin-module-stat-lbl { font-size: 0.7rem; color: #64748b; }
+
+/* Tablet-width cards: two label/value columns so the cards don't sit as a narrow strip in a wide viewport. */
+@media (min-width: 641px) and (max-width: 900px) {
+    body.admin-body .dash-table--cards tr { display: grid; grid-template-columns: 1fr 1fr; column-gap: 32px; }
+    body.admin-body .dash-table--cards td.dash-cell-actions,
+    body.admin-body .dash-table--cards td[data-label="Message"],
+    body.admin-body .dash-table--cards td[data-label="Details"],
+    body.admin-body .dash-table--cards td[data-label="Config at that point"] { grid-column: 1 / -1; }
+}
+
+/* Users table: let long emails / badge pairs wrap and keep the Action cell (Grant Unlimited + Delete) inside the card
+   at desktop width instead of scrolling it off the right edge. */
+body.admin-body .dash-table--wrap td { white-space: normal; overflow-wrap: break-word; }
+body.admin-body .dash-table--wrap td:first-child { white-space: nowrap; }
+body.admin-body .dash-table--wrap td:nth-child(3) { min-width: 250px; }
+body.admin-body .dash-table--wrap td .dash-btn,
+body.admin-body .dash-table--wrap td .dash-badge,
+body.admin-body .dash-table--wrap td.dash-td-name strong { white-space: nowrap; }
+body.admin-body .dash-table--wrap td.dash-td-acts { min-width: 170px; }
+body.admin-body .dash-table--wrap td.dash-td-acts .dash-btn { margin: 2px 4px 2px 0; }
+@media (min-width: 1100px) {
+    .an-root--biz .an-kpi-grid--six { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+@media (min-width: 641px) and (max-width: 1099px) {
+    .an-root--biz .an-kpi-grid--six { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* Wide business tables (assignees / leaderboard / invites / access lists) -> labelled cards on phones.
+   Labels are stamped onto the cells by js/table-cards.js; before this they scrolled sideways with the
+   Status / Score / Actions columns hidden off-screen. */
+@media (max-width: 640px) {
+    body:not(.admin-body) table.asn-table-cards,
+    body:not(.admin-body) table.asn-table-cards tbody { display: block; width: 100%; }
+    body:not(.admin-body) table.asn-table-cards thead { display: none; }
+    body:not(.admin-body) table.asn-table-cards tr {
+        display: block; padding: 10px 16px; border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+    }
+    body:not(.admin-body) table.asn-table-cards td {
+        display: block; position: relative; padding: 5px 0 5px 108px; min-height: 28px; border: 0;
+        text-align: left; white-space: normal; overflow-wrap: anywhere;
+    }
+    body:not(.admin-body) table.asn-table-cards td[data-label]::before {
+        content: attr(data-label); position: absolute; left: 0; top: 8px; width: 96px;
+        font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: #64748b;
+    }
+    body:not(.admin-body) table.asn-table-cards td:empty { display: none; }
+    body:not(.admin-body) table.asn-table-cards td .admin-btn { min-height: 36px; }
+}
+
+/* ===== DESKTOP UX fixes ===== (>=1200px unless noted; owned by the desktop audit) */
+@media (min-width: 1200px) {
+    /* /games: page reserved 76px for a fixed navbar, but <body> already has the navbar clearance =>
+       a blank 76px strip between the navbar and the dark hero band. */
+    .game-home-page { padding-top: 0; }
+}
+
+/* Quiz/exam player question navigator: quiz.css hides .qp-close-btn in its >=960px block but then
+   redeclares display:flex for the same selector further down, so a dead "X" showed in the sidebar
+   header on desktop (closePalette() is a no-op in sidebar mode). */
+@media (min-width: 960px) {
+    .qp-drawer .qp-close-btn { display: none; }
+}
+
+@media (min-width: 1200px) {
+    /* /games: the two cards were a 1000px column centred under a hero whose heading starts at the
+       1076px container edge, so the heading and cards did not share a left edge. */
+    .game-home-cards { max-width: 1076px; padding-left: 0; padding-right: 0; }
+}
+
+/* Student-group rows: member names ran together as one grey blob ("Jaya Candidate Wren Candidate Sam Sample").
+   Give each a chip so they read as separate people. */
+.asn-qbank-item-meta .asn-member-chip {
+    padding: 1px 8px; border-radius: 999px; background: rgba(15, 23, 42, 0.05); color: var(--text-body, #334155);
+}
+
+/* --- ADMIN dark mode: surfaces/text that hardcoded light-theme colors (near-black on dark navy, white cards) --- */
+:root[data-theme="dark"] body.admin-body {
+    --admin-dk-text: var(--text-main, #f1f5f9);
+}
+:root[data-theme="dark"] body.admin-body .dash-table td,
+:root[data-theme="dark"] body.admin-body .dash-table td strong,
+:root[data-theme="dark"] body.admin-body .dash-td-name strong,
+:root[data-theme="dark"] body.admin-body .admin-form-label,
+:root[data-theme="dark"] body.admin-body .admin-module-card-title,
+:root[data-theme="dark"] body.admin-body .health-value,
+:root[data-theme="dark"] body.admin-body .dash-table details > summary { color: var(--text-main, #f1f5f9); }
+:root[data-theme="dark"] body.admin-body .dash-card [style*="color:#334155"],
+:root[data-theme="dark"] body.admin-body .dash-card strong { color: var(--text-body, #cbd5e1); }
+:root[data-theme="dark"] body.admin-body .aqz-stat { background: var(--white, #1a2332); }
+:root[data-theme="dark"] body.admin-body .aqz-stat-val { color: var(--text-main, #f1f5f9); }
+:root[data-theme="dark"] body.admin-body .aqz-stat-label { color: var(--text-muted, #94a3b8); }
+:root[data-theme="dark"] body.admin-body .asn-input,
+:root[data-theme="dark"] body.admin-body .admin-form-input,
+:root[data-theme="dark"] body.admin-body .admin-search-input,
+:root[data-theme="dark"] body.admin-body input[type="text"],
+:root[data-theme="dark"] body.admin-body input[type="number"],
+:root[data-theme="dark"] body.admin-body input[type="email"],
+:root[data-theme="dark"] body.admin-body input[type="datetime-local"],
+:root[data-theme="dark"] body.admin-body select,
+:root[data-theme="dark"] body.admin-body textarea {
+    background: var(--surface-subtle, #16213a); color: var(--text-main, #f1f5f9); border-color: var(--border-color, #2d3b52);
+    color-scheme: dark;
+}
+:root[data-theme="dark"] body.admin-body ::placeholder { color: var(--text-subtle, #64748b); opacity: 1; }
+:root[data-theme="dark"] body.admin-body .iq-tab { color: var(--text-muted, #94a3b8); }
+:root[data-theme="dark"] body.admin-body .iq-tab.is-active { color: #ff8c3a; }
+:root[data-theme="dark"] body.admin-body .dash-btn--edit { color: #a5b4fc; background: rgba(99,102,241,0.16); border-color: rgba(129,140,248,0.35); }
+:root[data-theme="dark"] body.admin-body .dash-badge--expired { color: #fca5a5; }
+:root[data-theme="dark"] body.admin-body .dash-badge--active { color: #6ee7b7; }
+:root[data-theme="dark"] body.admin-body .admin-hub-ticket-alert { color: #fecaca; }
+:root[data-theme="dark"] body.admin-body .admin-module-stat-chip { color: var(--text-body, #cbd5e1); }
+:root[data-theme="dark"] body.admin-body .admin-module-stat-num { color: var(--text-main, #f1f5f9); }
+:root[data-theme="dark"] body.admin-body .dash-card,
+:root[data-theme="dark"] body.admin-body .admin-card { color: var(--text-body, #cbd5e1); }
+/* Orange pager pill: white on #ff6a00 is 2.9:1 — darken slightly on admin pages. */
+body.admin-body .admin-pager-num--active,
+body.admin-body .admin-pager-num--active:hover { background: #ea580c; }
+
+/* ===== TABLET UX fixes ===== (768-1199px only; owned by the tablet audit — desktop/mobile unaffected) */
+@media (min-width: 768px) and (max-width: 1199px) {
+    /* Closed off-canvas nav drawer's 32px box-shadow bled onto the left edge of every page as a grey band
+       (same fix as the mobile block above, extended to the tablet range where the hamburger drawer still exists). */
+    .nav-drawer:not(.open) { box-shadow: none; }
+
+    /* "VS" badge: .reveal-scale.is-visible resets transform to none, which threw away the translate(-50%,-50%)
+       centring, so the badge sat half a badge-width right of centre and hid the check icon on the third INTQUES row.
+       The standalone `translate` property composes with (and survives) the reveal transform. */
+    .cmp-vs { transform: none; translate: -50% -50%; }
+
+    /* Footer bottom row: the fixed WhatsApp button covered the last link ("Cookie Policy"). */
+    .footer-bottom { padding-right: 76px; }
+
+    /* Personal-dashboard KPI strip: 7 cards in an auto-fit grid left 2-3 orphaned cards on the last row.
+       Fixed 4-up grid; when the last row would be 3 cards the final one stretches to fill it. */
+    .an-kpi-grid:not([class*="--"]) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .an-kpi-grid:not([class*="--"]) > :last-child:nth-child(4n+3) { grid-column: span 2; }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    /* Footer: 2-col grid left the Contact column orphaned on its own row. Three link columns fit at this width. */
+    .footer-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+    .footer-brand { grid-column: 1 / -1; margin-bottom: 8px; }
+    .footer-brand p { max-width: 460px; }
+
+    /* Resume builder header: breadcrumb + 5 actions overflowed at 768px (labels wrapped, Save & Preview clipped).
+       Give the actions their own full-width, right-aligned row with single-line labels. */
+    .rb-header-actions { width: 100%; flex-wrap: wrap; justify-content: center; }
+    .rb-header-actions .rb-more-item, .rb-header-actions button { white-space: nowrap; }
+    /* Stacked title + button rows read as one centered block (title was left, buttons right). */
+    .rb-header-inner { justify-content: center; }
+    .rb-breadcrumb { width: 100%; justify-content: center; }
+
+    /* Quiz player question palette is an off-canvas drawer below 960px; its shadow leaked onto the right edge. */
+    .qp-drawer:not(.open) { box-shadow: none; }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    /* Hero headline: at 3.6rem "Interview-Ready." broke after the hyphen inside the ~470px column. */
+    .hp-main-title { font-size: clamp(2.2rem, 4.3vw, 3.2rem); }
+}
+
+/* Touch tablets: bring the most-used controls up to a ~44px hit area. */
+@media (min-width: 768px) and (max-width: 1199px) and (pointer: coarse) {
+    /* Desktop-style navbar (>=992px): taller link hit areas (nav is 68px tall, so no layout change). */
+    .navbar-nav .nav-link { padding-top: 10px !important; padding-bottom: 10px !important; }
+    /* Icon buttons stay 34px visually (no room in the 992px logged-in navbar); grow the hit area invisibly. */
+    .nav-search-btn, .nav-account-toggle, .nav-notif-toggle { position: relative; }
+    .nav-search-btn::before, .nav-account-toggle::before, .nav-notif-toggle::before {
+        content: ""; position: absolute; inset: -6px -3px;
+    }
+    /* Hamburger-mode header (<992px). */
+    .nav-hamburger, .nav-mobile-account, .nav-drawer-close { min-width: 44px; min-height: 44px; }
+
+    #of-btn-grid, #of-btn-list { min-width: 44px; min-height: 44px; }
+    .onboarding-chip, #onboardingSkip, #onboardingSave { min-height: 44px; }
+    .rb-more-item, #rbPhotoBtn, #rbImportBtn { min-height: 44px; }
+    .ac-sub-page-back, .ac-sub-btn, .dash-nav-link, .rv-sample-cta { min-height: 44px; }
+    #helpSubject { min-height: 44px; }
+    #rbScoreRefresh, #an-range-select, .an-weakspot-cta-btn, .of-btn-o, .admin-btn.admin-btn-primary { min-height: 44px; }
+}
+
+@media (min-width: 1200px) {
+    /* Learner dashboard: 7 KPI tiles auto-fit to 5 + 2 orphans in the 1076px container. */
+    .an-kpi-grid--seven { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; }
+    .an-kpi-grid--seven .an-kpi-card { padding-left: 12px; padding-right: 12px; }
+    .an-kpi-grid--seven .an-kpi-label { font-size: 0.72rem; }
+}
+:root[data-theme="dark"] body.admin-body .health-item { background: var(--white, #1a2332); border-color: var(--border-color, #2d3b52); }
+:root[data-theme="dark"] body.admin-body .health-label { color: var(--text-muted, #94a3b8); }
+:root[data-theme="dark"] body.admin-body .iq-tab.is-active { background: var(--surface-subtle, #16213a); }
+:root[data-theme="dark"] body.admin-body .dash-table details > summary,
+:root[data-theme="dark"] body.admin-body .dash-card div[style*="color:#334155"],
+:root[data-theme="dark"] body.admin-body .dash-card label[style*="color"] { color: var(--text-body, #cbd5e1) !important; }
+
+/* Light-theme contrast (WCAG AA for small text) on admin pages */
+:root:not([data-theme="dark"]) body.admin-body .dash-table th,
+:root:not([data-theme="dark"]) body.admin-body .admin-table th { color: #64748b; }
+:root:not([data-theme="dark"]) body.admin-body .dash-table td[style*="#94a3b8"],
+:root:not([data-theme="dark"]) body.admin-body .admin-module-stat-lbl { color: #64748b; }
+:root:not([data-theme="dark"]) body.admin-body .admin-table td span[style*="primary-orange"],
+:root:not([data-theme="dark"]) body.admin-body .admin-table td span[style*="rgba(255,106,0"] { color: #c2410c !important; }
+:root:not([data-theme="dark"]) body.admin-body .iq-tab.is-active { color: #c2410c; }
+body.admin-body .admin-form-actions > span[style*="94a3b8"] { color: #64748b !important; }
+
+@media (max-width: 640px) {
+    /* Brand link is visually collapsed to a 13px sliver on phones (label hidden) — a dead tap target; "Overview" covers it. */
+    body.admin-body .admin-brand { display: none; }
+}
+@media (pointer: coarse) {
+    body.admin-body .admin-nav-tab { min-width: 40px; justify-content: center; }
+    body.admin-body input[type="checkbox"], body.admin-body input[type="radio"] { width: 18px; height: 18px; }
+}
+
+@media (min-width: 901px) { body.admin-body .dash-table details > summary { max-width: 260px; } }
+@media (min-width: 901px) {
+    body.admin-body .dash-table--compact th, body.admin-body .dash-table--compact td { padding-left: 9px; padding-right: 9px; }
+    body.admin-body .dash-table--compact details > summary { max-width: 220px; }
+}
+
+/* List rows with actions (team members / pending invites / groups / question bank) on phones: the action
+   buttons squeezed the name/email into a narrow column ("pending.person / @example.com"). Let the row wrap so
+   actions sit under the text, with 40px-tall buttons. */
+@media (max-width: 575px) {
+    .asn-qbank-item { flex-wrap: wrap; }
+    .asn-qbank-item > div:first-child { flex: 1 1 100%; }
+    .asn-qbank-item-actions { flex: 1 1 100%; flex-wrap: wrap; }
+    .asn-qbank-item-actions .admin-btn { min-height: 40px; }
+    .asn-qbank-item-actions select.admin-btn { min-width: 110px; }
+}
+
+/* Dark mode (documented above as intentionally partial): hero/marketing/legal surfaces still paint
+   with hardcoded LIGHT backgrounds, but their text follows the dark tokens => near-invisible
+   headings and body copy (home "Prep Smarter.", about hero, terms/privacy/cookie text). Pin the
+   light tokens on those light-surface containers so text stays readable on them. */
+:root[data-theme="dark"] .hero-v3,
+:root[data-theme="dark"] .about-hero,
+:root[data-theme="dark"] .auth-page-main {
+    --white: #ffffff;
+    --light-bg: #f8fafc;
+    --surface-subtle: #f1f5f9;
+    --text-main: #0f172a;
+    --text-body: #334155;
+    --text-muted: #64748b;
+    --text-subtle: #94a3b8;
+    --border-color: #e2e8f0;
+}
+@media (min-width: 901px) {
+    body.admin-body .dash-table--compact td[style*="max-width"] { max-width: 260px; }
+    body.admin-body .dash-table--compact td small { white-space: normal; }
+}
+
+/* ── Single-row, swipeable chip/action rows ────────────────────────────────────────────────
+   Result / completion screens had a row of pill buttons that wrapped onto a ragged 2nd row (or
+   stacked full-width on phones). Keep them on ONE line and let the row scroll sideways instead.
+   `safe center` centers the row when it fits and start-aligns when it overflows (plain `center`
+   would clip the first chip off the left edge). */
+.qresult-actions,
+.gresult-actions,
+.fc-done-actions,
+.qprof-focus-chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: safe center;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    /* room for hover lift / focus rings / shadows that overflow-x:auto would otherwise clip */
+    padding: 6px 4px 10px;
+    margin-top: -6px;
+}
+.qprof-focus-chips { justify-content: flex-start; }
+.qresult-actions::-webkit-scrollbar,
+.gresult-actions::-webkit-scrollbar,
+.fc-done-actions::-webkit-scrollbar,
+.qprof-focus-chips::-webkit-scrollbar { display: none; }
+.qresult-actions > *,
+.gresult-actions > *,
+.fc-done-actions > *,
+.qprof-focus-chips > * {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    scroll-snap-align: start;
+}
+@media (max-width: 600px) {
+    .qresult-actions { gap: 8px; }
+    .qresult-btn { width: auto; padding: 9px 16px; font-size: 0.85rem; }
+}
+
+/* Resume builder header on tablets (701–991px): title + all five actions centered as one block, and
+   trimmed so the buttons stay on one row where they fit (otherwise Save & Preview dropped alone to
+   a second row). An empty save-status span was also taking a flex gap and nudging the row off-center. */
+@media (min-width: 701px) and (max-width: 991px) {
+    .rb-header-inner { justify-content: center; }
+    .rb-header-actions { width: 100%; justify-content: center; gap: 8px; }
+    .rb-header-actions .rb-more-menu { gap: 8px; }
+    .rb-header-actions .rb-more-item,
+    .rb-header-actions .rb-btn-save { padding-left: 12px; padding-right: 12px; white-space: nowrap; }
+    .rb-header .rb-save-status:empty { display: none; }
+}

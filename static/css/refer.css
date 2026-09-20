@@ -26,6 +26,12 @@
     font-size: var(--text-sm);
     color: var(--text-body);
     background: var(--surface-subtle);
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.refer-link-input:focus {
+    outline: none;
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 3px rgba(255,106,0,0.12);
 }
 .refer-copy-btn {
     padding: 11px 18px;
@@ -36,7 +42,10 @@
     font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
 }
+.refer-copy-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-orange-sm, 0 4px 14px rgba(255,106,0,0.24)); }
+.refer-copy-btn:active { transform: translateY(0); }
 .refer-code-sub { margin-top: 12px; font-size: var(--text-sm); color: var(--text-muted); }
 
 .refer-stat-card {

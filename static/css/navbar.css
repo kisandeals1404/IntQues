@@ -66,6 +66,28 @@
     letter-spacing: -0.04em;
 }
 
+/* Wordmark for the top bar's brand slot. display:none by default since the bare class is also
+   reused (unscoped) by the mobile drawer's own brand row, which shows logo+text together and
+   must stay unaffected — .navbar-brand below is what actually turns this on, scoped to just the
+   top nav so the drawer's own text (.nav-brand-text) is untouched. */
+.nav-brand-wordmark {
+    display: none;
+    font-size: 1.3rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+/* Top navbar only (not the mobile drawer's own brand row, which keeps its logo+text combo) —
+   text reads better than a small icon in the wide space the nav bar's brand slot has at every
+   width, so this applies unconditionally rather than only below the old 991px breakpoint. */
+.navbar-brand .nav-brand-logo { display: none; }
+.navbar-brand .nav-brand-wordmark { display: inline-block; }
+
 /* =========================================
    NAV LINKS
 ========================================= */

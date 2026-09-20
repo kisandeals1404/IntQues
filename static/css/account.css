@@ -12,7 +12,9 @@
 }
 
 .account-section {
-    padding-top: 32px;
+    /* Explicit bottom padding too — without it this inherits global.css's bare-<section> 72px
+       padding-bottom, giving the page a lopsided 32px-top/72px-bottom gap. */
+    padding: 32px 0;
 }
 
 .account-shell {
@@ -959,6 +961,8 @@
 .ac-sub-btn-outline:hover {
     background: #f8fafc;
     color: #0f172a;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
 }
 
 /* Subscription history table */
@@ -1012,8 +1016,9 @@
     border-radius: 999px;
 }
 
-.ac-sub-status-pill.active  { background: rgba(22,163,74,0.10); color: #15803d; }
-.ac-sub-status-pill.expired { background: rgba(100,116,139,0.10); color: #64748b; }
+.ac-sub-status-pill.active   { background: rgba(22,163,74,0.10); color: #15803d; }
+.ac-sub-status-pill.expired  { background: rgba(100,116,139,0.10); color: #64748b; }
+.ac-sub-status-pill.refunded { background: rgba(220,38,38,0.10); color: #dc2626; }
 
 @media (max-width: 600px) {
     .ac-sub-details {

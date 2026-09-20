@@ -29,9 +29,13 @@
     border: none;
     cursor: pointer;
     font-size: var(--text-base);
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s, color 0.15s;
 }
 .share-btn--primary { background: var(--primary-gradient); color: var(--white); box-shadow: var(--shadow-orange-sm); }
+.share-btn--primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-orange-md, 0 10px 26px rgba(255,106,0,0.3)); color: var(--white); text-decoration: none; }
 .share-btn--outline { background: var(--white); border: 1px solid var(--border-color); color: var(--text-body); }
+.share-btn--outline:hover { border-color: var(--primary-orange); color: var(--primary-orange); text-decoration: none; }
+.share-btn:active { transform: translateY(0); }
 
 .share-buttons { display: flex; justify-content: center; gap: 14px; margin-bottom: 8px; }
 .share-icon-btn {

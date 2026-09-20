@@ -19,6 +19,7 @@
 .qsub-hero {
     text-align: center;
     margin-bottom: 40px;
+    animation: fadeUp 560ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
 }
 
 .qsub-badge {
@@ -35,6 +36,7 @@
     padding: 5px 14px;
     border-radius: 999px;
     margin-bottom: 18px;
+    box-shadow: 0 2px 10px rgba(255,106,0,0.10);
 }
 
 .qsub-title {
@@ -82,8 +84,13 @@
 
 /* ── Plan cards ── */
 .qsub-plans {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* Flex + justify-content:center rather than a fixed 2-column grid — plans are now admin-
+       configurable (see /admin/plans), so the count isn't guaranteed to stay at 2. A rigid grid
+       either stretches an odd count unevenly or strands a lone extra card by itself on the left;
+       flex-wrap centers whatever number actually exists. */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 16px;
     margin-bottom: 32px;
 }
@@ -98,6 +105,8 @@
     background: #fff;
     user-select: none;
     min-width: 0;
+    flex: 1 1 220px;
+    max-width: 260px;
 }
 
 .qsub-plan:hover {
@@ -271,6 +280,7 @@
 
 .qsub-coupon-row {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
 }
 
@@ -333,6 +343,8 @@
     align-items: center;
     gap: 16px;
     margin-bottom: 32px;
+    box-shadow: 0 4px 18px rgba(22,163,74,0.08);
+    animation: fadeUp 560ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
 }
 
 .qsub-active-icon {
@@ -411,8 +423,8 @@
 
 /* ── Responsive ── */
 @media (max-width: 520px) {
-    .qsub-plans {
-        grid-template-columns: 1fr;
+    .qsub-plan {
+        max-width: 100%;
     }
 
     .qsub-plan-amount {

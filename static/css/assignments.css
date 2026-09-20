@@ -41,6 +41,7 @@
 .asn-badge--upcoming  { background: rgba(14,165,233,0.10); color: #0284c7; }
 .asn-badge--active    { background: rgba(255,106,0,0.10);  color: #ea580c; }
 .asn-badge--pending   { background: rgba(148,163,184,0.16); color: #475569; }
+.asn-badge--in_progress { background: rgba(59,130,246,0.12); color: #2563eb; }
 .asn-badge--submitted { background: rgba(234,179,8,0.14);  color: #a16207; }
 .asn-badge--graded    { background: rgba(34,197,94,0.12);  color: #16a34a; }
 .asn-badge--expired   { background: rgba(239,68,68,0.10);  color: #dc2626; }
@@ -67,9 +68,10 @@
 .asn-field input[type="number"],
 .asn-field input[type="datetime-local"],
 .asn-field select,
-.asn-field textarea {
+.asn-field textarea,
+.asn-input {
     width: 100%;
-    padding: 10px 14px;
+    padding: 11px 14px;
     border: 1.5px solid var(--border-color);
     border-radius: var(--radius-md);
     font-size: 0.92rem;
@@ -78,11 +80,29 @@
     background: #fff;
     outline: none;
     box-sizing: border-box;
-    transition: border-color 0.15s;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
 }
-.asn-field input:focus, .asn-field select:focus, .asn-field textarea:focus {
+.asn-field input[type="text"]:hover,
+.asn-field input[type="email"]:hover,
+.asn-field input[type="number"]:hover,
+.asn-field input[type="datetime-local"]:hover,
+.asn-field select:hover,
+.asn-field textarea:hover,
+.asn-input:hover {
+    border-color: rgba(255, 106, 0, 0.38);
+}
+.asn-field input:focus, .asn-field select:focus, .asn-field textarea:focus,
+.asn-input:focus {
     border-color: var(--primary-orange);
+    background: #fffdfb;
+    box-shadow: 0 0 0 4px rgba(255, 106, 0, 0.12), 0 2px 8px rgba(15, 23, 42, 0.05);
 }
+/* .asn-input — same treatment as .asn-field's inputs, for the handful of places
+   (invite-by-email rows, inline course-creation fields) that use a bare input
+   outside an .asn-field wrapper, usually inside a horizontal flex row rather
+   than a labeled vertical field. */
+.asn-input { display: block; }
 .asn-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 @media (max-width: 720px) { .asn-grid-2 { grid-template-columns: 1fr; } }
 
@@ -269,6 +289,14 @@
 .asn-picker-item:hover { background: var(--surface-subtle); }
 .asn-picker-item input { margin-top: 3px; }
 .asn-picker-item-text { font-size: 0.88rem; color: var(--text-main); }
+/* Checkbox + long description (Proctoring / Results Release): flex-wrap above let the text drop
+   below the checkbox instead of sitting beside it — let the text take the remaining row width. */
+.asn-picker-item > .asn-picker-item-text { flex: 1 1 0; min-width: 0; }
+/* Phones: the preview (eye) button dropped onto its own line under every question in the picker —
+   keep it beside the question text instead (label already has min-width:0 so long text wraps). */
+@media (max-width: 575px) {
+    .asn-picker-item { flex-wrap: nowrap; }
+}
 
 .asn-picker-item-label {
     display: flex;
@@ -348,6 +376,11 @@
     font-size: 0.82rem;
 }
 .asn-qstat-row { grid-template-columns: 1fr 160px 50px; }
+/* Phones: the 160px bar column squeezed the question text into a ~90px sliver — put the text on its own row. */
+@media (max-width: 575px) {
+    .asn-qstat-row { grid-template-columns: 1fr 44px; row-gap: 4px; margin-bottom: 14px; }
+    .asn-qstat-row .asn-qstat-text { grid-column: 1 / -1; }
+}
 .asn-dist-label { color: var(--text-muted); }
 .asn-qstat-text { color: var(--text-main); }
 .asn-qstat-flag { color: #dc2626; margin-left: 6px; }
@@ -371,6 +404,21 @@
     cursor: pointer;
 }
 .asn-tab-btn.is-active { border-color: var(--primary-orange); background: rgba(255,106,0,0.08); color: #ea580c; }
+
+/* Five filter tabs (Active/Upcoming/Completed/Expired/All) don't fit one row on a phone width —
+   flex-wrap above lets them spill onto a visibly broken second row. Horizontal scroll instead,
+   so every tab keeps its normal size and stays reachable without ever wrapping. */
+@media (max-width: 640px) {
+    .asn-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 2px;
+    }
+    .asn-tabs::-webkit-scrollbar { display: none; }
+    .asn-tab-btn { flex-shrink: 0; }
+}
 
 .asn-card-list { display: flex; flex-direction: column; gap: 12px; }
 .asn-card {
@@ -578,6 +626,13 @@ body:has(#proctor-badge) .asn-play-body { padding-bottom: 140px; }
     justify-content: flex-end;
 }
 
+@media (max-width: 640px) {
+    /* Right-aligned reads fine next to a wide desktop question column, but on a narrow phone
+       the primary Submit button ends up tucked awkwardly against the edge — centering it here
+       matches how every other primary mobile CTA in this app is presented. */
+    .asn-play-submit-bar { justify-content: center; }
+}
+
 /* ══════════════════════════════════════════════════════════
    assignment-result.ftl
    ══════════════════════════════════════════════════════════ */
@@ -602,4 +657,197 @@ body:has(#proctor-badge) .asn-play-body { padding-bottom: 140px; }
 .asn-result-qitem--correct { border-left: 4px solid #22c55e; }
 .asn-result-qitem--wrong   { border-left: 4px solid #ef4444; }
 .asn-result-qitem--pending { border-left: 4px solid #eab308; }
+
+/* ══════════════════════════════════════════════════════════
+   Shared "preview before you save/send" modal — used by
+   business-questions.ftl (preview one question) and
+   business-assignment-new.ftl (preview the whole assignment).
+   ══════════════════════════════════════════════════════════ */
+
+.asn-preview-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    /* Matches .iq-confirm-overlay (global.css) and the blur already used elsewhere site-wide —
+       same "this is a focused moment" treatment for every modal, not just the confirm dialog. */
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 180ms, visibility 180ms, backdrop-filter 180ms;
+}
+.asn-preview-modal-overlay.open { opacity: 1; visibility: visible; }
+
+.asn-preview-modal {
+    background: #fff;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 640px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    transform: scale(0.97);
+    transition: transform 180ms;
+}
+.asn-preview-modal-overlay.open .asn-preview-modal { transform: scale(1); }
+.asn-preview-modal--wide { max-width: 820px; }
+
+.asn-preview-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    flex: none;
+}
+.asn-preview-modal-header h3 { margin: 0; font-size: 1.05rem; color: var(--text-main); }
+.asn-preview-modal-subtitle { margin: 2px 0 0; font-size: 0.82rem; color: var(--text-muted); }
+
+.asn-preview-modal-close {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 1rem;
+    cursor: pointer;
+}
+.asn-preview-modal-close:hover { background: var(--surface-subtle); color: var(--text-main); }
+
+.asn-preview-modal-body { padding: 20px; overflow-y: auto; }
+
+/* Preview cards reuse .asn-play-qcard's real exam look, but nothing in them is interactive —
+   disabled controls keep that visually obvious instead of looking like a stuck/broken form. */
+.asn-preview-modal-body .asn-play-qcard { margin-bottom: 14px; }
+.asn-preview-modal-body .asn-play-qcard:last-child { margin-bottom: 0; }
+.asn-preview-modal-body .asn-play-option,
+.asn-preview-modal-body .asn-play-tf-btn { cursor: default; pointer-events: none; }
+.asn-preview-modal-body .asn-play-textarea { pointer-events: none; background: var(--surface-subtle); }
+
+/* ── AI question generation (business-questions.ftl) ── */
+.aiq-locked-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 18px;
+    background: rgba(148, 163, 184, 0.14);
+    color: #475569;
+}
+.aiq-locked-banner a { color: #ea580c; text-decoration: underline; }
+/* Exactly two flex children (icon + message span, see ai-content-generator.js's lock()) — the
+   icon stays fixed-size and the span takes the rest of the row, wrapping as one normal block of
+   text (links included) instead of every bit of inline content becoming its own flex item. */
+.aiq-locked-banner i { flex-shrink: 0; }
+.aiq-locked-banner span { flex: 1 1 auto; min-width: 0; }
+
+.aiq-usage-wrap { margin-bottom: 20px; }
+.aiq-usage-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+.aiq-usage-track {
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.18);
+    overflow: hidden;
+}
+.aiq-usage-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ff6a00, #ea580c);
+    transition: width 0.3s ease;
+}
+
+.aiq-model-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+}
+.aiq-model-card {
+    text-align: left;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border-color);
+    background: var(--surface-subtle);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+.aiq-model-card:hover { border-color: #ea580c; }
+.aiq-model-card.is-active { border-color: #ea580c; background: rgba(255, 106, 0, 0.06); }
+.aiq-model-name { font-weight: 700; font-size: 0.92rem; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+.aiq-model-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+.aiq-cost-badge {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    background: #f1f5f9;
+    color: #475569;
+}
+
+/* ── Per-topic flashcard rows (business-flashcard-detail.ftl) — mirrors .asn-blank-row's
+   add/remove-row pattern, just with three inputs per row instead of one. ── */
+.aiq-topic-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+.aiq-topic-row {
+    display: grid;
+    grid-template-columns: 1fr 90px 1.4fr auto;
+    gap: 8px;
+    align-items: center;
+}
+.aiq-topic-remove {
+    flex-shrink: 0;
+    background: #fee2e2;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+}
+@media (max-width: 640px) {
+    .aiq-topic-row { grid-template-columns: 1fr; }
+}
+
+/* ── AI generation review checklist (preview-before-save) ── */
+.aiq-review-list { display: flex; flex-direction: column; gap: 10px; }
+.aiq-review-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--surface-subtle);
+}
+.aiq-review-checkbox { flex-shrink: 0; padding-top: 3px; }
+.aiq-review-checkbox input { width: 18px; height: 18px; cursor: pointer; }
+.aiq-review-body { flex: 1; min-width: 0; }
+.aiq-review-text { font-size: 0.9rem; color: var(--text-main); margin-bottom: 4px; }
+.aiq-review-meta { font-size: 0.78rem; color: var(--text-muted); display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
+.aiq-review-options { list-style: none; margin: 4px 0 0; padding: 0; font-size: 0.85rem; color: var(--text-body); }
+.aiq-review-options li { padding: 2px 0; }
+.aiq-review-options li.aiq-review-correct { color: #16a34a; font-weight: 600; }
+.aiq-review-regen {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
 .asn-result-answer-row { font-size: 0.85rem; color: var(--text-body); margin-top: 6px; }

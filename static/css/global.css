@@ -151,6 +151,48 @@ body {
    previously set it locally (admin-courses.css, resume-builder.css). */
 input[type="checkbox"], input[type="radio"] {
     accent-color: var(--primary-orange);
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+    transition: transform 150ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+input[type="checkbox"]:hover, input[type="radio"]:hover {
+    transform: scale(1.1);
+}
+
+/* ── Sitewide invalid-field state ── driven by form-validation.js, which listens for the
+   native `invalid` event on every form site-wide and toggles this class — works regardless
+   of which input styling a page uses (.asn-field, .asn-input, or a bare input), since it
+   targets the element directly rather than depending on a specific wrapper/component. Same
+   red pair auth.css's own .form-field already used, kept consistent rather than picking a
+   second red. */
+input.is-invalid, select.is-invalid, textarea.is-invalid {
+    border-color: #ef4444 !important;
+    background: #fef2f2 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12) !important;
+    animation: iqFieldShake 340ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+input.is-invalid:focus, select.is-invalid:focus, textarea.is-invalid:focus {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.16) !important;
+}
+@keyframes iqFieldShake {
+    10%, 90% { transform: translateX(-1px); }
+    20%, 80% { transform: translateX(2px); }
+    30%, 50%, 70% { transform: translateX(-3px); }
+    40%, 60% { transform: translateX(3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+    input.is-invalid, select.is-invalid, textarea.is-invalid { animation: none; }
+}
+.iq-field-error {
+    display: block;
+    flex-basis: 100%; /* harmless outside a flex row; forces its own line inside one
+                          (several compact inline forms lay their fields out with
+                          display:flex + flex-wrap, e.g. the "Invite a Teammate" row) */
+    margin-top: 5px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #ef4444;
 }
 
 @media (max-width: 991px) {
@@ -184,6 +226,29 @@ input[type="checkbox"], input[type="radio"] {
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+}
+
+/* ── Bold gradient headline accent ──────────────────────────
+   Shared by the homepage and business-landing hero headlines (and available anywhere
+   else a marketing page wants the same "confident, colorful" treatment) so the two
+   never drift into two different gradients. Animated (slow hue drift) rather than
+   static — this is the site's one deliberately vibrant, multi-hue accent; used
+   sparingly (headline highlight words only), not as a general text-color utility. */
+.h1-highlight {
+    background: linear-gradient(120deg, #ff6a00 0%, #ff3d81 50%, #7c3aed 100%);
+    background-size: 220% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+    animation: h1HighlightShift 7s ease infinite;
+}
+@keyframes h1HighlightShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .h1-highlight { animation: none; }
 }
 
 .skip-link,
@@ -476,6 +541,80 @@ section > .curr-container {
 }
 .skeleton > * { visibility: hidden; }
 
+/* Ready-made building blocks on top of .skeleton above — this base class existed but nothing in
+   the codebase actually used it (defined, never adopted); these are what a caller drops into a
+   "loading…" slot instead of hand-rolling the shimmer gradient/animation again per feature.
+   .skeleton-line is a bare placeholder bar; .skeleton-card wraps a few of them in a card-shaped
+   box matching the site's standard --radius-card/--shadow-xs so it doesn't visually jump once
+   the real content swaps in. */
+.skeleton-line {
+    height: 14px;
+    margin-bottom: 8px;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(90deg, #eef1f6 25%, #f8fafc 37%, #eef1f6 63%);
+    background-size: 400% 100%;
+    animation: shimmerSlide 1.4s ease-in-out infinite;
+}
+.skeleton-line:last-child { margin-bottom: 0; }
+.skeleton-line--title { height: 18px; width: 60%; }
+.skeleton-line--short { width: 40%; }
+
+.skeleton-card {
+    background: var(--white);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-xs);
+    padding: var(--space-5);
+}
+
+/* =========================================
+   SHARED EMPTY STATE
+   The site had 20+ independently hand-rolled empty-state treatments (.dash-empty, .of-empty,
+   .an-empty, .asn-empty, .fc-empty-state, ...) — most just an icon + one line of muted text, no
+   two quite alike. This is a single, slightly more considered version (icon in a soft tinted
+   badge, title + description, optional CTA slot) for anywhere that's building a NEW empty state
+   or doing a real pass on an existing one — not a mandate to rename the other 20 today. Markup:
+   <div class="iq-empty-state">
+     <div class="iq-empty-icon"><i class="fa-solid fa-inbox" aria-hidden="true"></i></div>
+     <h3 class="iq-empty-title">…</h3>
+     <p class="iq-empty-desc">…</p>
+     <a class="admin-btn admin-btn-primary" href="…">…</a> <!-- optional -->
+   </div>
+========================================= */
+.iq-empty-state {
+    text-align: center;
+    padding: var(--space-12) var(--space-6);
+    max-width: 420px;
+    margin: 0 auto;
+}
+.iq-empty-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto var(--space-4);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--primary-orange);
+    background: linear-gradient(135deg, rgba(255, 106, 0, 0.10), rgba(255, 140, 58, 0.05));
+}
+.iq-empty-title {
+    font-size: var(--text-lg);
+    font-weight: 800;
+    color: var(--dark-900);
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+}
+.iq-empty-desc {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0 0 var(--space-5);
+}
+.iq-empty-state > .admin-btn,
+.iq-empty-state > a.admin-btn { margin-top: var(--space-1); }
+
 /* =========================================
    CONFIRM DIALOG — shared accessible replacement for confirm()
    (see static/js/confirm-dialog.js — IntQuesConfirm.show({...}))
@@ -484,6 +623,11 @@ section > .curr-container {
     position: fixed;
     inset: 0;
     background: rgba(15, 23, 42, 0.5);
+    /* Matches the blur already used on the navbar/other overlays site-wide (navbar.css,
+       quiz.css, home-shared.css) — a confirm dialog is exactly the kind of "focus attention on
+       this" moment a soft blur behind it reinforces, instead of a flat dark tint alone. */
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     z-index: 1400;
     display: flex;
     align-items: center;
@@ -491,7 +635,7 @@ section > .curr-container {
     padding: var(--space-4);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 180ms, visibility 180ms;
+    transition: opacity 180ms, visibility 180ms, backdrop-filter 180ms;
 }
 .iq-confirm-overlay.open { opacity: 1; visibility: visible; }
 
