@@ -469,28 +469,37 @@
         render();
         scheduleAdvance();
 
-        var startX = 0, startT = 0;
+        var startX = 0, startY = 0, startT = 0;
         function onTouchStart(e) {
             startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
             startT = Date.now();
             clearTimeout(timer);
         }
         function onTouchEnd(e) {
             var dx = e.changedTouches[0].clientX - startX;
+            var dy = e.changedTouches[0].clientY - startY;
             var dt = Date.now() - startT;
-            if (Math.abs(dx) > 40 && dt < 600) {
+            /* A swipe must be predominantly horizontal. Without the dy check, scrolling the page with a
+               finger that started on the carousel (and drifted sideways a little) counted as a swipe and
+               flipped the slide on every scroll. */
+            if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5 && dt < 600) {
                 goTo(index + (dx < 0 ? 1 : -1));
             }
             scheduleAdvance();
         }
+        /* The browser took the gesture over (vertical scroll) — not a swipe, just resume auto-advance. */
+        function onTouchCancel() { scheduleAdvance(); }
         track.addEventListener('touchstart', onTouchStart, { passive: true });
         track.addEventListener('touchend', onTouchEnd, { passive: true });
+        track.addEventListener('touchcancel', onTouchCancel, { passive: true });
 
         return {
             teardown: function () {
                 clearTimeout(timer);
                 track.removeEventListener('touchstart', onTouchStart);
                 track.removeEventListener('touchend', onTouchEnd);
+                track.removeEventListener('touchcancel', onTouchCancel);
                 scenes[order[index]].deactivate();
             },
             onHide: function () { clearTimeout(timer); },

@@ -741,6 +741,9 @@
        past the rounded-corner edge instead of staying hidden, which is what caused the horizontal
        overflow/cut-off look. */
     .hs-stage { aspect-ratio: 4 / 5; animation: none; overflow: hidden; }
+    /* Vertical panning stays with the browser (page scroll); only horizontal gestures reach the swipe
+       handler in hero-showcase.js, so scrolling past the carousel can't flip its slide. */
+    .hs-stage { touch-action: pan-y; }
     .hs-stage-glow { display: none; }
     .hs-badge { display: none; }
 

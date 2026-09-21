@@ -471,7 +471,6 @@
         document.body.appendChild(btn);
 
         var showingArrow = false;
-        var lastY = window.scrollY;
 
         function setArrowVisible(show) {
             if (show === showingArrow) return;
@@ -480,17 +479,41 @@
             if (whatsapp) whatsapp.classList.toggle('fab-hidden', show);
         }
 
-        window.addEventListener('scroll', function () {
-            var y = window.scrollY;
-            var scrollingUp = y < lastY;
+        /* Hysteresis, not a raw "did scrollY go down/up since the last event" comparison.
+           On phones scrollY wobbles by a few px — momentum scrolling, rubber-banding, and the
+           address bar collapsing/expanding all nudge it — so a bare direction check flipped every
+           few frames and the WhatsApp / back-to-top bubbles flickered in and out while scrolling.
+           Now the arrow only appears after scrolling UP a real distance from the furthest point
+           reached, and only hides after scrolling DOWN a real distance from the highest point. */
+        var SHOW_AFTER_UP = 60;
+        var HIDE_AFTER_DOWN = 40;
+        var peak = window.scrollY;
+        var trough = window.scrollY;
+        var ticking = false;
+
+        function update() {
+            ticking = false;
+            var y = Math.max(0, window.scrollY); /* iOS overscroll reports negative values */
             if (y <= 400) {
                 setArrowVisible(false);
-            } else if (scrollingUp) {
-                setArrowVisible(true);
-            } else if (y > lastY) {
-                setArrowVisible(false);
+                peak = trough = y;
+                return;
             }
-            lastY = y;
+            if (y > peak) peak = y;
+            if (y < trough) trough = y;
+            if (!showingArrow && peak - y >= SHOW_AFTER_UP) {
+                setArrowVisible(true);
+                trough = y;
+            } else if (showingArrow && y - trough >= HIDE_AFTER_DOWN) {
+                setArrowVisible(false);
+                peak = y;
+            }
+        }
+
+        window.addEventListener('scroll', function () {
+            if (ticking) return;
+            ticking = true;
+            window.requestAnimationFrame(update);
         }, { passive: true });
     }
 

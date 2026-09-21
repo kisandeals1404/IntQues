@@ -107,10 +107,19 @@
         subMgr.add(step);
     }
 
+    /* Reads a CSS time custom property (e.g. --hero-showcase-mobile-advance: 5000ms) as milliseconds.
+       Must understand BOTH "ms" and "s": the production CSS bundle is minified by lightningcss, which
+       rewrites time values into their shortest form ("5000ms" -> "5s", "450ms" -> ".45s"). A bare
+       parseFloat read "5s" as 5 — so in production the mobile carousel advanced every 5ms (visible as
+       constant flicker/shaking) and every other showcase duration collapsed to ~1ms, while dev, which
+       serves the source CSS untouched, looked fine. Unitless values are treated as milliseconds. */
     function readMs(styles, name, fallback) {
         var raw = styles.getPropertyValue(name).trim();
         var n = parseFloat(raw);
-        return isNaN(n) ? fallback : n;
+        if (isNaN(n)) return fallback;
+        if (/ms$/i.test(raw)) return n;
+        if (/s$/i.test(raw)) return n * 1000;
+        return n;
     }
 
     function prefersReducedMotion() {

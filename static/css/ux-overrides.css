@@ -3057,3 +3057,44 @@ body.admin-body .admin-form-actions > span[style*="94a3b8"] { color: #64748b !im
     .rb-header-actions .rb-btn-save { padding-left: 12px; padding-right: 12px; white-space: nowrap; }
     .rb-header .rb-save-status:empty { display: none; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════════════════════
+   SCROLL PERFORMANCE — flicker / shake while scrolling on phones & tablets (all devices)
+   backdrop-filter and big blurred, animated layers force the browser to re-blur what's behind
+   them on every scroll frame; on mobile GPUs that shows up as flicker and shaking.
+   ══════════════════════════════════════════════════════════════════════════════════════════ */
+
+/* Fixed bars whose background is already fully opaque: the blur can never show, it only costs.
+   (Visually identical — see the "fully opaque" notes in navbar.css.) */
+.navbar,
+.navbar.scrolled,
+.mobile-tab-bar {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Phones / tablets / touch devices: these surfaces are already 86–96% opaque white, so dropping
+   the blur is imperceptible. Also make the hero's decorative blobs static, un-blurred gradients
+   (they're already soft radial gradients) — a 640px layer with a 70–90px blur that also animates
+   forever was re-rasterised constantly. */
+@media (max-width: 991px), (hover: none) {
+    .hs-panel-inner,
+    .hero-float-card,
+    .glass-card,
+    .fcs-card,
+    .qex-card {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+    .hs-panel-inner { background: rgba(255, 255, 255, 0.97); }
+
+    .hero-bg-orb {
+        filter: none;
+        animation: none;
+    }
+
+    /* Only the moving track needs its own layer; per-panel hints just multiply layers */
+    .hs-panel,
+    .hs-panel-parallax { will-change: auto; }
+    .hs-track { will-change: transform; }
+}
