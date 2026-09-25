@@ -51,7 +51,7 @@
 
 /* ── Home page ───────────────────────────────────────── */
 
-.game-home-page { padding-top: 76px; min-height: 70vh; background: var(--light-bg); }
+.game-home-page { padding-top: 76px; min-height: 70vh; background: linear-gradient(180deg, var(--site-gradient-start) 0%, var(--site-gradient-end) 55%); }
 
 .game-hero-band {
     background: var(--secondary-dark);
@@ -152,7 +152,7 @@
 
 /* ── Lobby page ──────────────────────────────────────── */
 
-.game-lobby-page { padding-top: 96px; min-height: 80vh; background: var(--light-bg); display: flex; justify-content: center; }
+.game-lobby-page { padding-top: 96px; min-height: 80vh; background: linear-gradient(180deg, var(--site-gradient-start) 0%, var(--site-gradient-end) 55%); display: flex; justify-content: center; }
 .game-lobby-wrap { width: 100%; max-width: 480px; padding: 0 20px 60px; }
 
 .game-lobby-code-card {
@@ -354,7 +354,7 @@
 
 /* ── Results page ────────────────────────────────────── */
 
-.gresult-page { padding-top: 90px; min-height: 80vh; background: var(--light-bg); position: relative; overflow: hidden; }
+.gresult-page { padding-top: 90px; min-height: 80vh; background: linear-gradient(180deg, var(--site-gradient-start) 0%, var(--site-gradient-end) 55%); position: relative; overflow: hidden; }
 .gresult-wrap { max-width: 640px; margin: 0 auto; padding: 0 20px 60px; position: relative; z-index: 1; }
 
 .gresult-hero { text-align: center; margin-bottom: 32px; }

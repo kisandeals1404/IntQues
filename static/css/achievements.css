@@ -3,7 +3,7 @@
    used from quiz-result.ftl / game-results.ftl too)
 ═══════════════════════════════════════════════════════ */
 
-.ach-page { padding-top: 96px; min-height: 80vh; background: var(--light-bg); }
+.ach-page { padding-top: 96px; min-height: 80vh; background: linear-gradient(180deg, var(--site-gradient-start) 0%, var(--site-gradient-end) 55%); }
 .ach-wrap { max-width: 900px; margin: 0 auto; padding: 0 20px 60px; }
 
 .ach-hero { text-align: center; margin-bottom: 32px; }

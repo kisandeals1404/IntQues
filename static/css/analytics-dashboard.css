@@ -545,32 +545,109 @@
     .an-topic-label { flex-basis: 90px; }
 }
 
-/* ── Onboarding interest picker modal (home-individual.ftl) ────────────── */
-
-.onboarding-chip-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.onboarding-chip {
-    background: var(--surface-subtle);
-    border: 1.5px solid var(--border-color);
-    color: var(--text-body);
+/* ── Insight action link ("Review <topic>" etc.) ───────────── */
+.an-insight-text { flex: 1; min-width: 0; }
+.an-insight-action {
+    align-self: center;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
     border-radius: 999px;
-    padding: 8px 16px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s, color 0.15s;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--an-ink);
+    background: #fff;
+    border: 1px solid var(--an-border);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+.an-insight-action:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(15, 23, 42, 0.10); border-color: rgba(15, 23, 42, 0.18); color: var(--an-ink); }
+.an-insight-action:focus-visible { outline: 2.5px solid #ff6a00; outline-offset: 2px; }
+@media (max-width: 560px) {
+    /* icon (30px) + gap (12px) = 42px: give the text the full remaining row so the action button wraps
+       onto its own line underneath it, instead of the text being squeezed into a narrow column */
+    .an-insight { flex-wrap: wrap; }
+    .an-insight-text { flex: 1 1 calc(100% - 42px); }
+    .an-insight-action { margin-left: 42px; }
 }
 
-.onboarding-chip:hover {
-    border-color: var(--primary-orange);
+/* ── "Next up" card — the first thing on the learner dashboard ── */
+.an-next {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px 32px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding: 22px 26px;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid var(--an-border);
+    box-shadow: var(--shadow-card, 0 8px 24px rgba(15, 23, 42, 0.07));
 }
-
-.onboarding-chip--active {
-    background: var(--primary-orange);
-    border-color: var(--primary-orange);
+.an-next-main { flex: 1 1 320px; min-width: 0; }
+.an-next-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #ea580c;
+}
+.an-next-title {
+    margin: 6px 0 4px;
+    font-size: clamp(1.25rem, 3vw, 1.7rem);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    color: var(--an-ink);
+    overflow-wrap: anywhere;
+}
+.an-next-sub { margin: 0 0 14px; font-size: 0.9rem; color: var(--an-muted); }
+.an-next-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.an-next-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 10px 20px;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    text-decoration: none;
     color: #fff;
+    background: linear-gradient(120deg, #ff6a00, #ff3d81);
+    box-shadow: 0 10px 26px rgba(255, 61, 129, 0.24), 0 6px 14px rgba(255, 106, 0, 0.20);
+    transition: transform 240ms cubic-bezier(0.2, 0.9, 0.2, 1), box-shadow 240ms ease;
+}
+.an-next-btn:hover { color: #fff; transform: translateY(-2px); box-shadow: 0 14px 32px rgba(255, 61, 129, 0.30), 0 8px 18px rgba(255, 106, 0, 0.24); }
+.an-next-btn:focus-visible { outline: 2.5px solid #0f172a; outline-offset: 3px; }
+.an-next-btn--ghost { color: var(--an-ink); background: #fff; border: 1.5px solid rgba(15, 23, 42, 0.14); box-shadow: none; }
+.an-next-btn--ghost:hover { color: var(--an-ink); box-shadow: 0 6px 14px rgba(15, 23, 42, 0.10); }
+.an-next-stats { display: flex; gap: 12px; flex-wrap: wrap; }
+.an-next-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 104px;
+    padding: 12px 16px;
+    border-radius: 16px;
+    background: rgba(255, 106, 0, 0.07);
+    text-align: center;
+}
+.an-next-stat i { color: #ea580c; font-size: 1.1rem; margin-bottom: 2px; }
+.an-next-stat strong { font-size: 1.6rem; font-weight: 900; letter-spacing: -0.03em; line-height: 1.1; color: var(--an-ink); }
+.an-next-stat span { font-size: 0.74rem; font-weight: 700; color: var(--an-muted); }
+@media (max-width: 560px) {
+    .an-next { padding: 18px; }
+    .an-next-stats { width: 100%; }
+    .an-next-stat { flex: 1; min-width: 0; }
+    .an-next-btn { width: 100%; justify-content: center; }
+    /* 7 KPI tiles in a 2-column grid leave the last one stranded in a half-empty row */
+    .an-kpi-grid > .an-kpi-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
 }

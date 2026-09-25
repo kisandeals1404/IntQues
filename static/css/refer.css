@@ -2,7 +2,7 @@
    Invite Friends / referral page
 ═══════════════════════════════════════════════════════ */
 
-.refer-page { padding-top: 96px; min-height: 80vh; background: var(--light-bg); display: flex; justify-content: center; }
+.refer-page { padding-top: 96px; min-height: 80vh; background: linear-gradient(180deg, var(--site-gradient-start) 0%, var(--site-gradient-end) 55%); display: flex; justify-content: center; }
 .refer-wrap { width: 100%; max-width: 560px; padding: 0 20px 60px; text-align: center; }
 
 .refer-title { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; color: var(--text-main); margin: 0 0 10px; display: flex; align-items: center; justify-content: center; gap: 12px; }

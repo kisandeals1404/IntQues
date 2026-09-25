@@ -2,7 +2,10 @@
    RESUME BUILDER PAGE
 ========================================= */
 
-.rb-page-main { background: #f8fafc; min-height: 100vh; }
+.rb-page-main {
+    background: linear-gradient(180deg, var(--site-gradient-start) 0%, var(--site-gradient-end) 55%);
+    min-height: 100vh;
+}
 .hidden { display: none !important; }
 .opacity-40 { opacity: 0.4; }
 

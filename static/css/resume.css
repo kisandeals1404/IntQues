@@ -2,7 +2,10 @@
    RESUME DOCUMENT — Preview & Print
 ========================================= */
 
-.rv-page-main { background: #f8fafc; min-height: 100vh; }
+.rv-page-main {
+    background: linear-gradient(180deg, var(--site-gradient-start) 0%, var(--site-gradient-end) 55%);
+    min-height: 100vh;
+}
 
 /* ── Preview toolbar (hidden on print) ── */
 .rv-toolbar {
@@ -1132,7 +1135,11 @@
    TEMPLATE GALLERY PAGE
 ========================================= */
 
-.rg-page-main { background: #f8fafc; min-height: 100vh; padding: 32px 0 80px; }
+.rg-page-main {
+    background: linear-gradient(180deg, var(--site-gradient-start) 0%, var(--site-gradient-end) 55%);
+    min-height: 100vh;
+    padding: 32px 0 80px;
+}
 
 /* ── Toolbar ── */
 .rg-toolbar {

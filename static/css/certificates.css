@@ -2,7 +2,7 @@
    My Certificates page
 ═══════════════════════════════════════════════════════ */
 
-.cert-page { padding-top: 96px; min-height: 80vh; background: var(--light-bg); }
+.cert-page { padding-top: 96px; min-height: 80vh; background: linear-gradient(180deg, var(--site-gradient-start) 0%, var(--site-gradient-end) 55%); }
 .cert-wrap { max-width: 900px; margin: 0 auto; padding: 0 20px 60px; }
 
 .cert-title { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; color: var(--text-main); margin: 0 0 28px; display: flex; align-items: center; gap: 12px; }

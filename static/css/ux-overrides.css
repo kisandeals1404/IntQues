@@ -1936,12 +1936,19 @@ footer::before {
     box-shadow: 0 6px 24px rgba(255,106,0,0.38) !important;
 }
 
-/* ── 2. Offering body — remove flat white, add depth ── */
+/* ── 2. Offering body — remove flat white, add depth ──
+   Was a flat #ffffff with two barely-there (2-3.5% opacity) corner highlights, forced with
+   !important — which also broke dark mode: the dark-mode .of-body rule further down
+   (ux-overrides.css's own ":root[data-theme='dark']" block) has no !important of its own, so
+   it could never win against this one regardless of source order, leaving /quizzes and
+   /flashcards showing a flat white strip in dark mode. Dropping !important here lets that
+   rule (and light mode's own soft page gradient below) apply normally — later-in-cascade
+   still beats this on equal specificity, so nothing regresses in light mode either. */
 .of-body {
     background:
-        radial-gradient(ellipse at 96% 0%, rgba(255,106,0,0.035) 0%, transparent 42%),
-        radial-gradient(ellipse at 4% 100%, rgba(255,106,0,0.02) 0%, transparent 38%),
-        #ffffff !important;
+        radial-gradient(ellipse at 96% 0%, rgba(255,106,0,0.06) 0%, transparent 45%),
+        radial-gradient(ellipse at 4% 100%, rgba(255,106,0,0.04) 0%, transparent 42%),
+        linear-gradient(180deg, var(--site-gradient-start) 0%, var(--site-gradient-end) 55%);
 }
 
 /* ── 3. Quiz mode hero title — gradient text ── */
@@ -2148,6 +2155,13 @@ footer::before {
 @media (max-width: 768px) {
     .btt-btn { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
 }
+/* On phones the 56px orange disc sat on top of card content while reading; a 44px (still the minimum
+   touch target), slightly translucent one is far less intrusive, and solid again on press. */
+@media (max-width: 768px) {
+    .btt-btn { width: 44px; height: 44px; right: 14px; font-size: 1.05rem; box-shadow: 0 3px 12px rgba(255, 106, 0, 0.28); }
+    .btt-btn.visible { opacity: 0.9; }
+    .btt-btn:active { opacity: 1; }
+}
 
 /* =========================================
    DARK MODE — shared chrome & components
@@ -2255,8 +2269,15 @@ footer::before {
     .qhist-item { background: var(--white); }
     .asn-empty { background: var(--surface-subtle); border-color: var(--border-color); }
 
-    /* ── Consumer card grid (flashcards/quizzes catalogs) ── */
-    .of-body { background: var(--light-bg); }
+    /* ── Consumer card grid (flashcards/quizzes catalogs) ──
+       Same soft top-to-bottom page gradient as light mode, just with the dark tokens (already
+       redefined for dark mode in global.css) plus a faint warm glow instead of the orange one
+       (brighter orange-on-navy at the same opacity read too hot). */
+    .of-body {
+        background:
+            radial-gradient(ellipse at 96% 0%, rgba(255,138,61,0.05) 0%, transparent 45%),
+            linear-gradient(180deg, var(--site-gradient-start) 0%, var(--site-gradient-end) 55%);
+    }
     .of-card { background: var(--white); border-color: var(--border-color); }
     .of-name { color: var(--text-main); }
     .of-card:hover .of-name { color: var(--text-main); }
@@ -2289,8 +2310,14 @@ footer::before {
     .rb-input { background: var(--white); color: var(--text-main); border-color: var(--border-color); }
     /* Page canvas behind the header/sidebar/sections — was left at its hardcoded
        near-white, so the (already dark-themed) cards sat on a jarring light-gray
-       backdrop instead of the rest of the app's dark background. */
-    .rb-page-main { background: var(--light-bg); }
+       backdrop instead of the rest of the app's dark background. Same fix applies to the
+       resume preview/print and "choose a style" pages (.rv-page-main / .rg-page-main), whose
+       light-mode CSS hardcodes the identical #f8fafc with no dark-mode rule of their own at
+       all — those didn't even have a broken attempt, they were just never touched, so they'd
+       show flat light gray under a dark nav/header. */
+    .rb-page-main, .rv-page-main, .rg-page-main {
+        background: linear-gradient(180deg, var(--site-gradient-start) 0%, var(--site-gradient-end) 55%);
+    }
     .rb-btn-sample, .rb-btn-preview, .rb-btn-import {
         background: var(--white);
         border-color: var(--border-color);
@@ -2424,7 +2451,6 @@ footer::before {
     body.modal-open .whatsapp-float,
     body.modal-open .btt-btn { display: none; }
     .modal-footer .admin-btn, .modal-footer .btn { min-height: 44px; }
-    .onboarding-chip { min-height: 44px; }
 
     /* Course/quiz cards: 16:9 banner made each card ~1 screen tall; a wider, shorter banner
        lets people scan more than one course per screen. */
@@ -2930,7 +2956,6 @@ body.admin-body .admin-pager-num--active:hover { background: #ea580c; }
     .nav-hamburger, .nav-mobile-account, .nav-drawer-close { min-width: 44px; min-height: 44px; }
 
     #of-btn-grid, #of-btn-list { min-width: 44px; min-height: 44px; }
-    .onboarding-chip, #onboardingSkip, #onboardingSave { min-height: 44px; }
     .rb-more-item, #rbPhotoBtn, #rbImportBtn { min-height: 44px; }
     .ac-sub-page-back, .ac-sub-btn, .dash-nav-link, .rv-sample-cta { min-height: 44px; }
     #helpSubject { min-height: 44px; }

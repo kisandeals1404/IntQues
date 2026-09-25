@@ -2,7 +2,7 @@
    Public share pages — quiz/game result cards, challenges
 ═══════════════════════════════════════════════════════ */
 
-.share-page { padding-top: 96px; min-height: 80vh; background: var(--light-bg); display: flex; justify-content: center; }
+.share-page { padding-top: 96px; min-height: 80vh; background: linear-gradient(180deg, var(--site-gradient-start) 0%, var(--site-gradient-end) 55%); display: flex; justify-content: center; }
 .share-wrap { width: 100%; max-width: 640px; padding: 0 20px 60px; text-align: center; }
 
 .share-card {

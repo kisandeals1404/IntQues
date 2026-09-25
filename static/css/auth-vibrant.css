@@ -175,7 +175,8 @@ html[data-auth] body:not(.admin-body) .an-card-link:hover { color: var(--vb-pink
 html[data-auth] .an-kpi-card              { --k1: #3b82f6; --k2: #6366f1; }
 html[data-auth] .an-kpi-card:nth-child(8n+2) { --k1: #10b981; --k2: #14b8a6; }
 html[data-auth] .an-kpi-card:nth-child(8n+3) { --k1: #7c3aed; --k2: #c026d3; }
-html[data-auth] .an-kpi-card:nth-child(8n+4) { --k1: #f59e0b; --k2: #f97316; }
+/* darker amber pair — the light #f59e0b start was only ~2:1 against white as the KPI number */
+html[data-auth] .an-kpi-card:nth-child(8n+4) { --k1: #d97706; --k2: #ea580c; }
 html[data-auth] .an-kpi-card:nth-child(8n+5) { --k1: #ff6a00; --k2: #ef4444; }
 html[data-auth] .an-kpi-card:nth-child(8n+6) { --k1: #ec4899; --k2: #ff3d81; }
 html[data-auth] .an-kpi-card:nth-child(8n+7) { --k1: #16a34a; --k2: #22c55e; }
@@ -213,6 +214,32 @@ html[data-auth] .an-kpi-value {
     color: transparent;
 }
 html[data-auth] .an-kpi-label { font-weight: 700; }
+
+/* "Next up" — full-bleed hero gradient card, white type, white button (the home hero's energy) */
+html[data-auth] body:not(.admin-body) .an-next {
+    /* the flat 10% scrim keeps white small text legible on the bright orange end (~3:1 without it) */
+    background:
+        linear-gradient(rgba(15, 23, 42, 0.10), rgba(15, 23, 42, 0.10)),
+        radial-gradient(ellipse 60% 120% at 100% 0%, rgba(124, 58, 237, 0.55) 0%, transparent 60%),
+        linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%);
+    border-color: transparent;
+    box-shadow: 0 18px 44px rgba(255, 61, 129, 0.28), 0 8px 20px rgba(255, 106, 0, 0.22);
+}
+html[data-auth] body:not(.admin-body) .an-next :is(.an-next-title, .an-next-eyebrow) { color: #fff; }
+html[data-auth] body:not(.admin-body) .an-next :is(.an-next-eyebrow, .an-next-sub) { text-shadow: 0 1px 2px rgba(15, 23, 42, 0.28); }
+html[data-auth] body:not(.admin-body) .an-next .an-next-sub { color: #fff; font-weight: 600; }
+html[data-auth] body:not(.admin-body) .an-next .an-next-btn {
+    background: #fff;
+    color: #c2410c;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18);
+}
+html[data-auth] body:not(.admin-body) .an-next .an-next-btn:hover { color: #9a3412; box-shadow: 0 14px 30px rgba(15, 23, 42, 0.24); }
+html[data-auth] body:not(.admin-body) .an-next .an-next-btn--ghost { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.7); box-shadow: none; }
+html[data-auth] body:not(.admin-body) .an-next .an-next-btn--ghost:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
+html[data-auth] body:not(.admin-body) .an-next .an-next-btn:focus-visible { outline-color: #fff; }
+html[data-auth] body:not(.admin-body) .an-next .an-next-stat { background: rgba(255, 255, 255, 0.18); }
+html[data-auth] body:not(.admin-body) .an-next .an-next-stat :is(i, strong, span) { color: #fff; }
+html[data-auth] body:not(.admin-body) .an-next .an-next-stat span { color: rgba(255, 255, 255, 0.9); }
 
 /* Radial rings — a glow in the ring's own colour */
 html[data-auth] body:not(.admin-body) .an-ring {
