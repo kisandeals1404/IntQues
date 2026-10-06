@@ -619,7 +619,9 @@ h2 { font-size: clamp(1.35rem, 2.6vw, 2.2rem); line-height:1.08; }
 
 /* ── 10. Mobile tab bar — tighten labels on 320 px ──────────*/
 @media (max-width: 360px) {
-    .mtb-tab { font-size: 0.6rem; }
+    /* 10.4px, not 0.6rem (9.6px) — stay above the 10px readability floor; slight negative
+       tracking keeps "Flashcards" inside its 64px slot. */
+    .mtb-tab { font-size: 0.65rem; letter-spacing: -0.01em; }
     .mtb-tab i { font-size: 1.05rem; }
 }
 
@@ -2747,6 +2749,14 @@ body.admin-body [id] { scroll-margin-top: 84px; }
 #bqcUploadFile:hover::file-selector-button, #bfcUploadFile:hover::file-selector-button {
     background: rgba(255, 106, 0, 0.18);
 }
+/* Phones: the picker shared a row with the Import button, so Chrome truncated its label to
+   "No fil…hosen". Give it the full width and let the button wrap underneath. */
+@media (max-width: 575px) {
+    *:has(> #sgUploadFile), *:has(> #bqUploadFile), *:has(> #bqcUploadFile), *:has(> #bfcUploadFile) { flex-wrap: wrap; }
+    #sgUploadFile, #bqUploadFile, #bqcUploadFile, #bfcUploadFile { flex: 1 1 100%; }
+    *:has(> #sgUploadFile) > button, *:has(> #bqUploadFile) > button,
+    *:has(> #bqcUploadFile) > button, *:has(> #bfcUploadFile) > button { flex: 1 1 100%; justify-content: center; min-height: 44px; }
+}
 
 /* Shared search box (team / groups / courses / assignments lists): on phones the 220px flex-basis pushed
    the Search button onto its own row under the field. Let the field shrink so both stay on one line. */
@@ -2800,7 +2810,9 @@ body.admin-body .dash-table--wrap td:nth-child(3) { min-width: 250px; }
 body.admin-body .dash-table--wrap td .dash-btn,
 body.admin-body .dash-table--wrap td .dash-badge,
 body.admin-body .dash-table--wrap td.dash-td-name strong { white-space: nowrap; }
-body.admin-body .dash-table--wrap td.dash-td-acts { min-width: 170px; }
+/* Actions sit side by side on one line — "Grant Unlimited" used to stack above "Delete" on
+   business rows only, so row heights jumped around the table. */
+body.admin-body .dash-table--wrap td.dash-td-acts { min-width: 250px; white-space: nowrap; }
 body.admin-body .dash-table--wrap td.dash-td-acts .dash-btn { margin: 2px 4px 2px 0; }
 @media (min-width: 1100px) {
     .an-root--biz .an-kpi-grid--six { grid-template-columns: repeat(6, minmax(0, 1fr)); }
@@ -2918,6 +2930,15 @@ body.admin-body .admin-pager-num--active:hover { background: #ea580c; }
        Fixed 4-up grid; when the last row would be 3 cards the final one stretches to fill it. */
     .an-kpi-grid:not([class*="--"]) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .an-kpi-grid:not([class*="--"]) > :last-child:nth-child(4n+3) { grid-column: span 2; }
+    /* Other remainders too (Recruitment: 10 tiles = 4+4+2, University: 5 = 4+1) — the last row
+       always fills the width instead of leaving empty slots. */
+    .an-kpi-grid:not([class*="--"]) > :last-child:nth-child(4n+1) { grid-column: 1 / -1; }
+    .an-kpi-grid:not([class*="--"]) > :last-child:nth-child(4n+2),
+    .an-kpi-grid:not([class*="--"]) > :nth-last-child(2):nth-child(4n+1) { grid-column: span 2; }
+    /* The learner dashboard's strip is .an-kpi-grid--seven, which the :not([class*="--"]) rule
+       above skips — it still showed 4 + 3 with an empty slot on tablets. */
+    .an-kpi-grid--seven { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .an-kpi-grid--seven > :last-child:nth-child(4n+3) { grid-column: span 2; }
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
@@ -3070,6 +3091,18 @@ body.admin-body .admin-form-actions > span[style*="94a3b8"] { color: #64748b !im
     .qresult-actions { gap: 8px; }
     .qresult-btn { width: auto; padding: 9px 16px; font-size: 0.85rem; }
 }
+/* Below ~1024px these rows overflow (5 buttons on a tablet, all rows on phones) and the last
+   button was simply sliced mid-word ("Challe…") with no hint the row scrolls. A soft fade on the
+   trailing edge is the standard "there's more — swipe" cue. */
+/* Desktop: the five result actions (Practice Again / Try Exam Mode / All Quizzes / My History /
+   Challenge a Friend) overflowed the 860px column by a few pixels, so the last one was cut off.
+   Slightly tighter buttons fit all five on one line. */
+@media (min-width: 1024px) {
+    .qresult-actions { gap: 8px; }
+    .qresult-actions .qresult-btn { padding-left: 16px; padding-right: 16px; }
+}
+/* (The fade itself comes from .is-scrollable, set by ux-animations.js initChipRows only while
+   the row actually overflows.) */
 
 /* Resume builder header on tablets (701–991px): title + all five actions centered as one block, and
    trimmed so the buttons stay on one row where they fit (otherwise Save & Preview dropped alone to
@@ -3122,4 +3155,425 @@ body.admin-body .admin-form-actions > span[style*="94a3b8"] { color: #64748b !im
     .hs-panel,
     .hs-panel-parallax { will-change: auto; }
     .hs-track { will-change: transform; }
+}
+
+/* ── Touch targets (phones + tablets) ────────────────────────────────────────────────────────
+   Found by the e2e-web responsive suite on iPad/phone: these links/buttons rendered 16-23px tall,
+   under the 24px WCAG 2.5.8 minimum (44px recommended for touch). Mouse users keep the compact
+   desktop sizes; only coarse pointers get the larger hit areas. */
+@media (pointer: coarse) {
+    /* Footer legal row (Privacy / Terms / Cookie) */
+    .footer-bottom-links a { display: inline-flex; align-items: center; min-height: 44px; }
+
+    /* Card header "View All" links and the dashboard's "View Full Leaderboard" */
+    .an-card-link,
+    .an-root a[href="/leaderboard"] { display: inline-flex; align-items: center; min-height: 40px; }
+
+    /* Plan/usage banners ("Upgrade →") */
+    .admin-alert a { display: inline-flex; align-items: center; min-height: 40px; }
+
+    /* Invoice "Download" links in billing tables */
+    td > a[href*="/invoice/"] { display: inline-flex; align-items: center; min-height: 40px; }
+
+    /* New assignment: "Select all visible" / "Clear selection" */
+    .asn-select-action { min-height: 40px; padding-top: 8px; padding-bottom: 8px; }
+
+    /* Business flashcard course: topic group toggles */
+    .bfc-topic-toggle { min-height: 44px; }
+
+    /* Checkboxes in pickers (the whole label row is also tappable) */
+    .asn-picker-item input[type="checkbox"],
+    .asn-picker-item-label input[type="checkbox"] { width: 22px; height: 22px; }
+
+    /* Back links / breadcrumbs */
+    .account-shell a[href="/my-account"],
+    .rv-breadcrumb a,
+    .rg-breadcrumb a,
+    .lbrd-hdr .of-btn-o { display: inline-flex; align-items: center; min-height: 44px; }
+
+    /* Resume sample: template picker */
+    .rv-sp-select { min-height: 40px; }
+}
+
+/* Resume builder header actions (Import Resume / View Sample / Choose Template) and the photo
+   button hard-coded #fff/#f8fafc, so in dark mode they sat as bright white pills on the dark
+   header. Re-theme them with the same dark tokens the rest of the builder uses. */
+:root[data-theme="dark"] .rb-more-menu { background: var(--white); border-color: var(--border-color); }
+:root[data-theme="dark"] .rb-more-item { color: var(--text-body); }
+:root[data-theme="dark"] .rb-more-item:hover { background: var(--surface-subtle); color: #ff8a3d; }
+:root[data-theme="dark"] .rb-photo-btn {
+    background: var(--surface-subtle);
+    border-color: var(--border-color);
+    color: var(--text-body);
+}
+:root[data-theme="dark"] .rb-photo-btn:hover { border-color: #ff8a3d; color: #ff8a3d; }
+@media (min-width: 701px) {
+    :root[data-theme="dark"] .rb-more-menu { background: transparent; }
+    :root[data-theme="dark"] .rb-more-item {
+        background: var(--white);
+        border-color: var(--border-color);
+        color: var(--text-body);
+    }
+    :root[data-theme="dark"] .rb-more-item:hover { background: var(--surface-subtle); border-color: #ff8a3d; color: #ff8a3d; }
+}
+
+/* Dark mode: text-on-white buttons. --an-ink flips to near-white in dark mode but these buttons
+   hard-code a white background, so their labels vanished (AI Insights "Review <topic> →", the
+   dashboard hero's secondary button). The account page's "Sign Out" outline had the opposite
+   problem: dark slate text on the dark card. */
+:root[data-theme="dark"] .an-insight-action,
+:root[data-theme="dark"] .an-next-btn--ghost {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.18);
+    color: #f1f5f9;
+}
+:root[data-theme="dark"] .an-insight-action:hover,
+:root[data-theme="dark"] .an-next-btn--ghost:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+:root[data-theme="dark"] .btn-account-signout {
+    border-color: rgba(255, 255, 255, 0.28);
+    color: #e2e8f0;
+}
+:root[data-theme="dark"] .btn-account-signout:hover {
+    border-color: rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
+/* Phones: the floating WhatsApp button sat over the bottom-right of the screen — exactly where
+   phone layouts put their primary actions — covering "Create Account & Send OTPs" on sign-up,
+   "Start Quiz"/"Study Now" on catalogue cards, KPI tiles, Save/Create buttons and list actions.
+   On phones it now shows only on the marketing pages; everywhere else support stays one tap away
+   via Help (menu / account) and the FAQ's "Chat with us on WhatsApp" button. */
+@media (max-width: 767px) {
+    .whatsapp-float { display: none !important; }
+    /* Marketing pages only: home hero, About, For Business, FAQ. */
+    body:has(.hero-v3, .about-hero, .bz-hero, #faqAccordion) .whatsapp-float { display: inline-flex !important; }
+}
+
+/* Request a Course → "Your Requests": 5 columns can't fit a phone, so the Title column was cut off
+   inside the card. Below 576px each request becomes a labelled card (labels from data-label). */
+@media (max-width: 575px) {
+    .cr-requests-table thead { display: none; }
+    .cr-requests-table, .cr-requests-table tbody, .cr-requests-table tr, .cr-requests-table td { display: block; width: 100%; }
+    .cr-requests-table tr { padding: 12px 16px; border-bottom: 1px solid var(--border-color, #e2e8f0); }
+    .cr-requests-table td {
+        display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+        padding: 4px 0 !important; border: 0 !important; max-width: none !important; text-align: right;
+    }
+    .cr-requests-table td::before {
+        content: attr(data-label); flex: 0 0 auto; text-align: left;
+        font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+        color: var(--text-muted, #64748b);
+    }
+}
+
+/* 375px phones: the resume score header squeezed "Resume Score / Needs Work / See suggestions"
+   into three narrow wrapping columns, and the "Points Earned" banner broke "+7 points" over two
+   lines. Keep labels on one line and drop the redundant hint text. */
+@media (max-width: 420px) {
+    .rv-score-toggle-hint #rvScoreHintText { display: none; }
+    .rv-score-header-right, .rv-score-header-left, .rv-score-header-left * { white-space: nowrap; }
+    .points-earn-banner .ach-earn-text, .points-earn-banner .ach-earn-text * { white-space: nowrap; }
+    .points-earn-banner { flex-wrap: wrap; row-gap: 6px; }
+}
+
+/* Business Plans / AI Credits header on phones: ~110px of blank space above the back link and a
+   4-line 2rem heading pushed the plans below the fold. Page-title scale like the rest of the app,
+   left-aligned with the back link. */
+@media (max-width: 575px) {
+    .bz-page-header { padding: 84px 16px 12px; text-align: left; }
+    .bz-page-header .bz-section-header { text-align: left; margin-bottom: 0; }
+    .bz-page-header .bz-section-header h1 { font-size: 1.55rem; line-height: 1.25; }
+    .bz-page-header .bz-section-header p { font-size: 0.92rem; margin-left: 0; }
+    .bz-page-header .bz-back-link { margin-bottom: 8px; }
+    /* Plan-usage banner: message on top, "Upgrade →" on its own line instead of a squeezed column. */
+    .admin-alert:has(a[href*="/business/plans"]) { flex-wrap: wrap; }
+    .admin-alert:has(a[href*="/business/plans"]) > a { margin-left: 26px; }
+    /* Dashboard / analytics header controls: an even 2-column grid instead of a ragged mix of
+       paired and lone buttons (range picker, Overview, Recruitment/University View, back link). */
+    .an-root--biz .dash-header-actions,
+    .an-root--biz .an-filter-bar { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+    .an-root--biz .dash-header-actions > *,
+    .an-root--biz .an-filter-bar > * { width: 100%; min-width: 0; justify-content: center; white-space: nowrap; }
+}
+/* Alerts carrying a long email/URL ("Invite sent to qa.someone…@company.com") ran past the edge. */
+.admin-alert, .alert { overflow-wrap: anywhere; }
+
+/* Resume preview/sample "Style" picker was truncated ("1. Slate Prof…") on phones — full width. */
+@media (max-width: 575px) {
+    .rv-style-picker { flex: 1 1 100%; }
+    .rv-style-picker .rv-sp-select { flex: 1; width: 100%; max-width: none; }
+}
+
+/* Activity timeline on phones: the date column squeezed long descriptions into a one-word-wide
+   strip ("Studied / Wireless / Network / …"). Date moves under the text, full width. */
+@media (max-width: 480px) {
+    .an-timeline-item { flex-wrap: wrap; }
+    .an-timeline-main { flex: 1 1 0; min-width: 0; }
+    .an-timeline-when { flex: 1 1 100%; order: 3; padding-left: 44px; margin-top: 2px; font-size: 0.78rem; }
+}
+
+/* Profile Details header on phones: icon above, text full width (it was squeezed into a narrow
+   column beside the icon, wrapping the description over four lines). */
+@media (max-width: 575px) {
+    .ac-profile-head { flex-direction: column; gap: 10px !important; }
+}
+
+/* Course detail "Save Changes" + "Archive": on phones the full-width buttons stacked with the
+   Archive button's inline margin-left and no vertical gap (pressed flush under Save). Consistent
+   gap, same height, full width. */
+.admin-form-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.admin-form-actions > button[form$="ArchiveForm"] { margin-left: 0 !important; min-height: 40px; }
+@media (max-width: 575px) { .admin-form-actions > .admin-btn { flex: 1 1 100%; justify-content: center; min-height: 44px; } }
+
+/* Flashcard study: "↑ ↓ ← → to navigate · Space for next" is keyboard help — meaningless on
+   touch tablets/phones, where the swipe hint already explains navigation. */
+@media (hover: none) and (pointer: coarse) { .fc-kbd-hint { display: none !important; } }
+
+/* Headlines: balance line lengths so a heading never ends on a lone word ("…spreadsheets &" /
+   "email"), and keep the hero's rotating word whole — "Interview-Ready." broke at its hyphen. */
+h1, h2, h3, .an-card-title, .admin-hub-title { text-wrap: balance; }
+.h1-rotate { white-space: nowrap; }
+@media (max-width: 400px) { .hero-v3 h1 { font-size: clamp(2rem, 10vw, 2.6rem); } }
+
+/* ── Chip rows never wrap (product rule) ──────────────────────────────────────────────────────
+   Feature/tag/stat chips stay on ONE line; when they don't fit, the row scrolls sideways (touch
+   swipe, trackpad, shift+wheel) with a fade on the trailing edge as the "more" cue. Covers the
+   Quiz Pro feature list, home hero pills, course-card badges/topics, list-row meta chips and
+   the active-plan quick links. The e2e-web visual audit flags any chip row that wraps. */
+.qsub-features,
+.hero-v3-pills,
+.of-card-badges,
+.of-topics,
+.asn-qbank-item-meta,
+.qsub-active-links,
+*:has(> .asn-type-btn) {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+}
+.qsub-features::-webkit-scrollbar,
+.hero-v3-pills::-webkit-scrollbar,
+.of-card-badges::-webkit-scrollbar,
+.of-topics::-webkit-scrollbar,
+.asn-qbank-item-meta::-webkit-scrollbar,
+.qsub-active-links::-webkit-scrollbar,
+*:has(> .asn-type-btn)::-webkit-scrollbar { display: none; }
+.qsub-features > *,
+.hero-v3-pills > *,
+.of-card-badges > *,
+.of-topics > *,
+.asn-qbank-item-meta > *,
+.qsub-active-links > *,
+*:has(> .asn-type-btn) > * { flex: 0 0 auto; white-space: nowrap; scroll-snap-align: start; }
+/* Centred rows (hero pills, Pro features) centre when they fit and start-align when they
+   overflow — plain `center` would clip the first chip off the left edge. */
+.qsub-features, .hero-v3-pills { justify-content: safe center; padding-bottom: 2px; }
+/* Fade the trailing edge only when the row can actually scroll (set by chip-rows script
+   below via .is-scrollable), so rows that fit aren't faded for no reason. */
+.is-scrollable {
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
+}
+
+/* Admin tables: cells given a max-width + overflow-wrap (long URLs, screen paths, error
+   messages) still inherited the table's nowrap, so their text ran over the next column
+   (Mobile App Errors "Screen" spilling into "User"). Let those cells actually wrap. */
+body.admin-body .dash-table td[style*="max-width"],
+body.admin-body .dash-table td[style*="overflow-wrap"] { white-space: normal; overflow-wrap: anywhere; }
+
+/* Admin is an internal tool — the public marketing footer (Learn / Company / Contact, social
+   icons) looked out of place under every admin screen. Keep only the slim copyright bar. */
+body.admin-body .footer-section { padding: 18px 0; }
+body.admin-body .footer-section .footer-grid { display: none; }
+body.admin-body .footer-section .footer-bottom { border-top: 0; padding-top: 0; }
+
+/* Leaderboard period tabs: "This Month" wrapped onto two lines on 375px phones. */
+@media (max-width: 420px) {
+    .lbrd-tab { white-space: nowrap; font-size: 0.86rem; padding-left: 6px; padding-right: 6px; }
+}
+
+/* Dark mode: the dashboard range picker and the catalogue card chips kept their light-mode white
+   fill, so they sat as bright white boxes on the dark cards. */
+:root[data-theme="dark"] .an-filter-select,
+:root[data-theme="dark"] #an-range-select {
+    background-color: var(--white);
+    color: var(--text-main);
+    border-color: var(--border-color);
+}
+/* Empty chart placeholders were a hard-coded #fafafa box — bright white panels on dark cards. */
+:root[data-theme="dark"] .an-empty {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #94a3b8;
+}
+:root[data-theme="dark"] .ach-card:not(.ach-card--earned) .ach-card-icon { background: rgba(255, 255, 255, 0.06); color: #64748b; }
+:root[data-theme="dark"] .ach-card { border-color: rgba(255, 255, 255, 0.1); }
+:root[data-theme="dark"] .of-duration-chip {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: #cbd5e1;
+}
+
+/* ── Touch targets, round 2 (e2e-web run 2026-09-28) ──────────────────────────────────────────
+   Still under 24px on phones/tablets: resume builder "Add bullet point" (21px), the skill chip ×
+   (8×13), the "Currently working here" checkbox (15px), toast close (15px wide), "Mark all read"
+   in the notifications menu and the quiz/game result "Leaderboard →" link. */
+@media (pointer: coarse) {
+    .rb-add-bullet { min-height: 40px; padding: 8px 4px; }
+    .rb-chip-del {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 24px; min-height: 24px; margin: -4px -6px -4px 0;
+    }
+    .we-current { width: 20px; height: 20px; }
+    label:has(> .we-current) { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; }
+    .iq-toast-close { min-width: 32px; min-height: 32px; margin: -6px -6px 0 0; }
+    .nav-notif-mark-all { min-height: 36px; padding: 6px 8px; }
+    .ach-earn-link { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; }
+}
+
+/* Account sub-pages (Profile / Subscription / Help): .account-shell is a grid, so the "‹ My Account"
+   back pill stretched into a full-width bar that read as a search field, and its own 20px margin
+   stacked on the grid gap. Pill-sized, start-aligned; titles bold like every other page heading. */
+.account-shell > .ac-sub-page-back { justify-self: start; margin-bottom: -8px; }
+.account-shell h1.h4, .account-shell h1.h3, .account-shell h2.h5 { font-weight: 800; letter-spacing: -0.01em; }
+
+/* Quiz Pro "what you get": six features need ~1,275px on one line but the column is 760px, so
+   on desktop/tablet the chip row became a sideways scroll with "Weak-area Break…" cut off — and
+   mouse users have no swipe. From 768px it's a 3×2 checklist grid: every benefit visible. */
+@media (min-width: 768px) {
+    .qsub-features {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        overflow: visible;
+        -webkit-mask-image: none; mask-image: none;
+    }
+    .qsub-features > .qsub-feat { justify-content: flex-start; white-space: normal; text-align: left; }
+}
+
+/* Dark mode, Flashcards/Quizzes catalogues: the "Can't find … Request a course" banner kept its
+   light-mode #9a3412 text (brown on near-black, ~2:1), and the grid/list view toggle stayed a
+   bright #f1f5f9/white box. */
+:root[data-theme="dark"] .of-request-course-cta { color: #fdba74; background: rgba(255, 106, 0, 0.08); border-color: rgba(255, 106, 0, 0.24); }
+:root[data-theme="dark"] .of-request-course-cta strong { color: #ffedd5; }
+:root[data-theme="dark"] .of-view-toggle { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.12); }
+:root[data-theme="dark"] .of-vt-btn { color: #94a3b8; }
+:root[data-theme="dark"] .of-vt-btn.active { background: rgba(255, 106, 0, 0.16); color: #ff8a3d; box-shadow: none; }
+
+/* Quiz result, desktop: Practice mode has SIX actions (… Challenge a Friend, Share Result) — ~55px
+   more than the 828px column, so "Share" was sliced off at the edge. Share collapses to an icon
+   button (label kept for screen readers via aria-label; a share error message still shows in
+   full since it replaces the button content). Extra bottom room so the primary button's glow
+   isn't clipped into a grey box by the row's overflow-x. */
+@media (min-width: 1024px) {
+    #qresult-share-btn .qresult-btn-label { display: none; }
+    #qresult-share-btn { padding-left: 14px; padding-right: 14px; }
+    .qresult-actions .qresult-btn { padding-left: 14px; padding-right: 14px; }
+}
+.qresult-actions { padding-bottom: 16px; }
+
+/* Home hero, desktop: the five trust pills were ~35px wider than the hero's text column, so the
+   last one ("Free to Start") was faded out mid-word. Slightly tighter pills fit all five. */
+@media (min-width: 992px) {
+    .hero-v3-pills { gap: 6px; }
+    .hero-v3-pill { padding: 5px 11px !important; font-size: 11.5px !important; }
+}
+
+/* Admin tables: clamp very long values (Mobile App Errors "Screen" bundle URLs) to three lines. */
+.adm-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Business Plans on tablets (700–1099px): 3 cards + Enterprise orphaned alone on row two. When
+   there are exactly four plans, lay them out 2×2 so both rows are full. */
+@media (min-width: 700px) and (max-width: 1099px) {
+    .bz-plan-grid:has(> .bz-plan-card:nth-child(4):last-child) {
+        display: grid; grid-template-columns: repeat(2, minmax(0, 320px)); justify-content: center;
+    }
+    .bz-plan-grid:has(> .bz-plan-card:nth-child(4):last-child) > .bz-plan-card { max-width: none; }
+}
+
+/* KPI strips with exactly five tiles (University Analytics) on tablets: 4 + a lone full-width
+   tile read as a layout glitch. Five fit on one row at ≥768px. */
+@media (min-width: 768px) and (max-width: 1099px) {
+    .an-kpi-grid:has(> :nth-child(5):last-child) { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; }
+    .an-kpi-grid:has(> :nth-child(5):last-child) > * { grid-column: auto !important; }
+}
+
+/* ── FAQ dark mode (/faq and the home FAQ) ─────────────────────────────────────────────────────
+   The FAQ was pinned light (#faq gradient + white accordion items + #0f172a heading) from when it
+   only lived on the light-only home page. On /faq in dark mode that left a bright white page under
+   a dark navbar. Theme it with the site's dark tokens instead. */
+:root[data-theme="dark"] #faq { background: linear-gradient(180deg, var(--site-gradient-start, #0b1120) 0%, var(--site-gradient-end, #0f172a) 100%); }
+:root[data-theme="dark"] .faq-header h2 { color: #f1f5f9 !important; }
+:root[data-theme="dark"] .faq-header p, :root[data-theme="dark"] .faq-cta-text { color: #94a3b8; }
+:root[data-theme="dark"] #faq .accordion-item { background: var(--white, #111827); border-color: rgba(255, 255, 255, 0.1) !important; }
+:root[data-theme="dark"] #faq .accordion-button { background: var(--white, #111827) !important; color: #e2e8f0; }
+:root[data-theme="dark"] #faq .accordion-button:not(.collapsed) { background: rgba(255, 106, 0, 0.08) !important; color: #ff8a3d !important; }
+:root[data-theme="dark"] #faq .accordion-body { color: #cbd5e1; background: transparent; }
+:root[data-theme="dark"] #faq .accordion-button::after { background-color: rgba(255, 255, 255, 0.08) !important; }
+:root[data-theme="dark"] .faq-cta-link { background: #f1f5f9; color: #0f172a; }
+:root[data-theme="dark"] .faq-cta-link:hover { background: #fff; color: #0f172a; }
+
+/* ── Phone fixes, round 2 (e2e-web run 2026-09-28) ─────────────────────────────────────────── */
+@media (max-width: 575px) {
+    /* Course lists (Flashcard / Quiz Courses): the rows' only actions are icon buttons (archive,
+       open ›), but the generic list-row rule above pushed them onto their own line, leaving a lone
+       chevron under every course. Keep icon-only actions beside the text. */
+    .asn-qbank-item:has(.asn-qbank-item-actions .fa-chevron-right) { flex-wrap: nowrap; align-items: center; }
+    .asn-qbank-item:has(.asn-qbank-item-actions .fa-chevron-right) > div:first-child { flex: 1 1 0; min-width: 0; }
+    .asn-qbank-item:has(.asn-qbank-item-actions .fa-chevron-right) .asn-qbank-item-actions { flex: 0 0 auto; flex-wrap: nowrap; }
+
+    /* Plan-usage banner: the message span's flex-basis:auto made it wrap below the info icon,
+       leaving the icon alone on the first line. Icon + message share a row; Upgrade → wraps under. */
+    .admin-alert:has(a[href*="/business/plans"]) > span { flex: 1 1 0 !important; min-width: 0; }
+    .admin-alert:has(a[href*="/business/plans"]) > a { flex: 1 1 100%; }
+
+    /* Method tabs (Add Manually / Bulk Import / Generate with AI): three tabs wrapped 2 + 1 with
+       "Generate with AI" alone on a second row. Three equal columns, icon above a short label. */
+    .iq-tablist:has(> .iq-tab:nth-child(3):last-child) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .iq-tablist:has(> .iq-tab:nth-child(3):last-child) > .iq-tab {
+        flex-direction: column; gap: 4px; padding: 8px 4px; font-size: 0.78rem; line-height: 1.2;
+        text-align: center; white-space: normal; justify-content: center;
+    }
+}
+
+/* Catalogue cards: the "Flashcards"/"Quiz" type tag (22px) sat 5px shorter than the count chips
+   beside it (27px), so the row looked ragged. One chip height for the whole badge row. */
+.of-card-badges { align-items: center; }
+.of-card-badges > * { min-height: 26px; display: inline-flex; align-items: center; box-sizing: border-box; }
+
+/* Tablets (768–1024px): the home comparison card (.cmp-card.reveal-right) starts translateX(28px)
+   until its scroll-reveal fires, so the page was 8px wider than an iPad (818 > 810) — sideways
+   wobble on touch. Same vertical reveal the phone rule uses. */
+@media (max-width: 1024px) {
+    .reveal-left, .reveal-right { transform: translateY(20px); }
+}
+
+/* My Courses tabs on 375px phones: two equal nowrap tabs, but "Flashcard Courses (0)" is wider
+   than half the row, so its text ran under the "Quiz Courses" pill. Tighter type fits both;
+   an ellipsis guards longer counts. */
+@media (max-width: 400px) {
+    #mycTabs { gap: 6px; }
+    #mycTabs .asn-tab-btn {
+        font-size: 0.78rem; padding-left: 6px; padding-right: 6px; letter-spacing: -0.01em;
+        overflow: hidden; text-overflow: ellipsis;
+    }
+}
+
+/* Dashboard "Weakest topic … / Fix This Now" banner on 375px phones: the card sits in a narrow
+   chart column (266px) and its two rows kept their nowrap min-content width (264px), so both
+   spilled ~30px past the card's padding. Let them shrink and wrap inside the card. */
+@media (max-width: 480px) {
+    .an-weakspot-cta > * { min-width: 0; max-width: 100%; }
+    .an-weakspot-cta-text { flex-wrap: wrap; white-space: normal; text-align: center; }
+    .an-weakspot-cta-btn { justify-content: center; white-space: normal; }
 }

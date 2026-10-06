@@ -53,15 +53,17 @@
 
 .game-home-page { padding-top: 76px; min-height: 70vh; background: linear-gradient(180deg, var(--site-gradient-start) 0%, var(--site-gradient-end) 55%); }
 
+/* Light page header like every other logged-in page (Quizzes, Flashcards, Leaderboard…). This
+   used to be a near-black band that started below a strip of the light page background, which
+   read as a rendering glitch rather than a design choice. */
 .game-hero-band {
-    background: var(--secondary-dark);
-    padding: 48px 0 40px;
-    color: var(--white);
+    background: transparent;
+    padding: 28px 0 8px;
 }
+/* Same 1000px column as the cards below, so the title lines up with their left edge. */
+.game-hero-band .game-hb-inner { max-width: 1000px; padding: 0 20px; }
 .game-title {
-    /* Global `h1 { color: var(--dark-900) }` (global.css) otherwise wins over this dark hero
-       band's inherited white text — the heading was nearly invisible against the dark background. */
-    color: var(--white);
+    color: var(--text-main);
     font-size: clamp(1.6rem, 3vw, 2.2rem);
     font-weight: 800;
     margin: 0 0 8px;
@@ -70,11 +72,11 @@
     gap: 12px;
 }
 .game-title i { color: var(--primary-orange); }
-.game-sub { color: rgba(255,255,255,0.75); margin: 0; font-size: var(--text-lg); }
+.game-sub { color: var(--text-muted); margin: 0; font-size: var(--text-lg); }
 
 .game-home-cards {
     max-width: 1000px;
-    margin: -28px auto 60px;
+    margin: 20px auto 60px;
     padding: 0 20px;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -419,6 +421,50 @@
 .gresult-board-score { font-weight: 800; color: var(--primary-orange); min-width: 46px; text-align: right; }
 
 .gresult-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+/* The action row (Rematch / New Game / Share) had no styles at all, so two <button>s rendered as
+   grey browser-default boxes next to a bare orange link. Same pill language as .game-btn. */
+.gresult-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 140px;
+    padding: 12px 24px;
+    border-radius: 999px;
+    font: inherit;
+    font-weight: 700;
+    font-size: var(--text-base);
+    line-height: 1.2;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease, color .15s ease, background-color .15s ease;
+    -webkit-appearance: none;
+    appearance: none;
+}
+.gresult-btn:focus-visible { outline: 3px solid rgba(255,106,0,0.35); outline-offset: 2px; }
+.gresult-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.gresult-btn--primary {
+    background: var(--primary-gradient);
+    color: #fff;
+    box-shadow: var(--shadow-orange-sm);
+}
+.gresult-btn--primary:hover:not(:disabled) { color: #fff; box-shadow: var(--shadow-orange-md); transform: translateY(-2px); }
+.gresult-btn--outline {
+    background: var(--white);
+    color: var(--text-main);
+    border-color: var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+.gresult-btn--outline:hover:not(:disabled) {
+    color: var(--primary-orange);
+    border-color: var(--primary-orange);
+    transform: translateY(-2px);
+}
+@media (max-width: 480px) {
+    .gresult-actions { gap: 10px; }
+    .gresult-btn { flex: 1 1 100%; }
+}
 .gresult-rematch-err { color: #dc2626; text-align: center; font-size: var(--text-sm); margin-top: 12px; }
 
 .gresult-confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }

@@ -1,0 +1,1004 @@
+/* =========================================================================================
+   PREMIUM LAYER — glass surfaces, gradient accents, curved corners and layered depth, applied
+   site-wide (guests + signed-in, light + dark). Loaded LAST (after auth-vibrant.css) and wrapped
+   in @media screen so print (resume PDF / certificate) is untouched.
+
+   Scope: every page except the standalone admin console (body.admin-body — dense internal tool)
+   and the immersive full-screen play views that own their background.
+
+   Specificity: selectors start with `html[data-theme][data-theme] body:not(.admin-body)` (0,3,2)
+   and wrap component lists in :where() (zero weight — :is() would take its heaviest argument,
+   e.g. `.account-shell .card`, and silently outrank the specific overrides further down),
+   which ties auth-vibrant.css's `html[data-auth] body:not(.admin-body)` and wins by load order.
+   data-theme is always set by header.ftl's inline script, so the prefix matches every page.
+
+   Glass without traps: `backdrop-filter` makes an element the containing block for its
+   position:fixed descendants (toasts / confirm modals inside a card would render inside the
+   card — see auth.css .auth-shell note). So large containers get a *frosted translucent* fill
+   over the colour-mesh backdrop, and real blur is reserved for small self-contained surfaces
+   (nav, tab bar, dropdowns, KPI / hub / plan tiles, chips, modals).
+   ========================================================================================= */
+@media screen {
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   0. TOKENS
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+:root {
+    --pm-orange: #ff6a00;
+    --pm-pink: #ff3d81;
+    --pm-violet: #7c3aed;
+    --pm-grad: linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%);
+    --pm-grad-3: linear-gradient(100deg, #ff6a00 0%, #ff3d81 52%, #7c3aed 100%);
+    --pm-grad-soft: linear-gradient(135deg, rgba(255, 106, 0, 0.10) 0%, rgba(255, 61, 129, 0.07) 50%, rgba(124, 58, 237, 0.08) 100%);
+
+    --pm-r-xl: 26px;
+    --pm-r-lg: 22px;
+    --pm-r-md: 16px;
+    --pm-r-sm: 12px;
+
+    /* glass */
+    --pm-glass: linear-gradient(150deg, rgba(255, 255, 255, 0.90) 0%, rgba(255, 255, 255, 0.74) 100%);
+    --pm-glass-strong: linear-gradient(150deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.84) 100%);
+    --pm-glass-item: rgba(255, 255, 255, 0.72);
+    --pm-glass-edge: rgba(255, 255, 255, 0.85);
+    --pm-line: rgba(124, 58, 237, 0.12);
+    --pm-line-strong: rgba(124, 58, 237, 0.22);
+    --pm-blur: saturate(170%) blur(16px);
+
+    /* depth: inner top highlight + contact shadow + violet ambient + warm glow underneath */
+    --pm-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 1px 2px rgba(15, 23, 42, 0.05),
+        0 10px 28px -6px rgba(124, 58, 237, 0.13),
+        0 22px 50px -24px rgba(255, 106, 0, 0.22);
+    --pm-shadow-sm:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 1px 2px rgba(15, 23, 42, 0.05),
+        0 8px 20px -8px rgba(124, 58, 237, 0.16);
+    --pm-shadow-hover:
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        0 2px 4px rgba(15, 23, 42, 0.05),
+        0 18px 40px -10px rgba(124, 58, 237, 0.24),
+        0 26px 56px -22px rgba(255, 61, 129, 0.34);
+    --pm-glow-btn: 0 10px 24px -6px rgba(255, 61, 129, 0.45), 0 6px 14px -6px rgba(255, 106, 0, 0.45);
+    --pm-ring: 0 0 0 4px rgba(255, 106, 0, 0.16), 0 0 0 1px rgba(255, 106, 0, 0.55);
+
+    --pm-input-bg: rgba(255, 255, 255, 0.78);
+    --pm-input-line: rgba(100, 116, 139, 0.22);
+    --pm-head-wash: linear-gradient(95deg, rgba(255, 106, 0, 0.09) 0%, rgba(255, 61, 129, 0.06) 45%, rgba(124, 58, 237, 0.06) 100%);
+}
+:root[data-theme="dark"] {
+    --pm-glass: linear-gradient(150deg, rgba(30, 41, 66, 0.82) 0%, rgba(20, 28, 48, 0.72) 100%);
+    --pm-glass-strong: linear-gradient(150deg, rgba(34, 46, 74, 0.94) 0%, rgba(22, 31, 52, 0.90) 100%);
+    --pm-glass-item: rgba(30, 41, 66, 0.62);
+    --pm-glass-edge: rgba(255, 255, 255, 0.08);
+    --pm-line: rgba(255, 255, 255, 0.09);
+    --pm-line-strong: rgba(255, 255, 255, 0.16);
+    --pm-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 1px 2px rgba(0, 0, 0, 0.4),
+        0 16px 38px -10px rgba(0, 0, 0, 0.55),
+        0 24px 60px -30px rgba(124, 58, 237, 0.35);
+    --pm-shadow-sm:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 1px 2px rgba(0, 0, 0, 0.35),
+        0 10px 24px -10px rgba(0, 0, 0, 0.5);
+    --pm-shadow-hover:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 2px 4px rgba(0, 0, 0, 0.4),
+        0 22px 48px -12px rgba(0, 0, 0, 0.6),
+        0 26px 60px -24px rgba(255, 61, 129, 0.35);
+    --pm-ring: 0 0 0 4px rgba(255, 138, 61, 0.22), 0 0 0 1px rgba(255, 138, 61, 0.7);
+    --pm-input-bg: rgba(15, 23, 42, 0.55);
+    --pm-input-line: rgba(255, 255, 255, 0.12);
+    --pm-head-wash: linear-gradient(95deg, rgba(255, 106, 0, 0.14) 0%, rgba(255, 61, 129, 0.08) 45%, rgba(124, 58, 237, 0.12) 100%);
+}
+
+::selection { background: rgba(255, 61, 129, 0.22); }
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   1. BACKDROP — a soft orange / violet / magenta mesh behind every page (guests too), so the
+   translucent glass has colour to frost. auth-vibrant.css already paints it for signed-in users;
+   this gives guests the same canvas. Pages with their own immersive backgrounds are excluded.
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html:not([data-auth]) body:not(.admin-body):not(.game-play-page):not(.quiz-play-page):not(:has(.hero-v3)) { background: transparent; }
+html:not([data-auth]) { background: #fffefc; }
+html:not([data-auth]) body:not(.admin-body):not(.game-play-page):not(.quiz-play-page):not(:has(.hero-v3))::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 60% 55% at 12% -10%, rgba(255, 106, 0, 0.20) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 50% at 106% 12%, rgba(124, 58, 237, 0.15) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 45% at 42% 118%, rgba(236, 72, 153, 0.12) 0%, transparent 65%),
+        linear-gradient(165deg, #fff8f1 0%, #fffefc 45%, #faf5ff 100%);
+}
+html:not([data-auth])[data-theme="dark"] { background: #0f172a; }
+html:not([data-auth])[data-theme="dark"] body:not(.admin-body):not(.game-play-page):not(.quiz-play-page):not(:has(.hero-v3))::before {
+    background:
+        radial-gradient(ellipse 60% 55% at 12% -10%, rgba(255, 106, 0, 0.18) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 50% at 106% 12%, rgba(124, 58, 237, 0.24) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 45% at 42% 118%, rgba(236, 72, 153, 0.14) 0%, transparent 65%),
+        #0f172a;
+}
+
+/* Page shells that paint an opaque flat/near-white gradient over the mesh — let it show through. */
+html[data-theme][data-theme] body:not(.admin-body) :where(
+    .ach-page, .cert-page, .game-home-page, .game-lobby-page, .gresult-page, .lbrd-page,
+    .refer-page, .share-page, .rb-page-main, .rv-page-main, .rg-page-main,
+    .of-pg, .of-body, .qhist-page, .search-page, .account-page-main, .auth-page-main,
+    .dash-main, .admin-main, .admin-hub-main
+) { background: transparent; }
+/* /faq page (not the home FAQ block): let the mesh through too */
+html[data-theme][data-theme] body:not(.admin-body):not(:has(.hero-v3)) #faq { background: transparent; }
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   2. GLASS SURFACES — big containers (frosted translucent, no blur: see header note)
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-theme][data-theme] body:not(.admin-body) :where(
+    .admin-card, .dash-card, .an-card, .qprof-card, .rb-section, .auth-shell, .otp-card,
+    .account-shell .card, .account-page-main .card, .ac-sub-card, .account-hero,
+    .qresult-hero, .qmode-card, .gresult-hero, .game-lobby-code-card, .refer-code-card,
+    .qsub-coupon-wrap, .verify-card, .qplay-qcard, .share-wrap:not(.verify-card) > .share-card
+) {
+    border: 1px solid var(--pm-line);
+    box-shadow: var(--pm-shadow);
+}
+html[data-theme][data-theme] body:not(.admin-body) :where(
+    .qprof-card, .rb-section, .auth-shell, .otp-card, .account-shell .card, .account-page-main .card,
+    .ac-sub-card, .qmode-card, .game-lobby-code-card, .refer-code-card, .verify-card, .qplay-qcard
+) {
+    background: var(--pm-glass);
+    border-radius: var(--pm-r-lg);
+}
+/* The signed-in cards keep auth-vibrant's 3px gradient top edge, now over glass */
+html[data-theme][data-theme] body:not(.admin-body) :where(.admin-card, .dash-card, .an-card) {
+    background: var(--pm-grad-3) top / 100% 3px no-repeat, var(--pm-glass);
+    border-radius: var(--pm-r-lg);
+}
+/* The auth / legal card: gradient hairline + glass */
+html[data-theme][data-theme] body:not(.admin-body) .auth-shell {
+    background: var(--pm-grad-3) top / 100% 4px no-repeat, var(--pm-glass-strong);
+    border-radius: var(--pm-r-xl);
+}
+
+/* Card section headers: soft brand wash + gradient icon */
+html[data-theme][data-theme] body:not(.admin-body) :where(.admin-card-header, .dash-card-header, .qprof-card-hdr, .rb-section-header) {
+    background: var(--pm-head-wash);
+    border-bottom-color: var(--pm-line);
+}
+html[data-theme][data-theme] body:not(.admin-body) :where(.admin-card-header h2, .dash-card-title, .an-card-title, .qprof-card-title, .rb-section-title) {
+    letter-spacing: -0.015em;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   3. GLASS TILES & LIST ITEMS — interactive, lift + glow on hover
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-theme][data-theme] body:not(.admin-body) :where(
+    .ac-hub-card, .ach-card, .cert-card, .of-card, .qhist-item, .lbrd-item, .search-result-item,
+    .asn-qbank-item, .an-linkitem, .an-list-row, .game-card, .fc-topic-item, .qprof-recent-item,
+    .qresult-review-item, .lbrd-howto-item, .refer-stat-card, .account-stat-card, .rb-item-card,
+    .accordion-item, .qsub-plan, .bz-plan-card, .an-radial-card, .dash-stat, .fc-mode-panel
+) {
+    background: var(--pm-glass);
+    border: 1px solid var(--pm-line);
+    border-radius: var(--pm-r-md);
+    box-shadow: var(--pm-shadow-sm);
+    transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 220ms ease, border-color 220ms ease, background 220ms ease;
+}
+/* Nested list rows inside a card: lighter so they read as rows, not cards-in-cards */
+html[data-theme][data-theme] body:not(.admin-body) :where(.admin-card, .an-card, .dash-card) :where(.asn-qbank-item, .an-linkitem, .an-list-row) {
+    background: var(--pm-glass-item);
+    box-shadow: inset 0 1px 0 var(--pm-glass-edge), 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+@media (hover: hover) {
+    html[data-theme][data-theme] body:not(.admin-body) :where(
+        .ac-hub-card, .cert-card, .of-card, .qhist-item, .search-result-item, a.asn-qbank-item,
+        .asn-qbank-item:has(> a), .an-linkitem, .game-card, .fc-topic-item:not(.fc-topic-item--locked),
+        .qprof-recent-item, .qsub-plan, .bz-plan-card, .qmode-card, .ach-card--earned, .lbrd-item
+    ):hover {
+        transform: translateY(-3px);
+        border-color: var(--pm-line-strong);
+        box-shadow: var(--pm-shadow-hover);
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    html[data-theme][data-theme] body:not(.admin-body) :where(.ac-hub-card, .cert-card, .of-card, .qhist-item, .search-result-item,
+        .asn-qbank-item, .an-linkitem, .game-card, .fc-topic-item, .qprof-recent-item, .qsub-plan, .bz-plan-card, .qmode-card,
+        .ach-card, .lbrd-item):hover { transform: none; }
+}
+
+/* Small self-contained tiles get real frosted blur */
+html[data-theme][data-theme] body:not(.admin-body) :where(.ac-hub-card, .qsub-plan, .bz-plan-card, .an-kpi-card, .refer-stat-card, .account-stat-card, .fc-hero-stat) {
+    -webkit-backdrop-filter: var(--pm-blur);
+    backdrop-filter: var(--pm-blur);
+}
+/* KPI tiles: keep auth-vibrant's per-tile colour pair; add the curve + glass depth */
+html[data-theme][data-theme] body:not(.admin-body) .an-kpi-card { border-radius: var(--pm-r-md); }
+
+/* Highlighted / selected states: gradient ring */
+html[data-theme][data-theme] body:not(.admin-body) :where(.qsub-plan.selected, .qsub-plan.is-selected, .qsub-plan:has(input:checked), .bz-plan-card--popular, .lbrd-item--me, .gplay-lb-item--me, .gresult-board-row--me) {
+    border-color: transparent;
+    background:
+        var(--pm-glass-strong) padding-box,
+        var(--pm-grad-3) border-box;
+    border: 2px solid transparent;
+    box-shadow: var(--pm-shadow-hover);
+}
+
+/* Hub / tile icons: gradient chip with glow */
+html[data-theme][data-theme] body:not(.admin-body) :where(.ac-hub-icon, .cert-card-icon, .game-card-icon, .qmode-card-icon, .rb-section-icon) {
+    box-shadow: 0 8px 18px -6px rgba(255, 61, 129, 0.35);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   4. BUTTONS
+   Primary: brand gradient + coloured glow + a sheen that sweeps across on hover.
+   Secondary/outline: glass pill with a gradient-tinted edge.
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-theme][data-theme] body:not(.admin-body) :where(
+    .admin-btn-primary, .asn-btn--primary, .share-btn--primary, .btn-primary-custom, .auth-btn-primary,
+    .qresult-btn--primary, .bz-plan-btn--primary, .qmode-card-btn, .an-weakspot-cta-btn, .rb-add-btn,
+    .qsub-cta, .game-btn--primary, .refer-copy-btn, .of-card-footer .btn-cta, .btn-cta, .of-btn-o, .rv-sample-cta, .ac-sub-btn-primary
+):not(:disabled):not(.disabled) {
+    background-image: var(--pm-grad);
+    background-color: transparent;
+    border-color: transparent;
+    color: #fff;
+    box-shadow: var(--pm-glow-btn), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    transition: transform 180ms ease, box-shadow 220ms ease, filter 220ms ease;
+}
+html[data-theme][data-theme] body:not(.admin-body) :where(
+    .admin-btn-primary, .asn-btn--primary, .share-btn--primary, .btn-primary-custom, .auth-btn-primary,
+    .qresult-btn--primary, .bz-plan-btn--primary, .qmode-card-btn, .an-weakspot-cta-btn, .rb-add-btn,
+    .qsub-cta, .game-btn--primary, .refer-copy-btn, .btn-cta, .of-btn-o, .rv-sample-cta, .ac-sub-btn-primary
+):not(:disabled):not(.disabled)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 600ms ease;
+    pointer-events: none;
+}
+@media (hover: hover) {
+    html[data-theme][data-theme] body:not(.admin-body) :where(
+        .admin-btn-primary, .asn-btn--primary, .share-btn--primary, .btn-primary-custom, .auth-btn-primary,
+        .qresult-btn--primary, .bz-plan-btn--primary, .qmode-card-btn, .an-weakspot-cta-btn, .rb-add-btn,
+        .qsub-cta, .game-btn--primary, .refer-copy-btn, .btn-cta, .of-btn-o, .rv-sample-cta, .ac-sub-btn-primary
+    ):not(:disabled):not(.disabled):hover {
+        transform: translateY(-2px);
+        filter: saturate(1.1);
+        box-shadow: 0 16px 32px -8px rgba(255, 61, 129, 0.55), 0 8px 18px -8px rgba(255, 106, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        color: #fff;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) :where(
+        .admin-btn-primary, .asn-btn--primary, .share-btn--primary, .btn-primary-custom, .auth-btn-primary,
+        .qresult-btn--primary, .bz-plan-btn--primary, .qmode-card-btn, .an-weakspot-cta-btn, .rb-add-btn,
+        .qsub-cta, .game-btn--primary, .refer-copy-btn, .btn-cta, .of-btn-o, .rv-sample-cta, .ac-sub-btn-primary
+    ):not(:disabled):not(.disabled):hover::after { transform: translateX(120%); }
+}
+html[data-theme][data-theme] body:not(.admin-body) :where(.admin-btn-primary, .asn-btn--primary, .auth-btn-primary, .btn-cta):active { transform: translateY(0) scale(0.98); }
+
+html[data-theme][data-theme] body:not(.admin-body) :where(
+    .admin-btn-outline, .dash-btn--outline, .asn-btn--outline, .share-btn--outline,
+    .qresult-btn--outline, .ac-sub-page-back, .ac-sub-btn-outline, .qplay-ghost-btn, .fc-mode-btn:not(.active):not(.is-active),
+    .an-filter-select, .dash-nav-link, .rg-btn-sample
+) {
+    background: var(--pm-glass-strong);
+    border: 1px solid var(--pm-line-strong);
+    box-shadow: var(--pm-shadow-sm);
+    transition: transform 180ms ease, box-shadow 200ms ease, border-color 200ms ease, color 200ms ease;
+}
+@media (hover: hover) {
+    html[data-theme][data-theme] body:not(.admin-body) :where(
+        .admin-btn-outline, .dash-btn--outline, .asn-btn--outline, .share-btn--outline,
+        .qresult-btn--outline, .ac-sub-page-back, .ac-sub-btn-outline, .qplay-ghost-btn, .dash-nav-link, .rg-btn-sample
+    ):hover {
+        transform: translateY(-1px);
+        border-color: rgba(255, 106, 0, 0.45);
+        box-shadow: var(--pm-shadow-hover);
+        color: var(--pm-orange);
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   5. FORMS — frosted fields, curved corners, gradient focus ring
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-theme][data-theme] body:not(.admin-body) :where(
+    .form-control, .form-select, .admin-form-input, .admin-search-input, .rb-input, .of-search-input,
+    .qsub-coupon-input, .refer-link-input, .game-input, .auth-input, .asn-input, .rb-select, .game-select, .bz-coupon-input, .asn-play-textarea, select.asn-input, textarea.asn-input, .asn-library-search, .rb-chips-wrap,
+    select.admin-btn, .ql-toolbar.ql-snow, .ql-container.ql-snow
+):not(.otp-box) {
+    background-color: var(--pm-input-bg);
+    border-color: var(--pm-input-line);
+    border-radius: var(--pm-r-sm);
+    box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+    transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+/* The question-bank search is a pill with an inline icon — keep its shape; readable ink in dark */
+html[data-theme][data-theme] body:not(.admin-body) .asn-library-search { border-radius: 999px; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .asn-library-search { color: #e2e8f0; }
+/* Quill: toolbar + editor read as one rounded field */
+html[data-theme][data-theme] body:not(.admin-body) .ql-toolbar.ql-snow { border-radius: var(--pm-r-sm) var(--pm-r-sm) 0 0; }
+html[data-theme][data-theme] body:not(.admin-body) .ql-container.ql-snow { border-radius: 0 0 var(--pm-r-sm) var(--pm-r-sm); }
+html[data-theme][data-theme] body:not(.admin-body) :where(
+    .form-control, .form-select, .admin-form-input, .admin-search-input, .rb-input, .of-search-input,
+    .qsub-coupon-input, .refer-link-input, .game-input, .auth-input, .asn-input, .rb-select, .game-select, .bz-coupon-input, .asn-play-textarea, select.asn-input, textarea.asn-input, .asn-library-search
+):not(.otp-box):focus {
+    background-color: rgba(255, 255, 255, 0.96);
+    border-color: var(--pm-orange);
+    box-shadow: var(--pm-ring);
+    outline: none;
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) :where(
+    .form-control, .form-select, .admin-form-input, .admin-search-input, .rb-input, .of-search-input,
+    .qsub-coupon-input, .refer-link-input, .game-input, .auth-input, .asn-input, .rb-select, .game-select, .bz-coupon-input, .asn-play-textarea, select.asn-input, textarea.asn-input, .asn-library-search
+):not(.otp-box):focus { background-color: rgba(15, 23, 42, 0.85); }
+html[data-theme][data-theme] body:not(.admin-body) .rb-chips-wrap:focus-within { border-color: var(--pm-orange); box-shadow: var(--pm-ring); }
+/* OTP boxes: glass squares with a gradient ring when active */
+html[data-theme][data-theme] body:not(.admin-body) .otp-box {
+    background: var(--pm-input-bg);
+    border-radius: 14px;
+    border-color: var(--pm-input-line);
+    box-shadow: var(--pm-shadow-sm);
+}
+html[data-theme][data-theme] body:not(.admin-body) .otp-box:focus { border-color: var(--pm-orange); box-shadow: var(--pm-ring); }
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   6. TABS & SEGMENTED CONTROLS — glass track, gradient active pill
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-theme][data-theme] body:not(.admin-body) .iq-tablist {
+    background: var(--pm-glass);
+    border: 1px solid var(--pm-line);
+    border-radius: var(--pm-r-md);
+    box-shadow: var(--pm-shadow-sm);
+    padding: 5px;
+}
+html[data-theme][data-theme] body:not(.admin-body) .iq-tab { border-radius: var(--pm-r-sm); }
+html[data-theme][data-theme] body:not(.admin-body) :where(.iq-tab[aria-selected="true"], .asn-tab-btn.is-active, .lbrd-tab.active, .lbrd-tab.is-active, .lbrd-tab[aria-selected="true"]) {
+    background: var(--pm-grad);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: var(--pm-glow-btn);
+}
+html[data-theme][data-theme] body:not(.admin-body) :where(.iq-tab[aria-selected="true"], .asn-tab-btn.is-active) :where(i, .iq-tab-badge) { color: #fff; }
+html[data-theme][data-theme] body:not(.admin-body) .iq-tab[aria-selected="true"] .iq-tab-badge { background: rgba(255, 255, 255, 0.24); }
+html[data-theme][data-theme] body:not(.admin-body) .asn-tab-btn:not(.is-active) {
+    background: var(--pm-glass-strong);
+    border-color: var(--pm-line-strong);
+}
+/* Choice pills (question type, answer type): gradient-tinted selected state */
+html[data-theme][data-theme] body:not(.admin-body) .asn-type-btn.is-active {
+    background: var(--pm-grad-soft);
+    border-color: rgba(255, 106, 0, 0.55);
+    box-shadow: 0 6px 16px -8px rgba(255, 106, 0, 0.5);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   7. TABLES — rounded glass wrapper, tinted header, row hover
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-theme][data-theme] body:not(.admin-body) :where(.dash-table-wrap, .ac-sub-history-wrap, .my-enrollments-table-wrap) {
+    border-radius: var(--pm-r-md);
+    border: 1px solid var(--pm-line);
+    background: var(--pm-glass-item);
+}
+html[data-theme][data-theme] body:not(.admin-body) :where(.dash-table, .asn-attempts-table, .ac-sub-history-table, .cr-requests-table) thead th {
+    background: var(--pm-head-wash);
+    border-bottom-color: var(--pm-line) !important;
+}
+html[data-theme][data-theme] body:not(.admin-body) :where(.dash-table, .asn-attempts-table, .ac-sub-history-table, .cr-requests-table) tbody tr { transition: background 160ms ease; }
+@media (hover: hover) {
+    html[data-theme][data-theme] body:not(.admin-body) :where(.dash-table, .asn-attempts-table, .ac-sub-history-table, .cr-requests-table) tbody tr:hover {
+        background: rgba(255, 106, 0, 0.045);
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   8. EMPTY STATES — frosted panel, dashed gradient-tinted edge, glowing icon disc
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-theme][data-theme] body:not(.admin-body) :where(.an-empty, .dash-empty, .asn-empty, .of-empty, .game-card-empty) {
+    background:
+        radial-gradient(ellipse 70% 60% at 50% 0%, rgba(255, 106, 0, 0.07) 0%, transparent 70%),
+        var(--pm-glass-item);
+    border: 1.5px dashed rgba(124, 58, 237, 0.22);
+    border-radius: var(--pm-r-md);
+}
+html[data-theme][data-theme] body:not(.admin-body) :where(.an-empty, .dash-empty, .asn-empty, .of-empty) > :where(i, .fa-solid, .fa-regular):first-child,
+html[data-theme][data-theme] body:not(.admin-body) :where(.an-empty-icon, .dash-empty-icon, .asn-empty-icon, .of-empty-ico) {
+    box-shadow: 0 10px 26px -8px rgba(255, 61, 129, 0.35);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   9. CHIPS & BADGES — glass chips; page badges get the gradient
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-theme][data-theme] body:not(.admin-body) :where(.of-duration-chip, .asn-type-pill, .fc-tag, .qsub-feat, .dash-badge--muted) {
+    -webkit-backdrop-filter: saturate(160%) blur(8px);
+    backdrop-filter: saturate(160%) blur(8px);
+}
+html[data-theme][data-theme] body:not(.admin-body) :where(.auth-badge, .section-badge, .faq-top-badge, .qsub-badge) {
+    background: var(--pm-grad-soft);
+    border: 1px solid rgba(255, 106, 0, 0.22);
+    box-shadow: 0 4px 14px -6px rgba(255, 61, 129, 0.35);
+}
+html[data-theme][data-theme] body:not(.admin-body) .qsub-feat {
+    background: var(--pm-glass-strong);
+    border-color: var(--pm-line);
+    border-radius: 999px;
+    box-shadow: var(--pm-shadow-sm);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   10. HEADINGS — auth / legal / account titles get the same accent bar the app titles use
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-theme][data-theme] body:not(.admin-body) :where(.auth-header h1, .account-shell h1.h3, .account-shell h1.h4, .ac-sub-title) {
+    font-weight: 900;
+    letter-spacing: -0.03em;
+}
+html[data-theme][data-theme] body:not(.admin-body) .auth-shell .auth-header[style*="text-align:left"] h1::after {
+    content: '';
+    display: block;
+    width: 56px;
+    height: 5px;
+    margin: 12px 0 4px;
+    border-radius: 999px;
+    background: var(--pm-grad-3);
+}
+/* Legal body: section dividers as soft gradient hairlines, headings with a gradient number feel */
+html[data-theme][data-theme] body:not(.admin-body) .legal-body :where(h2, h3) { letter-spacing: -0.02em; }
+html[data-theme][data-theme] body:not(.admin-body) .legal-body hr {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.25), rgba(255, 106, 0, 0.25), transparent);
+    opacity: 1;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   11. CHROME — glass navbar, dropdowns, phone tab bar, modals, toasts
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-theme][data-theme] body:not(.admin-body) .navbar {
+    background: rgba(255, 255, 255, 0.78) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(18px);
+    backdrop-filter: saturate(180%) blur(18px);
+    box-shadow: 0 1px 0 rgba(124, 58, 237, 0.08), 0 8px 24px -16px rgba(15, 23, 42, 0.25);
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) .navbar {
+    background: rgba(15, 23, 42, 0.78) !important;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06), 0 8px 24px -16px rgba(0, 0, 0, 0.6);
+}
+html[data-theme][data-theme] body:not(.admin-body) :where(.nav-dropdown-menu, .dropdown-menu, .nav-notif-menu, .rb-more-menu) {
+    background: rgba(255, 255, 255, 0.88);
+    -webkit-backdrop-filter: saturate(180%) blur(18px);
+    backdrop-filter: saturate(180%) blur(18px);
+    border: 1px solid var(--pm-line);
+    border-radius: var(--pm-r-md);
+    box-shadow: 0 24px 48px -16px rgba(15, 23, 42, 0.28), 0 8px 18px -10px rgba(124, 58, 237, 0.2);
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) :where(.nav-dropdown-menu, .dropdown-menu, .nav-notif-menu, .rb-more-menu) {
+    background: rgba(22, 31, 52, 0.9);
+    box-shadow: 0 24px 48px -16px rgba(0, 0, 0, 0.7);
+}
+html[data-theme][data-theme] body:not(.admin-body) :where(.nav-dropdown-item, .dropdown-item) { border-radius: 10px; }
+
+html[data-theme][data-theme] body:not(.admin-body) .mobile-tab-bar {
+    background: rgba(255, 255, 255, 0.82) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(18px);
+    backdrop-filter: saturate(180%) blur(18px);
+    border-top: 1px solid rgba(124, 58, 237, 0.10);
+    box-shadow: 0 -10px 30px -18px rgba(15, 23, 42, 0.35);
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) .mobile-tab-bar {
+    background: rgba(15, 23, 42, 0.85) !important;
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+/* Active tab: gradient label + a glowing pill indicator above the icon */
+html[data-theme][data-theme] body:not(.admin-body) .mtb-tab.mtb-active { position: relative; }
+html[data-theme][data-theme] body:not(.admin-body) .mtb-tab.mtb-active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 28px;
+    height: 3px;
+    border-radius: 0 0 4px 4px;
+    transform: translateX(-50%);
+    background: var(--pm-grad);
+    box-shadow: 0 2px 10px rgba(255, 61, 129, 0.55);
+}
+
+html[data-theme][data-theme] body:not(.admin-body) :where(.iq-confirm-modal .iq-confirm-dialog, .iq-confirm-dialog, .modal-content, .qm-modal) {
+    background: var(--pm-glass-strong);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border: 1px solid var(--pm-line);
+    border-radius: var(--pm-r-lg);
+    box-shadow: 0 30px 70px -20px rgba(15, 23, 42, 0.45);
+}
+html[data-theme][data-theme] body:not(.admin-body) .iq-toast {
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    backdrop-filter: saturate(180%) blur(16px);
+    border-radius: var(--pm-r-md);
+    box-shadow: 0 20px 44px -14px rgba(15, 23, 42, 0.35);
+}
+
+/* Footer: a gradient hairline and a faint glow on top */
+html[data-theme][data-theme] body:not(.admin-body) .footer-section {
+    position: relative;
+    background-image: radial-gradient(ellipse 60% 120% at 50% 0%, rgba(124, 58, 237, 0.14) 0%, transparent 60%);
+}
+html[data-theme][data-theme] body:not(.admin-body) .footer-section::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ff6a00 22%, #ff3d81 50%, #7c3aed 78%, transparent);
+    opacity: 0.8;
+}
+
+/* WhatsApp float: glass ring */
+html[data-theme][data-theme] body:not(.admin-body) .whatsapp-float { box-shadow: 0 12px 28px -8px rgba(37, 211, 102, 0.55), 0 0 0 4px rgba(255, 255, 255, 0.55); }
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   12. PAGE-SPECIFIC POLISH
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+/* My Account hero: the flat orange cover becomes the three-stop brand gradient with a soft mesh */
+html[data-theme][data-theme] body:not(.admin-body) .account-hero-cover {
+    background:
+        radial-gradient(ellipse 60% 120% at 85% 0%, rgba(255, 255, 255, 0.28) 0%, transparent 60%),
+        var(--pm-grad-3);
+}
+/* Profile / help / subscription: the section icon chips glow */
+html[data-theme][data-theme] body:not(.admin-body) .ac-profile-head .ac-hub-icon { box-shadow: 0 10px 22px -8px rgba(255, 106, 0, 0.5); }
+
+/* Leaderboard podium feel: top three rows get medal-tinted glass */
+html[data-theme][data-theme] body:not(.admin-body) .lbrd-item:nth-child(1):not(.lbrd-item--me) { background: linear-gradient(120deg, rgba(251, 191, 36, 0.16), transparent 60%), var(--pm-glass); }
+html[data-theme][data-theme] body:not(.admin-body) .lbrd-item:nth-child(2):not(.lbrd-item--me) { background: linear-gradient(120deg, rgba(148, 163, 184, 0.18), transparent 60%), var(--pm-glass); }
+html[data-theme][data-theme] body:not(.admin-body) .lbrd-item:nth-child(3):not(.lbrd-item--me) { background: linear-gradient(120deg, rgba(234, 88, 12, 0.14), transparent 60%), var(--pm-glass); }
+
+/* Achievements: earned badges glow in brand colour; locked ones stay frosted and quiet */
+html[data-theme][data-theme] body:not(.admin-body) .ach-card--earned {
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 106, 0, 0.10) 0%, transparent 70%), var(--pm-glass);
+    border-color: rgba(255, 106, 0, 0.22);
+}
+html[data-theme][data-theme] body:not(.admin-body) .ach-card:not(.ach-card--earned) { opacity: 0.88; }
+
+/* Catalogue cards: rounder, image band keeps its colour, subtle inner sheen */
+html[data-theme][data-theme] body:not(.admin-body) .of-card { border-radius: var(--pm-r-lg); overflow: hidden; }
+
+/* Quiz Pro plans / business plans: premium radius */
+html[data-theme][data-theme] body:not(.admin-body) :where(.qsub-plan, .bz-plan-card) { border-radius: var(--pm-r-lg); }
+
+/* FAQ accordion: glass items with a gradient edge when open */
+html[data-theme][data-theme] body:not(.admin-body) .accordion-item { overflow: hidden; margin-bottom: 12px; }
+html[data-theme][data-theme] body:not(.admin-body) .accordion-item:has(.accordion-button:not(.collapsed)) {
+    background: var(--pm-glass-strong) padding-box, var(--pm-grad-3) border-box;
+    border: 1.5px solid transparent;
+    box-shadow: var(--pm-shadow-hover);
+}
+html[data-theme][data-theme] body:not(.admin-body) #faq .accordion-button { background: transparent !important; }
+
+/* Resume builder side nav: active item gradient */
+html[data-theme][data-theme] body:not(.admin-body) .rb-nav-item.active,
+html[data-theme][data-theme] body:not(.admin-body) .rb-nav-item.is-active {
+    background: var(--pm-grad-soft);
+    border-radius: var(--pm-r-sm);
+}
+
+/* Search results / quiz history rows: arrow nudges on hover */
+@media (hover: hover) {
+    html[data-theme][data-theme] body:not(.admin-body) :where(.search-result-item, .qhist-item, .qprof-recent-item, .ac-hub-card):hover :where(.search-result-arrow, .qhist-arrow, .qprof-recent-arrow, .ac-hub-arrow) {
+        transform: translateX(3px);
+        color: var(--pm-pink);
+    }
+    html[data-theme][data-theme] body:not(.admin-body) :where(.search-result-arrow, .qhist-arrow, .qprof-recent-arrow, .ac-hub-arrow) { transition: transform 200ms ease, color 200ms ease; }
+}
+
+/* Progress bars: gradient fill with a soft glow */
+html[data-theme][data-theme] body:not(.admin-body) :where(.fc-hero-progress-fill, .rb-progress-fill, .qplay-pgbar-fill, .ach-progress-fill) {
+    background-image: var(--pm-grad-3);
+    box-shadow: 0 0 12px rgba(255, 61, 129, 0.45);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   13. DARK MODE specifics — glass needs lighter edges and deeper shadows; text on glass
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-theme="dark"][data-theme] body:not(.admin-body) :where(.admin-card, .dash-card, .an-card) {
+    background: var(--pm-grad-3) top / 100% 3px no-repeat, var(--pm-glass);
+    border-color: var(--pm-line);
+    box-shadow: var(--pm-shadow);
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) .an-kpi-card { box-shadow: var(--pm-shadow-sm); }
+html[data-theme="dark"][data-theme] body:not(.admin-body) :where(.admin-card-header, .dash-card-header, .qprof-card-hdr, .rb-section-header) {
+    background: var(--pm-head-wash);
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) :where(.dash-table, .asn-attempts-table, .ac-sub-history-table, .cr-requests-table) tbody tr:hover { background: rgba(255, 138, 61, 0.06); }
+html[data-theme="dark"][data-theme] body:not(.admin-body) :where(.an-empty, .dash-empty, .asn-empty, .of-empty, .game-card-empty) { border-color: rgba(167, 139, 250, 0.25); }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .whatsapp-float { box-shadow: 0 12px 28px -8px rgba(37, 211, 102, 0.45), 0 0 0 4px rgba(15, 23, 42, 0.6); }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .lbrd-item:nth-child(1):not(.lbrd-item--me) { background: linear-gradient(120deg, rgba(251, 191, 36, 0.14), transparent 60%), var(--pm-glass); }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .lbrd-item:nth-child(2):not(.lbrd-item--me) { background: linear-gradient(120deg, rgba(148, 163, 184, 0.14), transparent 60%), var(--pm-glass); }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .lbrd-item:nth-child(3):not(.lbrd-item--me) { background: linear-gradient(120deg, rgba(234, 88, 12, 0.14), transparent 60%), var(--pm-glass); }
+
+
+/* Auth / legal card stays a LIGHT glass card in dark mode (its type is dark by design — it was a
+   fixed-white card before this layer), just floated on the dark mesh with a deeper shadow. */
+html[data-theme="dark"][data-theme] body:not(.admin-body) .auth-shell {
+    background: var(--pm-grad-3) top / 100% 4px no-repeat, linear-gradient(150deg, rgba(255, 255, 255, 0.97) 0%, rgba(255, 255, 255, 0.92) 100%);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) .auth-shell :where(.form-control, .auth-input, .otp-box) {
+    background-color: rgba(248, 250, 252, 0.95);
+    border-color: rgba(100, 116, 139, 0.25);
+    color: #0f172a;
+}
+/* Guest catalogue heroes in dark mode: same navy mesh the signed-in skin uses (the light peach
+   band sat as a bright strip under the dark nav). */
+html:not([data-auth])[data-theme="dark"] body:not(.admin-body) :where(.of-list-hero, .qz-list-hero, .fc-list-hero) {
+    background:
+        radial-gradient(ellipse 55% 90% at 8% 0%, rgba(255, 106, 0, 0.22) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 90% at 100% 20%, rgba(124, 58, 237, 0.26) 0%, transparent 65%),
+        #0f172a;
+}
+
+html:not([data-auth])[data-theme="dark"] :where(.of-list-hero-title, .qz-list-hero-title, .fc-list-hero-title) {
+    background: linear-gradient(120deg, #f1f5f9 0%, #f1f5f9 30%, #ff8c3a 72%, #ff5c9a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+html:not([data-auth])[data-theme="dark"] :where(.of-list-hero-sub, .qz-list-hero-sub, .fc-list-hero-sub) { color: #94a3b8; }
+
+
+/* Help → Your Previous Requests rows (help.ftl): glass rows; were inline #f8fafc bars that stayed
+   bright white in dark mode. */
+.help-req-row {
+    display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+    background: var(--pm-glass-item, #f8fafc);
+    border: 1px solid var(--pm-line, rgba(15, 23, 42, 0.07));
+    border-radius: 12px;
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+.help-req-row:hover { border-color: var(--pm-line-strong); box-shadow: var(--pm-shadow-sm); }
+.help-req-subject { font-size: 0.9rem; font-weight: 700; color: var(--text-main, #0f172a); margin-bottom: 2px; }
+.help-req-date { font-size: 0.78rem; color: var(--text-muted, #94a3b8); flex-shrink: 0; white-space: nowrap; }
+
+/* Business Plans / AI Credits in dark mode: both sections were hard-coded #fff while their text
+   followed the dark theme (light-on-white). Let the dark mesh through and put the plans on dark
+   glass with light type. */
+html[data-theme][data-theme] body:not(.admin-body) :where(.bz-page-header, .bz-page-header + .bz-pricing) { background-color: transparent; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) :where(.bz-page-header, .bz-pricing) { background-color: transparent; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .bz-page-header .bz-section-header h1 { color: #f1f5f9 !important; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .bz-plan-card :where(.bz-plan-currency, .bz-plan-amount) { color: #f8fafc; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .bz-plan-card :where(.bz-plan-name, .bz-plan-period) { color: #94a3b8; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .bz-plan-card .bz-plan-features li { color: #cbd5e1; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .bz-plan-btn--outline { background: rgba(255, 255, 255, 0.06); color: #f1f5f9; border-color: rgba(255, 255, 255, 0.2); }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .bz-plan-btn--current { background: rgba(22, 163, 74, 0.16); color: #86efac; }
+
+
+/* Subscription page: the plan-details block was a hard-coded rgba(255,255,255,0.7) panel, and the
+   quick-link pills kept light-theme ink — both unreadable in dark mode. */
+.ac-sub-details { background: var(--pm-glass-item); border-color: var(--pm-line); }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .ac-sub-details :where(.ac-sub-detail-value) { color: #f1f5f9; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .ac-sub-details :where(.ac-sub-detail-label) { color: #94a3b8; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .ac-sub-btn-outline { color: #e2e8f0; }
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   14. STUDY SURFACES — flashcard study / smart review / topics / quiz mode sat on a flat beige
+   (#f7f3ef) slab with plain white cards and flat orange buttons. Let the mesh through and give
+   the card, mode switch and CTAs the same glass + gradient language as the rest of the site.
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-theme][data-theme] body:not(.admin-body) :where(.fc-study-page, .qmode-page, .qmode-cards-section) { background: transparent; }
+html[data-theme][data-theme] body:not(.admin-body) .fc-topics-section { background: transparent !important; }
+
+/* Swipe card: three-stop brand header with a light bloom, deeper coloured depth */
+html[data-theme][data-theme] body:not(.admin-body) .fc-card {
+    border-radius: var(--pm-r-xl);
+    box-shadow:
+        0 1px 2px rgba(15, 23, 42, 0.06),
+        0 18px 44px -12px rgba(124, 58, 237, 0.22),
+        0 34px 70px -30px rgba(255, 61, 129, 0.40);
+}
+html[data-theme][data-theme] body:not(.admin-body) .fc-card-top {
+    background:
+        radial-gradient(ellipse 60% 140% at 100% 0%, rgba(255, 255, 255, 0.24) 0%, transparent 60%),
+        linear-gradient(118deg, #ff6a00 0%, #ff3d81 62%, #a83bea 100%);
+}
+
+/* Read / Swipe / Listen: one glass track with the active mode as a gradient pill */
+html[data-theme][data-theme] body:not(.admin-body) .fc-mode-toggle {
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
+    padding: 5px;
+    gap: 4px;
+    background: var(--pm-glass);
+    border: 1px solid var(--pm-line);
+    border-radius: 999px;
+    box-shadow: var(--pm-shadow-sm);
+    -webkit-backdrop-filter: var(--pm-blur);
+    backdrop-filter: var(--pm-blur);
+}
+html[data-theme][data-theme] body:not(.admin-body) .fc-mode-toggle .fc-mode-btn:not(.is-active) {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+html[data-theme][data-theme] body:not(.admin-body) :where(.fc-mode-btn.is-active, .fc-nav-next, .fcr-reveal-btn:not([style*="transparent"])) {
+    background: var(--pm-grad);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: var(--pm-glow-btn), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+@media (hover: hover) {
+    html[data-theme][data-theme] body:not(.admin-body) :where(.fc-nav-next, .fcr-reveal-btn:not([style*="transparent"])):hover {
+        opacity: 1;
+        filter: saturate(1.1);
+        transform: translateY(-2px);
+        box-shadow: 0 16px 32px -8px rgba(255, 61, 129, 0.55), 0 8px 18px -8px rgba(255, 106, 0, 0.5);
+    }
+}
+html[data-theme][data-theme] body:not(.admin-body) .fc-nav-prev:not(:disabled) {
+    background: var(--pm-glass-strong);
+    border-color: var(--pm-line-strong);
+    box-shadow: var(--pm-shadow-sm);
+}
+
+/* Stacked deck (flashcard-study.css): brand-gradient bulb, glass ghosts; dark surfaces in dark mode */
+html[data-theme][data-theme] body:not(.admin-body) .fc-card-seam i { background: linear-gradient(135deg, #ff3d81 0%, #a83bea 100%); }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .fc-deck-ghost { background: #1e293b; border-color: rgba(255, 255, 255, 0.08); box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.6); }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .fc-card-seam i { border-color: #1e293b; }
+/* The Swipe panel holds the deck itself — no glass tile frame around it (section 3 styles .fc-mode-panel as a tile for Read mode) */
+html[data-theme][data-theme] body:not(.admin-body) #fc-panel-swipe { background: none; border: 0; box-shadow: none; border-radius: 0; -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* Phone Back / Next bar: glass in light, dark glass in dark (was a fixed cream bar in both) */
+@media (max-width: 640px) {
+    html[data-theme][data-theme] body:not(.admin-body) .fc-nav-row { background: rgba(255, 255, 255, 0.92); border-top-color: var(--pm-line); }
+    html[data-theme="dark"][data-theme] body:not(.admin-body) .fc-nav-row { background: rgba(15, 23, 42, 0.94); border-top-color: rgba(255, 255, 255, 0.08); box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.45); }
+    html[data-theme="dark"][data-theme] body:not(.admin-body) .fc-nav-prev { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.16); color: #e2e8f0; }
+}
+/* Keyboard hint keys: glass keycaps (were cream chips that glowed white in dark mode) */
+html[data-theme][data-theme] body:not(.admin-body) .fc-kbd {
+    background: var(--pm-glass-strong);
+    border-color: var(--pm-line-strong);
+    border-radius: 6px;
+    box-shadow: 0 1px 0 var(--pm-line-strong);
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) .fc-kbd { color: #cbd5e1; }
+
+/* Course headers (flashcard topics, quiz mode) + Request-a-Course table: dark-brown ink that
+   vanished on the dark header / dark glass. */
+html[data-theme="dark"][data-theme] body:not(.admin-body) :where(.fc-hero-title, .qmode-title) {
+    color: #f8fafc;
+    -webkit-text-fill-color: #f8fafc;
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) :where(.qmode-sub, .fc-hero-stat) { color: #94a3b8; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) :where(.fc-hero-back, .qmode-hero-back) {
+    color: #e2e8f0;
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.16);
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) .cr-requests-table td { color: #e2e8f0; }
+
+/* Read-mode list: glass cards; the current card gets the gradient ring */
+html[data-theme][data-theme] body:not(.admin-body) .fc-read-card {
+    background: var(--pm-glass);
+    border: 1px solid var(--pm-line);
+    border-radius: var(--pm-r-md);
+    box-shadow: var(--pm-shadow-sm);
+}
+html[data-theme][data-theme] body:not(.admin-body) .fc-read-card.is-current {
+    background: var(--pm-glass-strong) padding-box, var(--pm-grad-3) border-box;
+    border: 1.5px solid transparent;
+    box-shadow: var(--pm-shadow-hover);
+}
+
+/* Smart Review: floating glass card with a gradient top edge */
+html[data-theme][data-theme] body:not(.admin-body) .fcr-card {
+    background: var(--pm-grad-3) top / 100% 4px no-repeat, var(--pm-glass-strong);
+    border: 1px solid var(--pm-line);
+    border-radius: var(--pm-r-xl);
+    box-shadow: var(--pm-shadow);
+}
+html[data-theme][data-theme] body:not(.admin-body) .fcr-q-text { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.015em; }
+html[data-theme][data-theme] body:not(.admin-body) .fcr-divider { background: linear-gradient(90deg, rgba(255, 106, 0, 0.35), rgba(124, 58, 237, 0.25), transparent); }
+html[data-theme][data-theme] body:not(.admin-body) :where(.fcr-reveal-btn, .fcr-rate-btn) { border-radius: var(--pm-r-md); }
+html[data-theme][data-theme] body:not(.admin-body) .fcr-rate-btn { box-shadow: var(--pm-shadow-sm); transition: transform 180ms ease, box-shadow 200ms ease; }
+@media (hover: hover) {
+    html[data-theme][data-theme] body:not(.admin-body) .fcr-rate-btn:hover { transform: translateY(-2px); box-shadow: var(--pm-shadow-hover); }
+}
+/* Review finished panel sits on glass instead of floating text */
+html[data-theme][data-theme] body:not(.admin-body) .fcr-done-inner {
+    background: var(--pm-glass);
+    border: 1px solid var(--pm-line);
+    border-radius: var(--pm-r-xl);
+    box-shadow: var(--pm-shadow);
+}
+
+/* Dark: the study cards were hard-coded white with dark ink */
+html[data-theme="dark"][data-theme] body:not(.admin-body) .fcr-q-text { color: #f1f5f9; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .fcr-a-text { color: #cbd5e1; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) :where(.fcr-q-label, .fcr-a-label) { color: #94a3b8; }
+/* Study header title: its dark-brown gradient text vanished on the dark header */
+html[data-theme="dark"][data-theme] body:not(.admin-body) .fc-study-topic-label {
+    background: linear-gradient(120deg, #f8fafc 0%, #fdba74 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) .fc-study-topic-label i { -webkit-text-fill-color: #fb923c; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .fc-study-back { color: #e2e8f0; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .fc-read-q { color: #f1f5f9; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .fc-read-a { color: #cbd5e1; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .fcr-rate-btn--again { background: rgba(251, 146, 60, 0.12); border-color: rgba(251, 146, 60, 0.35); color: #fdba74; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .fcr-rate-btn--good { background: rgba(34, 197, 94, 0.12); border-color: rgba(34, 197, 94, 0.35); color: #86efac; }
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   15. CATALOGUE CARD ART — the per-technology gradient bands (offerings.css) were flat washes
+   with a bare icon. Keep each tech's colour; add a light bloom, a violet depth corner, a fine
+   dot grid, a glass icon tile and a sheen that sweeps across on hover.
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-theme][data-theme] body:not(.admin-body) .of-thumb-grad {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+html[data-theme][data-theme] body:not(.admin-body) .of-thumb-grad::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 55% 70% at 88% 0%, rgba(255, 255, 255, 0.34) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 80% at 0% 110%, rgba(255, 61, 129, 0.30) 0%, transparent 70%),
+        radial-gradient(rgba(255, 255, 255, 0.20) 1px, transparent 1.5px) 0 0 / 16px 16px;
+}
+html[data-theme][data-theme] body:not(.admin-body) .of-thumb-grad::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.28) 50%, transparent 65%);
+    transform: translateX(-110%);
+    transition: transform 700ms ease;
+}
+@media (hover: hover) {
+    html[data-theme][data-theme] body:not(.admin-body) .of-card:hover .of-thumb-grad::after { transform: translateX(110%); }
+}
+html[data-theme][data-theme] body:not(.admin-body) .of-list:not(.list-view) .of-thumb-grad i {
+    display: grid;
+    place-items: center;
+    width: 66px;
+    height: 66px;
+    font-size: 1.9rem;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.38);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 12px 26px -10px rgba(15, 23, 42, 0.45);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    filter: none;
+}
+html[data-theme][data-theme] body:not(.admin-body) .of-thumb-course-name { font-size: 1.08rem; font-weight: 900; letter-spacing: -0.02em; }
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   16. HOME — "How it works" step cards (≤900px, home-story.css) were hard-coded white; in dark
+   mode the global heading colour turned their titles near-white on white (invisible).
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+    html[data-theme][data-theme] body:not(.admin-body) .hiw-step-body {
+        background: var(--pm-glass-strong);
+        border: 1px solid var(--pm-line);
+        border-radius: var(--pm-r-md);
+        box-shadow: var(--pm-shadow-sm);
+    }
+    html[data-theme="dark"][data-theme] body:not(.admin-body) .hiw-step-body h3 { color: #f1f5f9; }
+    html[data-theme="dark"][data-theme] body:not(.admin-body) .hiw-step-body p { color: #94a3b8; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   17. RESUME / ACCOUNT / SUBSCRIPTION leftovers — hard-coded white bars and dark ink that broke
+   in dark mode; the resume toolbars also become frosted glass in light mode.
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-theme][data-theme] body:not(.admin-body) :where(.rv-toolbar, .rg-toolbar) {
+    background: var(--pm-glass-strong);
+    border-bottom: 1px solid var(--pm-line);
+    box-shadow: 0 8px 24px -18px rgba(15, 23, 42, 0.3);
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) :where(.rv-breadcrumb, .rg-breadcrumb) a { color: #94a3b8; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) :where(.rv-breadcrumb-current, .rg-breadcrumb-current, .rv-sp-label) { color: #f1f5f9; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) :where(.rg-hero-title, .qsub-title) {
+    background: linear-gradient(120deg, #f8fafc 0%, #f8fafc 35%, #ff8c3a 75%, #ff5c9a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) .account-detail-item {
+    background: var(--pm-glass-item);
+    border-color: var(--pm-line);
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) .account-detail-value { color: #f1f5f9; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .ac-sub-history-table td { color: #e2e8f0; }
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   18. DARK-MODE HOLES — surfaces that stayed light (or went dark-on-dark) under data-theme=dark
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+/* Login / signup brand panel is navy in both themes; the dark token pin on .auth-page-main
+   (ux-overrides) turned its headings #0f172a — invisible on the panel. */
+html[data-theme="dark"][data-theme] body:not(.admin-body) .auth-brand-panel :where(h2, .auth-brand-feature-text h3) { color: #fff; }
+/* Home tinted sections (comparison etc.) kept a near-white gradient behind dark-theme text */
+html[data-theme="dark"][data-theme] body:not(.admin-body) .home-section--tint {
+    background: linear-gradient(180deg, #111a2e 0%, #0f172a 100%);
+}
+
+/* Home quiz-experience section: its warm near-white gradient stayed on in dark mode under a
+   light heading. The showcase cards themselves (qex / weak-areas / daily-habit / resume teaser)
+   are intentionally light "product screenshots" in both themes — so the resume teaser's heading,
+   which sits INSIDE its light card, gets dark ink instead. */
+html[data-theme="dark"][data-theme] body:not(.admin-body) .qex-section {
+    background: linear-gradient(180deg, #0f172a 0%, #111a2e 100%);
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) :where(.qex-copy, .dh-copy, .fcs-copy) > p { color: #a3b1c6; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .rt-inner :where(h2, #rt-heading) { color: #0f172a; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .rt-inner > p,
+html[data-theme="dark"][data-theme] body:not(.admin-body) .rt-inner p { color: #475569; }
+
+/* Tag-chip field (question bank) and file pickers (roster / question / course imports): hard-coded
+   white boxes — frosted fields like the other inputs; dark glass in dark mode. */
+html[data-theme][data-theme] body:not(.admin-body) .asn-tag-input {
+    background: var(--pm-input-bg);
+    border-color: var(--pm-input-line);
+    border-radius: var(--pm-r-sm);
+}
+html[data-theme][data-theme] body:not(.admin-body) .asn-tag-input:focus-within { border-color: var(--pm-orange); box-shadow: var(--pm-ring); }
+html[data-theme][data-theme] body:not(.admin-body) .asn-tag-input input { background: transparent; color: inherit; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .asn-tag-input { color: #e2e8f0; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) :is(#sgUploadFile, #bqUploadFile, #bqcUploadFile, #bfcUploadFile) {
+    background: rgba(15, 23, 42, 0.55);
+    border-color: rgba(255, 255, 255, 0.16);
+    color: #94a3b8;
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) :is(#sgUploadFile, #bqUploadFile, #bqcUploadFile, #bfcUploadFile)::file-selector-button {
+    background: rgba(255, 138, 61, 0.16);
+    color: #fdba74;
+}
+
+/* Quiz Pro subscribe: feature pills and plan labels kept light-theme ink on dark glass */
+html[data-theme="dark"][data-theme] body:not(.admin-body) .qsub-feat { color: #e2e8f0; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) :where(.qsub-subtitle, .qsub-plan-name, .qsub-plan-duration, .qsub-secure-note) { color: #a3b1c6; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .qsub-active-title { color: #f1f5f9; }
+
+/* Assignment question-picker checkboxes were 13px wide on phones — below a usable tap target */
+@media (pointer: coarse) {
+    .asn-own-check { min-width: 22px; min-height: 22px; flex-shrink: 0; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   PERFORMANCE — same policy as ux-overrides.css ("blur is imperceptible… re-rasterised
+   constantly"): on touch devices / ≤991px, backdrop-filter on many tiles, chips, menus and modals
+   made every scroll and full-page capture re-blur the page (iPad subscribe page: 3s → 30s capture
+   under load). Keep the translucent glass FILLS, drop the live blur. The navbar keeps its blur
+   (one small fixed layer). !important: several originals sit in higher-specificity selectors.
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 991px), (hover: none) {
+    html[data-theme][data-theme] body:not(.admin-body) :where(
+        .ac-hub-card, .qsub-plan, .bz-plan-card, .an-kpi-card, .refer-stat-card, .account-stat-card, .fc-hero-stat,
+        .of-duration-chip, .asn-type-pill, .fc-tag, .qsub-feat, .dash-badge--muted, .fc-mode-toggle, .of-thumb-grad i,
+        .iq-confirm-dialog, .modal-content, .qm-modal, .iq-toast,
+        .nav-dropdown-menu, .dropdown-menu, .nav-notif-menu, .rb-more-menu, .mobile-tab-bar
+    ) {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .mobile-tab-bar { background: rgba(255, 255, 255, 0.96) !important; }
+    html[data-theme="dark"][data-theme] body:not(.admin-body) .mobile-tab-bar { background: rgba(15, 23, 42, 0.97) !important; }
+}
+
+} /* @media screen */

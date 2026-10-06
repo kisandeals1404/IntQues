@@ -21,10 +21,14 @@
     box-shadow: var(--shadow-xs);
     padding: 24px;
     text-align: center;
-    opacity: 0.55;
+    /* Locked = grey but fully readable: at 55% opacity a new learner's all-locked page read as
+       a broken, washed-out screen instead of "badges to earn". */
     filter: grayscale(1);
+    border: 1.5px dashed rgba(15, 23, 42, 0.12);
     transition: var(--transition-fast);
 }
+.ach-card:not(.ach-card--earned) .ach-card-icon { background: #f1f5f9; color: #94a3b8; }
+.ach-card--earned { border-style: solid; border-color: transparent; }
 .ach-card--earned { opacity: 1; filter: none; box-shadow: var(--shadow-sm); }
 .ach-card--earned:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
 

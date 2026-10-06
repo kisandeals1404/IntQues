@@ -493,6 +493,10 @@
     color: #64748b;
     text-decoration: none;
     margin-bottom: 18px;
+    /* Was 22px tall — below the 44px touch-target minimum on phones/tablets. */
+    min-height: 44px;
+    padding: 0 4px;
+    margin-left: -4px;
 }
 .bz-back-link:hover { color: #ff6a00; text-decoration: none; }
 @media (max-width: 560px) {
@@ -559,6 +563,15 @@
     flex: 1 1 260px;
     max-width: 300px;
     transition: border-color 200ms ease, box-shadow 200ms ease, transform 180ms ease;
+}
+/* Wide screens: four plans (Free/Growth/Scale/Enterprise) fit on one row — at 300px max they
+   wrapped 3 + 1 and left Enterprise stranded alone on a second row. */
+@media (min-width: 1100px) {
+    .bz-plan-card { flex: 1 1 220px; max-width: 268px; padding-left: 20px; padding-right: 20px; }
+}
+/* Tablets: three plans fit one row (AI Credits wrapped 2 + 1, leaving Scale alone). */
+@media (min-width: 700px) and (max-width: 1099px) {
+    .bz-plan-card { flex: 1 1 200px; max-width: 250px; padding-left: 18px; padding-right: 18px; }
 }
 
 .bz-plan-card:hover {

@@ -418,6 +418,13 @@
     }
     .asn-tabs::-webkit-scrollbar { display: none; }
     .asn-tab-btn { flex-shrink: 0; }
+    /* The last tab was simply sliced at the screen edge ("Expire…") with no hint the row
+       scrolls; a soft fade on the trailing edge is the standard "swipe for more" cue. */
+    /* Trailing-edge fade while it overflows comes from .is-scrollable (ux-animations.js). */
+    /* My Courses has just two tabs — split the width instead of scrolling ("Quiz Courses" was
+       cut off at the edge on 375px phones). */
+    #mycTabs { -webkit-mask-image: none; mask-image: none; padding-right: 0; overflow: visible; }
+    #mycTabs .asn-tab-btn { flex: 1 1 0; min-width: 0; padding-left: 8px; padding-right: 8px; text-align: center; white-space: nowrap; font-size: 0.85rem; }
 }
 
 .asn-card-list { display: flex; flex-direction: column; gap: 12px; }

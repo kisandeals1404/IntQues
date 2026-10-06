@@ -536,6 +536,27 @@
         initHeroWordRotate();
         initOfferingsSearchPlaceholder();
         initScrollFab();
+        initChipRows();
     });
+
+    /* Single-line chip rows (see ux-overrides.css "Chip rows never wrap"): mark the ones that
+       actually overflow so only they get the trailing-edge fade, and drop the fade once the
+       user has scrolled to the end. Re-checked on resize. */
+    function initChipRows() {
+        var SEL = '.qsub-features, .hero-v3-pills, .of-card-badges, .of-topics, .asn-qbank-item-meta, .qsub-active-links, ' +
+                  '.qresult-actions, .gresult-actions, .fc-done-actions, .qprof-focus-chips, .asn-tabs, *:has(> .asn-type-btn)';
+        function update(row) {
+            var overflow = row.scrollWidth - row.clientWidth > 2;
+            var atEnd = row.scrollLeft + row.clientWidth >= row.scrollWidth - 2;
+            row.classList.toggle('is-scrollable', overflow && !atEnd);
+        }
+        function all() { Array.prototype.forEach.call(document.querySelectorAll(SEL), update); }
+        document.addEventListener('scroll', function (e) {
+            if (e.target && e.target.matches && e.target.matches(SEL)) update(e.target);
+        }, true);
+        window.addEventListener('resize', all);
+        window.addEventListener('load', all);
+        all();
+    }
 })();
 

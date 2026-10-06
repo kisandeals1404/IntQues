@@ -481,6 +481,7 @@
 .of-duration-chip {
     display: inline-flex;
     align-items: center;
+    gap: 5px; /* flex drops the source whitespace — icon was touching the number ("⏱100 Qs") */
     font-size: 0.68rem;
     font-weight: 600;
     color: #64748b;
@@ -496,6 +497,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 8px; /* space between the label and its arrow ("Start Quiz →", not "Start Quiz→") */
     width: 100%;
     padding: 13px 16px;
     border-radius: 10px;

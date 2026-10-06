@@ -3235,3 +3235,10 @@ body.quiz-exam-lockdown .whatsapp-float {
     color: var(--primary-orange);
     margin-left: 6px;
 }
+
+/* Quiz history rows on phones: the meta line wraps, and the "•" separators were left hanging at
+   the start/end of wrapped lines. Drop them and let the flex gap separate the items instead. */
+@media (max-width: 576px) {
+    .qhist-meta { gap: 4px 12px; }
+    .qhist-meta .qhist-dot { display: none; }
+}

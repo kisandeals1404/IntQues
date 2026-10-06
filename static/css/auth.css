@@ -85,8 +85,17 @@
 .auth-split {
     display: grid;
     grid-template-columns: minmax(0, 380px) minmax(0, 1fr);
-    align-items: center;
+    /* Both panels the same height with matching top/bottom edges (they used to be centred
+       independently, so the dark brand panel and the form card sat at different heights). */
+    align-items: stretch;
     gap: 40px;
+}
+.auth-split > .auth-shell--form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .auth-brand-panel {

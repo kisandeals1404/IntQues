@@ -1105,3 +1105,89 @@
    a KPI-card grid like this (a handful of stat tiles, not a wide table), stretching the container
    just spreads the cards thin edge-to-edge instead of reading as an intentional layout. Reverted
    per explicit feedback: keep the same 1200px `.container` every other page uses, at every width. */
+
+/* ── Desktop-only admin ──────────────────────────────────────────────────────────────────────
+   Admin tools are supported on desktop/laptop only. Below 1200px wide, or on any touch-first
+   device without hover (iPad Pro landscape is 1366px), the gate from layout/admin-nav.ftl
+   replaces the page: every other child of <body> is hidden so nothing half-renders behind it. */
+.admin-desktop-gate { display: none; }
+
+@media (max-width: 1199.98px), (hover: none) and (pointer: coarse) {
+    body.admin-body > *:not(.admin-desktop-gate):not(script) { display: none !important; }
+    body.admin-body { overflow: auto; }
+    .admin-desktop-gate {
+        display: flex;
+        min-height: 100vh;
+        min-height: 100dvh;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 16px;
+        background: linear-gradient(180deg, var(--site-gradient-start, #fff7ed) 0%, var(--site-gradient-end, #f8fafc) 55%);
+    }
+    .admin-desktop-gate-card {
+        width: 100%;
+        max-width: 440px;
+        text-align: center;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 36px 24px 28px;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.10);
+    }
+    .admin-desktop-gate-icon {
+        width: 72px;
+        height: 72px;
+        margin: 0 auto 18px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 30px;
+        color: #fff;
+        background: linear-gradient(135deg, #ff6a00, #ee0979);
+        box-shadow: 0 10px 24px rgba(238, 9, 121, 0.28);
+    }
+    .admin-desktop-gate h1 {
+        font-size: 1.45rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0 0 10px;
+    }
+    .admin-desktop-gate p {
+        font-size: 0.98rem;
+        line-height: 1.55;
+        color: #475569;
+        margin: 0 0 24px;
+    }
+    .admin-desktop-gate-copy,
+    .admin-desktop-gate-home {
+        display: flex;
+        width: 100%;
+        min-height: 48px;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.98rem;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .admin-desktop-gate-copy {
+        border: 0;
+        color: #fff;
+        background: linear-gradient(135deg, #ff6a00, #ee0979);
+        margin-bottom: 10px;
+        word-break: break-all;
+    }
+    .admin-desktop-gate-home {
+        color: #334155;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+    }
+    .admin-desktop-gate-home:hover { color: #0f172a; text-decoration: none; }
+
+    :root[data-theme='dark'] .admin-desktop-gate-card { background: #141a2e; border-color: #243049; }
+    :root[data-theme='dark'] .admin-desktop-gate h1 { color: #f1f5f9; }
+    :root[data-theme='dark'] .admin-desktop-gate p { color: #cbd5e1; }
+    :root[data-theme='dark'] .admin-desktop-gate-home { color: #e2e8f0; background: #1e2740; border-color: #2c3857; }
+}

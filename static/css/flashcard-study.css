@@ -663,105 +663,82 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   FULLSCREEN SWIPE MODE (mobile only)
-   Swipe mode's whole point is a vertical drag gesture — sharing the
-   viewport with a page that scrolls the same direction meant the gesture
-   just scrolled the page instead of changing cards. Below 768px, entering
-   Swipe mode (see the fc-swipe-fullscreen toggle in syncModeUI(),
-   flashcard-study.ftl) takes over the full viewport instead, so there's no
-   scrollable page left underneath to compete with the swipe. Pairs with
-   the touch-action:none on #fc-card above, which hands the gesture to JS.
+   STACKED DECK — mirrors the mobile app's SwipeDeck (mobile/src/flashcards/SwipeDeck.tsx):
+   two ghost cards peek out under the live card so it reads as a physical deck, a glass
+   QUESTION / position chip row on the gradient header, and a bulb badge riding the seam
+   between question and answer. The ghosts sit outside #fc-viewport, so they stay put while
+   the top card tosses away over them on each swipe. Swipe mode stays inline on phones (it
+   used to take over the whole screen); #fc-card's non-passive touchmove keeps a swipe on
+   the card from scrolling the page, while the rest of the page scrolls normally.
 ═══════════════════════════════════════════════════════════════════════ */
-.fc-swipe-fullscreen-close { display: none; }
-
-@media (max-width: 767px) {
-    /* overflow:hidden alone doesn't reliably stop iOS Safari's rubber-band scroll — the page
-       could still visibly shift/bounce during a swipe even with it set. position:fixed removes
-       body from the scrollable flow entirely, which is what actually holds it still. The JS
-       toggling this class (enterSwipeFullscreen/exitSwipeFullscreen in flashcard-study.ftl)
-       captures scrollY into --fc-scroll-lock-y beforehand and restores real scroll on exit,
-       since a fixed body otherwise forgets where the page was and jumps to the top. */
-    body.fc-swipe-fullscreen {
-        overflow: hidden;
-        touch-action: none;
-        overscroll-behavior: none;
-        position: fixed;
-        top: calc(-1 * var(--fc-scroll-lock-y, 0px));
-        left: 0;
-        right: 0;
-        width: 100%;
-    }
-    body.fc-swipe-fullscreen .navbar,
-    body.fc-swipe-fullscreen .mobile-tab-bar,
-    body.fc-swipe-fullscreen .fc-study-hero,
-    body.fc-swipe-fullscreen #fc-mode-toggle,
-    body.fc-swipe-fullscreen .fc-kbd-hint,
-    body.fc-swipe-fullscreen .footer-section,
-    body.fc-swipe-fullscreen .fc-nav-row {
-        display: none !important;
-    }
-    body.fc-swipe-fullscreen #fc-panel-swipe {
-        position: fixed;
-        inset: 0;
-        z-index: 1700;
-        background: #f7f3ef;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        /* Top padding clears the absolutely-positioned close button (40px tall,
-           top:14px). No bottom nav bar to clear anymore — Prev/Next is hidden here
-           since swipe up/down already covers navigation; the swipe-hint text is the
-           last visible element, so a modest bottom margin is enough. */
-        padding: calc(70px + env(safe-area-inset-top, 0px)) 16px
-                 calc(16px + env(safe-area-inset-bottom, 0px));
-        height: 100dvh;
-    }
-    body.fc-swipe-fullscreen .fc-card-viewport {
-        height: min(600px, 68vh);
-    }
-    /* The X is drawn from two rotated bars (below) rather than the fa-xmark glyph —
-       an icon font's ink isn't always centered within its own character box the same
-       way across browsers/devices, so glyph-based centering could look right in one
-       renderer and off in another. Two bars centered via translate(-50%,-50%) are
-       centered by construction, not by trusting font metrics. */
-    body.fc-swipe-fullscreen .fc-swipe-fullscreen-close {
-        display: block;
-        position: absolute;
-        top: max(14px, env(safe-area-inset-top, 0px));
-        left: 50%;
-        transform: translateX(-50%);
-        width: 40px;
-        height: 40px;
-        padding: 0;
-        border-radius: 50%;
-        border: none;
-        background: rgba(15, 23, 42, 0.55);
-        z-index: 1701;
-    }
-    body.fc-swipe-fullscreen .fc-swipe-fullscreen-close i {
-        display: none;
-    }
-    body.fc-swipe-fullscreen .fc-swipe-fullscreen-close::before,
-    body.fc-swipe-fullscreen .fc-swipe-fullscreen-close::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 16px;
-        height: 2px;
-        background: #fff;
-        border-radius: 1px;
-    }
-    body.fc-swipe-fullscreen .fc-swipe-fullscreen-close::before {
-        transform: translate(-50%, -50%) rotate(45deg);
-    }
-    body.fc-swipe-fullscreen .fc-swipe-fullscreen-close::after {
-        transform: translate(-50%, -50%) rotate(-45deg);
-    }
-    body.fc-swipe-fullscreen .fc-swipe-fullscreen-close:active {
-        background: rgba(15, 23, 42, 0.75);
-    }
+.fc-deck {
+    position: relative;
+    padding-bottom: 18px;          /* room for the ghosts peeking out underneath */
 }
+.fc-deck > .fc-card-viewport { z-index: 1; }
+.fc-deck-ghost {
+    position: absolute;
+    top: 0;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 8px 22px -10px rgba(15, 23, 42, 0.22);
+    pointer-events: none;
+}
+.fc-deck-ghost--back { left: 26px; right: 26px; bottom: 0;    opacity: 0.45; }
+.fc-deck-ghost--mid  { left: 12px; right: 12px; bottom: 9px;  opacity: 0.75; }
+
+/* Header chips */
+.fc-card-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+}
+.fc-card-top-row .fc-card-q-label,
+.fc-card-top-num {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 4px 11px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.32);
+    color: #fff;
+    font-size: 0.66rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+}
+.fc-card-top-row .fc-card-q-label::before { display: none; }
+.fc-card-top-num { letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+
+/* Bulb badge on the seam */
+.fc-card-seam {
+    position: relative;
+    height: 0;
+    z-index: 3;
+    flex: 0 0 auto;
+}
+.fc-card-seam i {
+    position: absolute;
+    right: 22px;
+    top: -23px;
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    border: 3px solid #fff;
+    background: linear-gradient(135deg, #ff3d81 0%, #a83bea 100%);
+    color: #fff;
+    font-size: 1.05rem;
+    box-shadow: 0 8px 18px -6px rgba(15, 23, 42, 0.35);
+}
+.fc-card-seam + .fc-card-bottom { padding-top: 24px; }
 
 /* ═══════════════════════════════════════════════════════════════════════
    RESPONSIVE
@@ -845,6 +822,86 @@
     body.fc-study-active .btt-btn { display: none !important; }
     body.fc-study-active .mobile-tab-bar { display: none !important; }
     body.fc-study-active { padding-bottom: 0 !important; }
+}
+
+/* ── Phones: the inline stacked deck, sized and typeset like the app's card ─────────── */
+@media (max-width: 767px) {
+    /* Fill the space between the mode switch and the fixed Back / Next bar, like the app's
+       full-height card (≈ navbar + study header + mode switch + deck peek + bottom bar). */
+    .fc-card-viewport { height: clamp(300px, calc(100svh - 320px), 580px); }
+    .fc-deck-ghost    { border-radius: 26px; }
+    .fc-card          { border-radius: 26px; }
+
+    /* Question panel ≈ 42% of the card (app: flex 0.42), text anchored to its bottom edge */
+    .fc-card-top {
+        display: flex;
+        flex-direction: column;
+        min-height: 42%;
+        max-height: 62%;
+        padding: 18px 20px 26px;
+    }
+    .fc-card-question-text {
+        margin-top: auto;
+        font-weight: 900;
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+        overflow-y: auto;
+    }
+    /* App type scale: 24 / 20 / 17px by question length */
+    .fc-card[data-qlen="short"] .fc-card-question-text { font-size: 1.5rem; }
+    .fc-card[data-qlen="mid"]   .fc-card-question-text { font-size: 1.25rem; }
+    .fc-card[data-qlen="long"]  .fc-card-question-text { font-size: 1.06rem; }
+
+    .fc-card-bottom { padding: 24px 20px 16px; }
+    .fc-answer-text { font-size: 1.05rem; line-height: 1.6; font-weight: 500; }
+    /* The app card has no footer strip — position lives in the header chip */
+    .fc-card-foot { display: none; }
+}
+@media (max-width: 640px) {
+    /* App controls: two equal buttons, secondary "Back" + gradient "Next card" */
+    .fc-nav-prev,
+    .fc-nav-next {
+        flex: 1 1 0;
+        max-width: none;
+        height: 52px;
+        padding: 0 16px;
+        border-radius: 16px;
+        font-size: 0.95rem;
+        font-weight: 800;
+        gap: 8px;
+        justify-content: center;
+    }
+    .fc-swipe-hint { margin-top: 4px; }
+}
+
+/* Fade the answer's bottom edge while it has more to scroll (toggled by syncAnswerFade()). */
+.fc-card-bottom.has-more {
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 44px), transparent);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 44px), transparent);
+}
+
+/* ── Short phones (iPhone SE 320×568 and similar): the default deck height left the card's
+   bottom and the swipe hint hidden behind the fixed Back / Next bar. Tighten the chrome above
+   and below the deck and size the card to the space actually left between them. ────────── */
+@media (max-width: 767px) and (max-height: 700px) {
+    .fc-study-main { padding-top: 8px; }
+    .fc-mode-toggle { margin-bottom: 10px; }
+    .fc-mode-btn { padding-top: 6px; padding-bottom: 6px; }
+    /* ≈ navbar 60 + study header 62 + mode switch 55 + ghost peek 18 + bottom bar 64 + gaps */
+    .fc-card-viewport { height: max(250px, calc(100svh - 280px)); }
+    .fc-card-top { min-height: 0; max-height: 55%; padding: 14px 16px 22px; }
+    .fc-card-top-row { margin-bottom: 8px; }
+    .fc-card[data-qlen="short"] .fc-card-question-text { font-size: 1.25rem; }
+    .fc-card[data-qlen="mid"]   .fc-card-question-text { font-size: 1.1rem; }
+    .fc-card[data-qlen="long"]  .fc-card-question-text { font-size: 0.98rem; }
+    .fc-card-seam i { width: 40px; height: 40px; top: -20px; right: 16px; font-size: 0.95rem; }
+    .fc-card-bottom { padding: 20px 16px 12px; }
+    .fc-answer-text { font-size: 0.98rem; line-height: 1.55; }
+    /* The bar's buttons already say which way to go; the hint only fit behind it here */
+    .fc-swipe-hint { display: none; }
+    .fc-nav-row { padding-top: 8px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); }
+    .fc-nav-prev, .fc-nav-next { height: 46px; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
