@@ -31,7 +31,8 @@
         verifyOtpLoader: el('lsVerifyOtpLoader'),
         resendOtpBtn:    el('lsResendOtpBtn'),
 
-        message:         el('lsMessage')
+        message:         el('lsMessage'),
+        emailError:      el('lsEmailError')
     };
 
     // Bail out if the core step-1 elements are missing (old bundle vs new template mismatch)
@@ -75,10 +76,16 @@
 
             box.addEventListener('input', function () {
                 var val = box.value.replace(/\D/g, '');
-                box.value = val ? val.charAt(val.length - 1) : '';
                 box.classList.remove('otp-verified', 'otp-error');
-                if (box.value && i < boxes.length - 1) {
-                    boxes[i + 1].focus();
+                if (val.length > 2) {
+                    // The whole code at once (iOS/Android "From Messages/Mail" autofill): spread it like a paste.
+                    val.slice(0, boxes.length - i).split('').forEach(function (d, j) { boxes[i + j].value = d; });
+                    boxes[Math.min(i + val.length, boxes.length) - 1].focus();
+                } else {
+                    box.value = val ? val.charAt(val.length - 1) : '';
+                    if (box.value && i < boxes.length - 1) {
+                        boxes[i + 1].focus();
+                    }
                 }
                 var full = getValue();
                 if (full.length === 6 && onComplete) onComplete();
@@ -174,7 +181,8 @@
         btn.disabled = true;
         var remaining = seconds;
         btn.textContent = 'Resend in ' + remaining + 's';
-        var interval = setInterval(function () {
+        if (btn._iqCountdown) clearInterval(btn._iqCountdown);
+        var interval = btn._iqCountdown = setInterval(function () {
             remaining--;
             if (remaining <= 0) {
                 clearInterval(interval);
@@ -219,6 +227,8 @@
                 state.otpSent = true;
                 showOtpVerifyState();
                 toast('Login OTP sent to ' + state.email + '.', 'success');
+                // The server refuses another send until its cooldown is up — say so on the button.
+                startResendCountdown(els.resendOtpBtn, res.resendAfterSeconds || 30);
             })
             .catch(function (err) {
                 // Auto-send failed (e.g. mail service down) — fall back to the manual
@@ -247,21 +257,49 @@
         // "/\evil.com", both of which browsers resolve as a scheme-relative absolute URL
         // (an open-redirect an attacker could use to send a victim off-site right after a
         // real, trust-building login on this domain).
-        var isSafeRelative = next.charAt(0) === '/' && next.charAt(1) !== '/' && next.charAt(1) !== '\\';
-        window.location.href = isSafeRelative ? next : '/';
+        // Checking characters isn't enough either: browsers drop tabs/newlines first, so
+        // "/<tab>/evil.com" passes such a check and still lands off-site. Resolve and compare origins.
+        var target = '/';
+        if (next.charAt(0) === '/') {
+            try {
+                var u = new URL(next, window.location.origin);
+                if (u.origin === window.location.origin) target = u.pathname + u.search + u.hash;
+            } catch (e) { /* malformed: go home */ }
+        }
+        window.location.href = target;
     }
 
     // ── Step 1: Continue ───────────────────────────────────────
 
+    // Step-1 problems are about the field itself, so they're shown right under it — a floating
+    // banner over the navbar was easy to miss on phones and gave "No account found" no way forward.
+    function emailError(text, signupEmail) {
+        if (!els.emailError) { if (text) toast(text, 'error'); return; }
+        els.emailError.textContent = '';
+        els.emailError.hidden = !text;
+        if (!text) { els.emailInput.classList.remove('is-invalid'); els.emailInput.removeAttribute('aria-invalid'); return; }
+        els.emailInput.classList.add('is-invalid');
+        els.emailInput.setAttribute('aria-invalid', 'true');
+        els.emailError.appendChild(document.createTextNode(text + ' '));
+        if (signupEmail) {
+            var a = document.createElement('a');
+            a.href = '/signup?email=' + encodeURIComponent(signupEmail);
+            a.textContent = 'Create an account';
+            els.emailError.appendChild(a);
+        }
+    }
+    els.emailInput.addEventListener('input', function () {
+        if (els.emailError && !els.emailError.hidden) emailError('');
+    });
+
     els.continueBtn.addEventListener('click', function () {
         var email = (els.emailInput.value || '').trim();
         if (!email || !isValidEmail(email)) {
-            markInvalid(els.emailInput, true);
-            toast('Please enter a valid email address.', 'error');
+            emailError(email ? 'That doesn’t look like an email address. Check for typos.' : 'Enter your email address to continue.');
             els.emailInput.focus();
             return;
         }
-        markInvalid(els.emailInput, false);
+        emailError('');
         setLoading(els.continueBtn, els.continueLoader, true);
         postJson('/api/auth/login/check', { email: email })
             .then(function (res) {
@@ -270,7 +308,10 @@
                 state.otpSent = false;
                 showStep2();
             })
-            .catch(function (err) { toast(err.message, 'error'); })
+            .catch(function (err) {
+                var noAccount = /no account/i.test(err.message || '');
+                emailError(noAccount ? 'No account uses this email yet.' : err.message, noAccount ? email : null);
+            })
             .finally(function () { setLoading(els.continueBtn, els.continueLoader, false); });
     });
 
@@ -305,7 +346,7 @@
                     state.userId = res.userId;
                     if (loginOtpBoxes) loginOtpBoxes.reset();
                     toast('A new OTP has been sent to ' + state.email + '.', 'success');
-                    startResendCountdown(els.resendOtpBtn, 30);
+                    startResendCountdown(els.resendOtpBtn, res.resendAfterSeconds || 30);
                 })
                 .catch(function (err) {
                     toast(err.message, 'error');
@@ -324,12 +365,14 @@
                 userId: state.userId,
                 otp: loginOtpBoxes ? loginOtpBoxes.getValue() : ''
             })
+            // Stays disabled on success: the code is spent, and a second click during the redirect
+            // only showed an "OTP not sent yet" error.
             .then(handleLoginSuccess)
             .catch(function (err) {
                 toast(err.message, 'error');
                 if (loginOtpBoxes) loginOtpBoxes.setError();
-            })
-            .finally(function () { setLoading(els.verifyOtpBtn, els.verifyOtpLoader, false); });
+                setLoading(els.verifyOtpBtn, els.verifyOtpLoader, false);
+            });
         });
     }
 

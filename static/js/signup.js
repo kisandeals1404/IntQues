@@ -6,6 +6,7 @@
 
     var state = {
         userId: null,
+        completionToken: null,
         emailVerified: false,
         completing: false,
         accountType: 'INDIVIDUAL',
@@ -78,6 +79,11 @@
         setAccountType('BUSINESS');
     }
 
+    // Pre-fill the email when sent here from login's "No account uses this email yet" link.
+    var emailParam = new URLSearchParams(window.location.search).get('email');
+    var signupEmailInput = el('email');
+    if (emailParam && signupEmailInput && !signupEmailInput.value) signupEmailInput.value = emailParam;
+
     // ── OTP box helper ──────────────────────────────────────────
     function initOtpBoxes(containerId, onComplete) {
         var container = el(containerId);
@@ -126,10 +132,16 @@
 
             box.addEventListener('input', function () {
                 var val = box.value.replace(/\D/g, '');
-                box.value = val ? val.charAt(val.length - 1) : '';
                 box.classList.remove('otp-verified', 'otp-error');
-                if (box.value && i < boxes.length - 1) {
-                    boxes[i + 1].focus();
+                if (val.length > 2) {
+                    // The whole code at once (iOS/Android "From Messages/Mail" autofill): spread it like a paste.
+                    val.slice(0, boxes.length - i).split('').forEach(function (d, j) { boxes[i + j].value = d; });
+                    boxes[Math.min(i + val.length, boxes.length) - 1].focus();
+                } else {
+                    box.value = val ? val.charAt(val.length - 1) : '';
+                    if (box.value && i < boxes.length - 1) {
+                        boxes[i + 1].focus();
+                    }
                 }
                 var full = getValue();
                 if (full.length === 6 && onComplete) {
@@ -231,15 +243,24 @@
         var span = els.goToLoginBtn.querySelector('span');
         if (span) span.textContent = 'Completing…';
 
-        postJson('/api/auth/signup/complete', { userId: state.userId })
+        postJson('/api/auth/signup/complete', { userId: state.userId, completionToken: state.completionToken })
             .then(function () {
                 toast('Account created! Redirecting…', 'success', 2);
+                if (window.iqTrack) iqTrack('signup', { account_type: state.accountType });
                 var next = new URLSearchParams(window.location.search).get('next') || '';
                 // See login.js's handleLoginSuccess for why "starts with /" alone isn't enough
                 // ("//evil.com" and "/\evil.com" are both browser-resolved as off-site).
-                var isSafeRelative = next.charAt(0) === '/' && next.charAt(1) !== '/' && next.charAt(1) !== '\\';
+                // Resolved and compared by origin: browsers drop tabs/newlines, so "/<tab>/evil.com"
+                // would pass a character check.
+                var target = '/';
+                if (next.charAt(0) === '/') {
+                    try {
+                        var u = new URL(next, window.location.origin);
+                        if (u.origin === window.location.origin) target = u.pathname + u.search + u.hash;
+                    } catch (e) { /* malformed: go home */ }
+                }
                 setTimeout(function () {
-                    window.location.href = isSafeRelative ? next : '/';
+                    window.location.href = target;
                 }, 1200);
             })
             .catch(function (err) {
@@ -256,17 +277,41 @@
     // Keeps the visual invalid state (is-invalid) in sync with the ARIA state, so screen
     // readers announce the field as invalid and know the shared toast region explains why —
     // previously only the CSS class was set, so assistive tech had no signal at all.
-    function markInvalid(input, invalid) {
+    // Each field's problem is shown right under it (same .auth-field-error as login) — a single
+    // floating toast only ever named the first problem and sat over the navbar on phones.
+    function markInvalid(input, invalid, message, link) {
         if (!input) return;
         input.classList.toggle('is-invalid', invalid);
+        var errId = input.id + 'Error';
+        var existing = document.getElementById(errId);
+        if (existing) existing.remove();
         if (invalid) {
             input.setAttribute('aria-invalid', 'true');
-            if (els.message) input.setAttribute('aria-describedby', els.message.id);
+            if (message) {
+                var err = document.createElement('p');
+                err.id = errId;
+                err.className = 'auth-field-error';
+                err.setAttribute('role', 'alert');
+                err.appendChild(document.createTextNode(message + (link ? ' ' : '')));
+                if (link) {
+                    var a = document.createElement('a');
+                    a.href = link.href;
+                    a.textContent = link.text;
+                    err.appendChild(a);
+                }
+                input.insertAdjacentElement('afterend', err);
+                input.setAttribute('aria-describedby', errId);
+            } else if (els.message) {
+                input.setAttribute('aria-describedby', els.message.id);
+            }
         } else {
             input.removeAttribute('aria-invalid');
             input.removeAttribute('aria-describedby');
         }
     }
+    [els.firstName, els.lastName, els.email, els.companyName].forEach(function (f) {
+        if (f) f.addEventListener('input', function () { if (f.classList.contains('is-invalid')) markInvalid(f, false); });
+    });
 
     function clearValidation() {
         [els.firstName, els.lastName, els.email, els.companyName].forEach(function (e) {
@@ -284,22 +329,23 @@
 
         var companyName = els.companyName ? (els.companyName.value || '').trim() : '';
 
-        if (!firstName) { markInvalid(els.firstName, true); errors.push('First name is required'); }
-        if (!lastName)  { markInvalid(els.lastName, true);  errors.push('Last name is required'); }
-        if (!email || !validateEmail(email)) { markInvalid(els.email, true); errors.push(email ? 'Enter a valid email address' : 'Email is required'); }
+        var firstBad = null;
+        function fail(field, msg) { markInvalid(field, true, msg); errors.push(msg); if (!firstBad) firstBad = field; }
 
-        if (state.accountType === 'BUSINESS') {
-            if (!companyName) {
-                markInvalid(els.companyName, true);
-                errors.push('Company name is required for a business account');
-            }
-            if (email && validateEmail(email) && isFreeEmailDomain(email)) {
-                markInvalid(els.email, true);
-                errors.push('Business accounts need a work email — Gmail/Yahoo/Outlook etc. are not allowed');
-            }
+        if (state.accountType === 'BUSINESS' && !companyName) fail(els.companyName, 'Enter your company name.');
+        if (!firstName) fail(els.firstName, 'Enter your first name.');
+        if (!lastName)  fail(els.lastName, 'Enter your last name.');
+        if (!email) fail(els.email, 'Enter your email address.');
+        else if (!validateEmail(email)) fail(els.email, 'That doesn’t look like an email address. Check for typos.');
+        else if (state.accountType === 'BUSINESS' && isFreeEmailDomain(email)) {
+            fail(els.email, 'Business accounts need a work email — Gmail, Yahoo, Outlook and similar aren’t accepted.');
         }
 
-        if (errors.length) { toast(errors[0], 'error', 1); return; }
+        if (errors.length) {
+            try { firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) { /* noop */ }
+            firstBad.focus({ preventScroll: true });
+            return;
+        }
 
         els.startBtn.disabled = true;
         if (els.step1Loader) els.step1Loader.hidden = false;
@@ -311,14 +357,25 @@
             .then(function (res) {
                 state.userId       = res.userId;
                 state.emailVerified  = false;
+                state.completionToken = null;
                 state.completing     = false;
                 if (emailOtpBoxes)  emailOtpBoxes.reset();
                 updateVerificationState();
                 showStep2();
+                startResendCountdown(res.resendAfterSeconds || 30);
                 toast('OTP sent. Verify your email to continue.', 'success', 2);
                 if (emailOtpBoxes) emailOtpBoxes.focusFirst();
             })
-            .catch(function (err) { toast(err.message, 'error', 1); })
+            .catch(function (err) {
+                // An existing account is a field-level problem with an obvious next step.
+                if (/already exists/i.test(err.message || '')) {
+                    markInvalid(els.email, true, 'An account already uses this email.',
+                        { href: '/login', text: 'Log in instead' });
+                    els.email.focus();
+                } else {
+                    toast(err.message, 'error', 1);
+                }
+            })
             .finally(function () {
                 els.startBtn.disabled = false;
                 if (els.step1Loader) els.step1Loader.hidden = true;
@@ -333,6 +390,9 @@
         postJson('/api/auth/signup/verify', { userId: state.userId, otp: otp })
             .then(function (res) {
                 state.emailVerified  = !!res.verified;
+                // Single-use proof for /signup/complete (a repeat verify returns none; this
+                // session is then the proof).
+                if (res.completionToken) state.completionToken = res.completionToken;
                 if (emailOtpBoxes) emailOtpBoxes.setVerified();
                 updateVerificationState();
                 toast('Email verified!', 'success', 2);
@@ -352,19 +412,44 @@
     });
 
     // ── Resend OTP ──────────────────────────────────────────────
+    // The server refuses another send until its cooldown is up (resendAfterSeconds) — the button
+    // says how long is left instead of failing with "Please wait Ns" (same as login.js).
+    var resendCountdown = null;
+    function startResendCountdown(seconds) {
+        var btn = els.resendEmailBtn;
+        var label = btn.querySelector('span') || btn;
+        if (!btn.dataset.originalLabel) btn.dataset.originalLabel = label.textContent;
+        var remaining = seconds;
+        btn.disabled = true;
+        label.textContent = 'Resend in ' + remaining + 's';
+        if (resendCountdown) clearInterval(resendCountdown);
+        resendCountdown = setInterval(function () {
+            remaining--;
+            if (remaining <= 0) {
+                clearInterval(resendCountdown);
+                resendCountdown = null;
+                btn.disabled = false;
+                label.textContent = btn.dataset.originalLabel;
+            } else {
+                label.textContent = 'Resend in ' + remaining + 's';
+            }
+        }, 1000);
+    }
+
     els.resendEmailBtn.addEventListener('click', function () {
         if (!state.userId) { toast('Please start signup first.', 'error', 2); return; }
         els.resendEmailBtn.disabled = true;
         if (els.resendEmailLoader) els.resendEmailLoader.hidden = false;
         postJson('/api/auth/signup/resend', { userId: state.userId })
-            .then(function () {
+            .then(function (res) {
                 if (emailOtpBoxes) emailOtpBoxes.reset();
                 toast('Email OTP resent.', 'success', 2);
+                startResendCountdown((res && res.resendAfterSeconds) || 30);
                 if (emailOtpBoxes) emailOtpBoxes.focusFirst();
             })
             .catch(function (err) { toast(err.message, 'error', 2); })
             .finally(function () {
-                els.resendEmailBtn.disabled = false;
+                if (!resendCountdown) els.resendEmailBtn.disabled = false;
                 if (els.resendEmailLoader) els.resendEmailLoader.hidden = true;
             });
     });

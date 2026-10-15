@@ -10,7 +10,9 @@
     --primary-orange: #ff6a00;
     --primary-orange-dark: #e65f00;
     --primary-orange-hover: #e65f00;
-    --primary-gradient: linear-gradient(135deg, #ff6a00, #ff8c3a);
+    /* Brand CTA gradient (orange → pink) — same as the home hero and the signed-in skin, so guests and
+       members see identical buttons. Was orange → light orange for guests only. */
+    --primary-gradient: linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%);
 
     /* Dark palette */
     --dark-950: #07090d; /* footer's deliberately-deeper-than-navbar dark, tokenized */
@@ -192,7 +194,7 @@ input.is-invalid:focus, select.is-invalid:focus, textarea.is-invalid:focus {
     margin-top: 5px;
     font-size: 0.78rem;
     font-weight: 600;
-    color: #ef4444;
+    color: #dc2626; /* #ef4444 was 3.8:1 on white */
 }
 
 @media (max-width: 991px) {

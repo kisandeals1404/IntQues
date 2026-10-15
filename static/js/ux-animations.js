@@ -494,6 +494,7 @@
         function update() {
             ticking = false;
             var y = Math.max(0, window.scrollY); /* iOS overscroll reports negative values */
+            if (whatsapp) whatsapp.classList.toggle('fab-hero-wait', y < window.innerHeight * 0.6);
             if (y <= 400) {
                 setArrowVisible(false);
                 peak = trough = y;
@@ -510,6 +511,7 @@
             }
         }
 
+        update();
         window.addEventListener('scroll', function () {
             if (ticking) return;
             ticking = true;

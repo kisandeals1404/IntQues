@@ -1043,3 +1043,13 @@
     .ac-sub-history-table tbody tr:last-child { border-bottom: none; }
 }
 
+
+/* ── Delete account (profile page) — classes, not inline colours, so dark mode stays legible ── */
+.ac-delete-title { cursor: pointer; color: #b91c1c; font-weight: 700; }
+.ac-delete-body { font-size: 0.9rem; color: #475569; }
+.ac-delete-ok { color: #15803d; }
+.ac-delete-err { color: #b91c1c; }
+:root[data-theme="dark"] .ac-delete-title,
+:root[data-theme="dark"] .ac-delete-err { color: #fca5a5; }
+:root[data-theme="dark"] .ac-delete-body { color: #cbd5e1; }
+:root[data-theme="dark"] .ac-delete-ok { color: #86efac; }

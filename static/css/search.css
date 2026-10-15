@@ -203,3 +203,60 @@
     .search-result-item { flex-wrap: wrap; }
     .search-result-meta { width: 100%; order: 3; }
 }
+
+/* Popular-topic chips in the empty / no-results states (search.ftl) */
+/* One line that swipes sideways when the topics don't fit (the site's chip-row rule), centred
+   while they do: max-content width, capped at the container, centred by auto margins. */
+.search-popular {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+    margin: 18px auto 0;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 2px 2px 6px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+.search-popular::-webkit-scrollbar { display: none; }
+/* Phones: the chips scroll sideways. Fade the right edge so a cut-off chip reads as "more this way";
+   the end padding lets the last chip scroll fully clear of the fade. */
+@media (max-width: 640px) {
+    .search-popular {
+        padding-right: 32px;
+        -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
+        mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
+    }
+}
+.search-popular > * { flex: none; }
+.search-popular-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-muted, #64748b);
+    margin-right: 2px;
+}
+.search-popular-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: var(--white, #fff);
+    border: 1px solid rgba(255, 106, 0, 0.22);
+    color: #c2410c;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(255, 106, 0, 0.08);
+    transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, color 180ms ease;
+}
+.search-popular-chip:hover {
+    background: linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%);
+    color: #fff;
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(255, 61, 129, 0.25);
+}
+:root[data-theme="dark"] .search-popular-chip { color: #fdba74; border-color: rgba(255, 140, 58, 0.3); }

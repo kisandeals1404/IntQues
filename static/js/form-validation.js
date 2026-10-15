@@ -64,8 +64,9 @@
     function fieldMessage(field) {
         var label = fieldLabel(field);
         var validity = field.validity;
-        if (validity && validity.valueMissing) return label + ' is required.';
-        if (validity && validity.typeMismatch && field.type === 'email') return 'Enter a valid email address for ' + label + '.';
+        // A label phrased as a question ("What should it cover?") reads badly as "… is required."
+        if (validity && validity.valueMissing) return /\?$/.test(label) ? 'Please answer: ' + label : label + ' is required.';
+        if (validity && validity.typeMismatch && field.type === 'email') return 'Enter a valid email address, like name@example.com.';
         if (validity && validity.tooShort) return label + ' is too short.';
         if (validity && validity.tooLong) return label + ' is too long.';
         if (validity && (validity.rangeUnderflow || validity.rangeOverflow)) return label + ' is out of range.';
@@ -132,13 +133,13 @@
     // Clear the red state as soon as the field is fixed.
     document.addEventListener('input', function (e) {
         var field = e.target;
-        if (field.classList && field.classList.contains('is-invalid') && field.checkValidity && field.checkValidity()) {
+        if (field.classList && field.classList.contains('is-invalid') && field.validity && field.validity.valid) {
             clearInvalid(field);
         }
     }, true);
     document.addEventListener('change', function (e) {
         var field = e.target;
-        if (field.classList && field.classList.contains('is-invalid') && field.checkValidity && field.checkValidity()) {
+        if (field.classList && field.classList.contains('is-invalid') && field.validity && field.validity.valid) {
             clearInvalid(field);
         }
     }, true);

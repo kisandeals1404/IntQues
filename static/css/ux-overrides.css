@@ -2861,6 +2861,8 @@ body.admin-body .dash-table--wrap td.dash-td-acts .dash-btn { margin: 2px 4px 2p
     /* /games: the two cards were a 1000px column centred under a hero whose heading starts at the
        1076px container edge, so the heading and cards did not share a left edge. */
     .game-home-cards { max-width: 1076px; padding-left: 0; padding-right: 0; }
+    /* ...but game.css caps the hero at 1000px + 20px padding, so the heading still sat 58px in. */
+    .game-hero-band .game-hb-inner { max-width: 1076px; padding-left: 0; padding-right: 0; }
 }
 
 /* Student-group rows: member names ran together as one grey blob ("Jaya Candidate Wren Candidate Sam Sample").
@@ -2981,6 +2983,8 @@ body.admin-body .admin-pager-num--active:hover { background: #ea580c; }
     .ac-sub-page-back, .ac-sub-btn, .dash-nav-link, .rv-sample-cta { min-height: 44px; }
     #helpSubject { min-height: 44px; }
     #rbScoreRefresh, #an-range-select, .an-weakspot-cta-btn, .of-btn-o, .admin-btn.admin-btn-primary { min-height: 44px; }
+    /* A filter select sitting beside a primary button (assignment candidate status + Search) matches it */
+    select.admin-btn, .admin-search-form select.admin-btn { min-height: 44px; }
 }
 
 @media (min-width: 1200px) {
@@ -3090,6 +3094,17 @@ body.admin-body .admin-form-actions > span[style*="94a3b8"] { color: #64748b !im
 @media (max-width: 600px) {
     .qresult-actions { gap: 8px; }
     .qresult-btn { width: auto; padding: 9px 16px; font-size: 0.85rem; }
+    /* Game results: Rematch / New Game / Share were full-size pills, so Share sat cut off past the edge. */
+    .gresult-actions { gap: 8px; }
+    .gresult-actions .gresult-btn { flex: 0 0 auto; width: auto; min-width: 0; padding: 10px 16px; font-size: 0.875rem; }
+}
+/* Game results standings on phones: "3 correct · 2 wrong" shared the line with the name and squeezed it to
+   "Ashok…" — the stats drop to a second line under the name instead. */
+@media (max-width: 480px) {
+    .gresult-board-row { flex-wrap: wrap; row-gap: 2px; }
+    .gresult-board-name { flex: 1 1 0; }
+    .gresult-board-score { order: 3; }
+    .gresult-board-stats { order: 4; flex-basis: 100%; padding-left: 44px; }
 }
 /* Below ~1024px these rows overflow (5 buttons on a tablet, all rows on phones) and the last
    button was simply sliced mid-word ("Challe…") with no hint the row scrolls. A soft fade on the
@@ -3164,6 +3179,8 @@ body.admin-body .admin-form-actions > span[style*="94a3b8"] { color: #64748b !im
 @media (pointer: coarse) {
     /* Footer legal row (Privacy / Terms / Cookie) */
     .footer-bottom-links a { display: inline-flex; align-items: center; min-height: 44px; }
+    /* Footer column links (Privacy Policy etc. under Contact) were 23px tall on tablets */
+    .footer-links li > a { display: inline-flex; align-items: center; min-height: 32px; }
 
     /* Card header "View All" links and the dashboard's "View Full Leaderboard" */
     .an-card-link,
@@ -3434,10 +3451,11 @@ body.admin-body .footer-section .footer-bottom { border-top: 0; padding-top: 0; 
         display: inline-flex; align-items: center; justify-content: center;
         min-width: 24px; min-height: 24px; margin: -4px -6px -4px 0;
     }
-    .we-current { width: 20px; height: 20px; }
+    .rb-current-label input.we-current, .we-current { width: 20px; height: 20px; }
     label:has(> .we-current) { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; }
     .iq-toast-close { min-width: 32px; min-height: 32px; margin: -6px -6px 0 0; }
     .nav-notif-mark-all { min-height: 36px; padding: 6px 8px; }
+    .rb-chip-input { min-height: 36px; }
     .ach-earn-link { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; }
 }
 
@@ -3459,6 +3477,18 @@ body.admin-body .footer-section .footer-bottom { border-top: 0; padding-top: 0; 
         -webkit-mask-image: none; mask-image: none;
     }
     .qsub-features > .qsub-feat { justify-content: flex-start; white-space: normal; text-align: left; }
+}
+/* Same reasoning on phones: it's the paywall's list of benefits, and a sideways scroll hid four of the
+   six behind a swipe nobody makes. A 2-column checklist keeps every benefit on screen. */
+@media (max-width: 767.98px) {
+    .qsub-features {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        overflow: visible;
+        -webkit-mask-image: none; mask-image: none;
+    }
+    .qsub-features > .qsub-feat { justify-content: flex-start; white-space: normal; text-align: left; line-height: 1.3; }
 }
 
 /* Dark mode, Flashcards/Quizzes catalogues: the "Can't find … Request a course" banner kept its
@@ -3577,3 +3607,186 @@ body.admin-body .footer-section .footer-bottom { border-top: 0; padding-top: 0; 
     .an-weakspot-cta-text { flex-wrap: wrap; white-space: normal; text-align: center; }
     .an-weakspot-cta-btn { justify-content: center; white-space: normal; }
 }
+
+/* =========================================================================================
+   UX PASS — Oct 2026 audit (phones first; every rule below came from a screenshot sweep of the
+   guest, learner, Pro and business pages at 390px and 1366px)
+   ========================================================================================= */
+
+/* Search button: the brand gradient every other primary CTA uses, not flat orange */
+.search-form-btn {
+    background: linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%);
+    box-shadow: 0 6px 16px rgba(255, 61, 129, 0.22);
+    transition: transform 180ms ease, box-shadow 180ms ease;
+}
+.search-form-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(255, 61, 129, 0.30); }
+
+/* My Account hub: the chevron sat in a space-between footer, so on cards without a status pill it
+   landed bottom-LEFT under the text while Profile's sat on the right. Pin it to the right edge,
+   vertically centred, on every card. */
+.ac-hub-card { position: relative; padding-right: 44px; }
+.ac-hub-card .ac-hub-arrow {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.ac-hub-card:hover .ac-hub-arrow { transform: translate(3px, -50%); }
+/* No pill: collapse the empty footer row (the arrow is absolutely positioned on the card, so it stays) */
+.ac-hub-card .ac-hub-foot:not(:has(.ac-hub-pill)) { min-height: 0; height: 0; margin: 0; }
+
+/* Flashcard topic rows: long topic names were cut to one line ("Wireless Network Security (W…")
+   — two lines show the whole name in practice without letting a row grow unbounded. */
+.fc-topic-name {
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.35;
+}
+
+@media (max-width: 767px) {
+    /* ── Footer, compact ──
+       On every phone page the marketing footer (brand blurb + Learn / Company / Contact lists) was
+       ~800px — longer than many of the pages above it (a flashcard topic list, an empty course
+       list). Links become a wrap of compact chips; the Contact block collapses to one line. */
+    .footer-section { padding-top: 32px; }
+    .footer-grid { gap: 18px 12px; margin-bottom: 20px; }
+    .footer-brand-name { font-size: 1.5rem; margin-bottom: 8px; justify-content: center; }
+    .footer-brand p { font-size: 0.86rem; line-height: 1.55; margin-bottom: 14px; max-width: 340px; }
+    .footer-links h3 { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: #94a3b8; margin-bottom: 10px; }
+    .footer-links h3::after { display: none; }
+    .footer-links ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+    .footer-links a {
+        min-height: 40px;
+        padding: 0 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 0.86rem;
+        color: #cbd5e1;
+    }
+    .footer-links a:hover { transform: none; background: rgba(255, 106, 0, 0.14); color: #fff; }
+    /* Contact: "Email: support@…  ·  Hyderabad, India" as one compact line */
+    .footer-links:last-child ul { gap: 4px 10px; font-size: 0.86rem; color: #94a3b8; }
+    .footer-links:last-child li { display: inline-flex; align-items: center; min-height: 40px; }
+    .footer-links:last-child a { background: none; border: 0; padding: 0 4px; min-height: 40px; }
+    .footer-bottom { padding-top: 16px; gap: 6px; }
+
+    /* Signed in, the bottom tab bar and the menu drawer already carry all of that navigation —
+       keep only the brand line, socials and the legal row. */
+    html[data-auth] .footer-brand p,
+    html[data-auth] .footer-links { display: none; }
+    html[data-auth] .footer-grid { margin-bottom: 12px; }
+    html[data-auth] .footer-section { padding-top: 24px; }
+
+    /* ── Business dashboard / list headers ──
+       Action buttons kept their natural widths, so pairs read ragged ("Question Bank" 142px next
+       to "New Assignment" 170px) and a lone CTA hugged the left edge. Share the row equally. */
+    .dash-header-actions { display: flex; flex-wrap: wrap; gap: 10px; width: 100%; }
+    .dash-header-actions > :is(a, button):not(:only-child) { flex: 1 1 140px; justify-content: center; min-height: 44px; }
+    /* "New Assignment" landed in the first cell of the 2-column Range filter grid, alone on the left */
+    .an-filter-bar > a.admin-btn-primary { grid-column: 1 / -1; justify-content: center; margin-left: 0 !important; min-height: 44px; }
+
+    /* ── Forms ──
+       Stacked fields inside a 2-column form grid got the field's own 16px margin PLUS the grid's
+       16px gap — 32px+ between "Available from" / "Due by" / "Time limit", reading as separate
+       sections instead of one form. */
+    .asn-grid-2 > .asn-field { margin-bottom: 0; }
+    .asn-grid-2 { gap: 14px; margin-bottom: 14px; }
+
+    /* ── Achievements ──
+       Eleven badges as full-width 250px cards made a 3,000px scroll; a 2-up grid of compact tiles
+       shows the whole collection in about two screens. */
+    .ach-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .ach-card { padding: 18px 12px; }
+    .ach-card-icon { width: 52px; height: 52px; font-size: 1.3rem; margin-bottom: 10px; }
+    .ach-card-title { font-size: 0.9rem; margin-bottom: 4px; }
+    .ach-card-desc { font-size: 0.78rem; line-height: 1.4; min-height: 0; margin-bottom: 8px; }
+
+    /* Pro subscription shortcuts: 2 + 1 ragged pills — one even row of three icon-over-label tiles */
+    .ac-sub-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 8px; }
+    .ac-sub-actions .ac-sub-btn {
+        flex-direction: column;
+        justify-content: center;
+        gap: 6px;
+        min-height: 64px;
+        padding: 10px 6px;
+        font-size: 0.8rem;
+        text-align: center;
+        white-space: normal;
+        line-height: 1.2;
+    }
+}
+
+/* Points History reuses the leaderboard list markup, but its rows are events, not ranks — the
+   gold/silver/bronze tint premium.css gives the first three leaderboard rows made "Studied a
+   flashcard" look like a podium. */
+html[data-theme][data-theme] body:not(.admin-body) .lbrd-list--history .lbrd-item:nth-child(-n+3):not(.lbrd-item--me) {
+    background: var(--pm-glass);
+}
+
+@media (max-width: 767px) {
+    /* Resume sample: the sticky toolbar already has "Build My Resume" — the banner repeated it. */
+    .rv-sample-cta { display: none; }
+}
+
+/* ── Dark mode contrast (audit) ── */
+/* Phone header: hamburger bars (#334155) and the search icon (#475569) were slate-on-navy —
+   effectively invisible. */
+:root[data-theme="dark"] .nav-toggler-bars > span { background: #e2e8f0; }
+:root[data-theme="dark"] .nav-mobile-account { color: #e2e8f0; }
+/* Plan-usage / info banners: dark-orange text (#9a3412) on an 8% orange wash read at ~2:1. */
+:root[data-theme="dark"] .admin-alert:not(.admin-alert-error):not(.admin-alert-success),
+:root[data-theme="dark"] .admin-alert:not(.admin-alert-error):not(.admin-alert-success) span { color: #fdba74; }
+/* Refer page: the X share button is brand-black — give it an edge so it doesn't vanish on navy. */
+:root[data-theme="dark"] .share-icon-btn--twitter { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28); }
+
+/* Proficiency page: the flat #f8fafc fill under the dark hero band read as a bare white page —
+   let the site's warm brand canvas show through like every other learner page. */
+.qprof-page { background: transparent; }
+
+/* Help form: on 320px phones the "0 / 2000" counter wrapped onto two lines in the middle of the row. */
+.help-char-row { gap: 12px; }
+.help-char-row > #helpCharCount { white-space: nowrap; margin-left: auto; }
+
+/* === business review (b6) === */
+/* Archive sat at 40px next to the 48px Save on quiz-course/flashcard detail — match it. */
+.admin-form-actions > button[form$="ArchiveForm"] { min-height: 48px; }
+/* "Buy AI credits →" in the interview-assignment credits banner was a 17px-tall text link. */
+.iva-credits a { display: inline-flex; align-items: center; min-height: 44px; }
+/* Inline links in AI-credits steps, readiness sponsor note and the AI-generator "Buy AI credits" lock: grow the hit area on touch
+   without moving the line (padding offset by an equal negative margin). */
+@media (pointer: coarse) {
+  .rd-steps a, .rd-muted a, #aiqLockedBanner a { display: inline-block; padding: 12px 0; margin: -12px 0; }
+}
+
+/* Readiness students table (/business/readiness/{id}): the 9 columns overflowed the card at 1440 with
+   no hint that they scroll. Headers now wrap so the table fits on desktop; if it still doesn't (tablet),
+   the right edge fades while more columns are off-screen (class set by business-readiness.ftl). */
+.rd-table { min-width: 0; }
+.rd-table th, .rd-table td { padding: 10px 8px; }
+.rd-table thead th { white-space: normal; vertical-align: bottom; }
+/* A long unbroken email set the Student column's minimum width — let it wrap. */
+.rd-table .rd-email { overflow-wrap: break-word; } /* breaks at the <wbr> before "@", not mid-word */
+.rd-table-wrap--more {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent);
+}
+/* Phones: one card per student, each value labelled (data-label), so nothing is clipped at the edge. */
+@media (max-width: 640px) {
+  .rd-table, .rd-table tbody, .rd-table tr, .rd-table tbody th, .rd-table td { display: block; }
+  .rd-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .rd-table tr { border: 1px solid rgba(15, 23, 42, 0.08); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; }
+  .rd-table tbody th { min-width: 0; padding: 0 0 6px; border-bottom: 0; }
+  .rd-table td { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 5px 0; border-bottom: 0; white-space: normal; text-align: right; }
+  .rd-table td::before { content: attr(data-label); font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: #64748b; text-align: left; }
+  :root[data-theme="dark"] .rd-table tr { border-color: rgba(255, 255, 255, 0.08); }
+  :root[data-theme="dark"] .rd-table td::before { color: #94a3b8; }
+}
+
+/* KPI numbers use gradient-clipped text at line-height 1.05 inside overflow:hidden, which shaved the
+   top off taller glyphs such as "%" (e.g. "0%" on /business/recruitment). */
+html[data-auth] .an-kpi-value { line-height: 1.2; padding-block: 1px; }

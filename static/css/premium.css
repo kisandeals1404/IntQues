@@ -342,6 +342,16 @@ html[data-theme="dark"][data-theme] body:not(.admin-body) :where(
     .qsub-coupon-input, .refer-link-input, .game-input, .auth-input, .asn-input, .rb-select, .game-select, .bz-coupon-input, .asn-play-textarea, select.asn-input, textarea.asn-input, .asn-library-search
 ):not(.otp-box):focus { background-color: rgba(15, 23, 42, 0.85); }
 html[data-theme][data-theme] body:not(.admin-body) .rb-chips-wrap:focus-within { border-color: var(--pm-orange); box-shadow: var(--pm-ring); }
+/* The catalog search input lives inside its own white pill (.of-search-wrap), which already owns
+   the frame and focus ring — a frosted fill on the input itself drew a second, lighter box over the
+   left part of the bar. It also has to fill the pill at every width, not just on phones. */
+html[data-theme][data-theme] body:not(.admin-body) .of-search-wrap .of-search-input,
+html[data-theme][data-theme] body:not(.admin-body) .of-search-wrap .of-search-input:focus {
+    width: 100%;
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
 /* OTP boxes: glass squares with a gradient ring when active */
 html[data-theme][data-theme] body:not(.admin-body) .otp-box {
     background: var(--pm-input-bg);
@@ -462,14 +472,16 @@ html[data-theme][data-theme] body:not(.admin-body) .legal-body hr {
 /* ─────────────────────────────────────────────────────────────────────────────────────────
    11. CHROME — glass navbar, dropdowns, phone tab bar, modals, toasts
    ───────────────────────────────────────────────────────────────────────────────────────── */
+/* 0.96, not a 0.78 glass: ux-overrides.css drops the navbar blur for scroll performance, and without
+   the blur a 78% fill let headings scrolling underneath read straight through the bar. */
 html[data-theme][data-theme] body:not(.admin-body) .navbar {
-    background: rgba(255, 255, 255, 0.78) !important;
+    background: rgba(255, 255, 255, 0.96) !important;
     -webkit-backdrop-filter: saturate(180%) blur(18px);
     backdrop-filter: saturate(180%) blur(18px);
     box-shadow: 0 1px 0 rgba(124, 58, 237, 0.08), 0 8px 24px -16px rgba(15, 23, 42, 0.25);
 }
 html[data-theme="dark"][data-theme] body:not(.admin-body) .navbar {
-    background: rgba(15, 23, 42, 0.78) !important;
+    background: rgba(15, 23, 42, 0.96) !important;
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06), 0 8px 24px -16px rgba(0, 0, 0, 0.6);
 }
 html[data-theme][data-theme] body:not(.admin-body) :where(.nav-dropdown-menu, .dropdown-menu, .nav-notif-menu, .rb-more-menu) {
@@ -997,8 +1009,96 @@ html[data-theme="dark"][data-theme] body:not(.admin-body) .qsub-active-title { c
         -webkit-backdrop-filter: none !important;
         backdrop-filter: none !important;
     }
-    html[data-theme][data-theme] body:not(.admin-body) .mobile-tab-bar { background: rgba(255, 255, 255, 0.96) !important; }
-    html[data-theme="dark"][data-theme] body:not(.admin-body) .mobile-tab-bar { background: rgba(15, 23, 42, 0.97) !important; }
+    /* Fully opaque: without the blur, even 96% let button labels scrolling underneath read through */
+    html[data-theme][data-theme] body:not(.admin-body) .mobile-tab-bar { background: #ffffff !important; }
+    html[data-theme="dark"][data-theme] body:not(.admin-body) .mobile-tab-bar { background: #0f172a !important; }
+    /* Same for the top navbar: 0.96 without blur still let bold headings scrolling underneath show through. */
+    html[data-theme][data-theme] body:not(.admin-body) .navbar { background: #ffffff !important; }
+    html[data-theme="dark"][data-theme] body:not(.admin-body) .navbar { background: #0f172a !important; }
 }
+
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   POLISH PASS — legibility + touch targets (2026-10 audit: every page, 390px + 1366px).
+   Light theme only (dark has its own palette). Contrast targets WCAG AA (4.5:1 small text):
+   slate-400 (#94a3b8, 2.6:1) small labels → slate-500 #64748b (4.8:1); brand orange used AS
+   TEXT (#ff6a00, 2.9:1) → burnt orange #c2410c (5.2:1). Orange stays for fills, icons, rings.
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-theme]:not([data-theme="dark"]) body:not(.admin-body) :is(
+    .qmode-count-label, .qmode-exam-kpi-lbl, .qsub-secure-note, .bz-compare-col--old .bz-compare-col-label,
+    .rb-progress-label, .rb-score-label, .cmp-card--old .cmp-card-label
+) { color: #64748b; }
+html[data-theme]:not([data-theme="dark"]) body:not(.admin-body) :is(.cmp-card--old .cmp-list li, .of-duration-chip, .lbrd-rank--other) { color: #475569; }
+html[data-theme]:not([data-theme="dark"]) body:not(.admin-body) :is(
+    .hiw-step-num, .about-section-badge, .cmp-card--new .cmp-card-label, .qsub-coupon-btn, .bz-coupon-btn, .fc-card-foot-num, .fcta-btn,
+    .nav-notif-mark-all
+) { color: #c2410c; }
+/* navbar.css / offerings.css / ux-overrides.css all pin the active link to #ff6a00 with !important */
+html[data-theme]:not([data-theme="dark"]) body:not(.admin-body) .navbar-nav .nav-link.active { color: #c2410c !important; }
+html[data-theme]:not([data-theme="dark"]) body:not(.admin-body) :is(.nav-dropdown-label, .nav-di-meta, .nav-notif-empty) { color: #64748b; }
+/* Plain in-text links (no class = not a styled button/card): orange text was 2.9:1 */
+html[data-theme]:not([data-theme="dark"]) body:not(.admin-body) main a:not([class]) { color: #c2410c; }
+html[data-theme]:not([data-theme="dark"]) body:not(.admin-body) main a:not([class]):hover { color: #9a3412; text-decoration: underline; text-underline-offset: 3px; }
+/* Flashcard study card: the beige "Answer" label and topic footer were ~2.1:1 on the cream card */
+html[data-theme]:not([data-theme="dark"]) body:not(.admin-body) :is(.fc-answer-label, .fc-card-foot-topic) { color: #8a6a4a; }
+
+/* White text on flat #ff6a00 is 2.9:1 — small badges and the active pager get the deeper brand gradient */
+html[data-theme][data-theme] body:not(.admin-body) :is(.qsub-plan-popular, .bz-plan-popular-tag, .admin-pager-num--active) {
+    background: linear-gradient(120deg, #ea580c 0%, #db2777 100%);
+    border-color: transparent;
+}
+/* Selected question count: white on #22c55e was 2.3:1 */
+html[data-theme][data-theme] body:not(.admin-body) .qmode-count-pill--active { background: #15803d; border-color: #15803d; }
+
+/* Short pages (empty states, one-card lists, verify, games) ended mid-screen with the dark footer
+   filling the bottom half. Main always fills the viewport below the fixed navbar, so the footer sits
+   below the fold like on every long page. */
+body:not(.admin-body) > main#main-content,
+body:not(.admin-body) main#main-content {
+    min-height: calc(100vh - 64px);
+    min-height: calc(100dvh - 64px);
+}
+
+/* Keyboard focus: Bootstrap's .nav-link/.btn/.accordion-button/.dropdown-item/.btn-close replace the site
+   ring (global.css *:focus-visible) with outline:0 + a faint blue glow — off-brand and barely visible. */
+html[data-theme][data-theme] body:not(.admin-body) :is(.nav-link, .btn, .accordion-button, .dropdown-item, .btn-close, .page-link):focus-visible {
+    outline: 2.5px solid #ff6a00;
+    outline-offset: 2px;
+    box-shadow: none;
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) :is(.nav-link, .btn, .accordion-button, .dropdown-item, .btn-close, .page-link, a, button):focus-visible {
+    outline-color: #fdba74;
+}
+
+@media (max-width: 768px) {
+    /* Bottom tab bar: 10.5px slate-400 labels (2.6:1) were the least legible text on every page */
+    html[data-theme]:not([data-theme="dark"]) body:not(.admin-body) .mtb-tab:not(.mtb-active) { color: #64748b; }
+    html[data-theme][data-theme] body:not(.admin-body) .mtb-tab { font-size: 0.6875rem; }
+
+    /* Touch targets ≥ 40px */
+    html[data-theme][data-theme] body:not(.admin-body) .gs-step-cta { min-height: 40px; }
+    html[data-theme][data-theme] body:not(.admin-body) .admin-pager-num,
+    html[data-theme][data-theme] body:not(.admin-body) .admin-pager-nav { min-width: 40px; height: 40px; }
+    html[data-theme][data-theme] body:not(.admin-body) .asn-tab-btn { min-height: 40px; }
+    html[data-theme][data-theme] body:not(.admin-body) .ql-toolbar.ql-snow button { width: 36px; height: 36px; padding: 6px; }
+    html[data-theme][data-theme] body:not(.admin-body) .ql-toolbar.ql-snow .ql-picker { height: 36px; }
+    html[data-theme][data-theme] body:not(.admin-body) .ql-toolbar.ql-snow .ql-picker-label { display: flex; align-items: center; }
+    html[data-theme][data-theme] body:not(.admin-body) .hero-v3-search-input { min-height: 40px; }
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   DARK MODE — home hero. Every home section below it is themed dark, but the hero kept its light
+   peach fill: a bright block between the dark navbar and the dark page. (/business and /about are
+   deliberately fixed-light pages — see ux-overrides.css — and are left alone.)
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-theme="dark"][data-theme] body:not(.admin-body) .hero-v3 {
+    background:
+        radial-gradient(60% 55% at 12% -10%, rgba(255, 106, 0, 0.20) 0%, transparent 65%),
+        radial-gradient(50% 55% at 96% 6%, rgba(124, 58, 237, 0.24) 0%, transparent 60%),
+        #0b1120 !important;
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) .hero-v3-content h1 { color: #f8fafc; }
+html[data-theme="dark"][data-theme] body:not(.admin-body) .hero-v3-desc { color: #cbd5e1; }
 
 } /* @media screen */

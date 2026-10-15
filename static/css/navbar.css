@@ -899,7 +899,41 @@ body.nav-drawer-open {
     transition: color 200ms ease, background 200ms ease;
     flex-shrink: 0;
 }
+/* Phone notifications bell (moved in by nav.ftl's script) — sits just left of search */
+.nav-mobile-notif { margin-left: auto; display: flex; align-items: center; }
+.nav-mobile-notif + .nav-mobile-account { margin-left: 2px; }
+.nav-mobile-notif .nav-notif-toggle {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; padding: 0;
+    border: 0; border-radius: 10px; background: transparent;
+    color: #475569; font-size: 1.25rem;
+}
+.nav-mobile-notif .nav-notif-toggle:hover { color: #ff6a00; background: rgba(255, 106, 0, 0.06); }
+.nav-mobile-notif .nav-notif-badge { top: 2px; right: 0; }
+/* Pinned under the header across the full width (Popper anchored it off the left edge), and solid —
+   the glass menu fill reads as see-through with the blur dropped on touch devices. */
+.nav-mobile-notif .nav-notif-menu.show {
+    position: fixed !important;
+    inset: calc(64px + env(safe-area-inset-top, 0px)) 12px auto 12px !important;
+    transform: none !important;
+    width: auto;
+    min-width: 0;
+    max-height: min(70vh, 520px);
+    overflow-y: auto;
+    margin: 0 !important;
+    background: #ffffff !important;
+}
+:root[data-theme="dark"] .nav-mobile-notif .nav-notif-menu.show { background: #111a2e !important; }
+:root[data-theme="dark"] .nav-mobile-notif .nav-notif-toggle { color: #cbd5e1; }
+
+.nav-drawer-icon--wa { color: #16a34a; }
+
 .nav-mobile-account:hover {
     color: #ff6a00;
     background: rgba(255, 106, 0, 0.06);
 }
+/* Drawer link with a one-line description under the label (e.g. Play with Friends) */
+.nav-drawer-text { display: flex; flex-direction: column; min-width: 0; }
+.nav-drawer-sub { font-size: 0.78rem; font-weight: 500; color: #64748b; line-height: 1.35; }
+:root[data-theme="dark"] .nav-drawer-sub { color: #94a3b8; }

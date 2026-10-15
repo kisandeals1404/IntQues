@@ -588,7 +588,7 @@ body:has(#proctor-badge) .asn-play-body { padding-bottom: 140px; }
     text-align: left;
     width: 100%;
 }
-.asn-play-option:hover { border-color: var(--primary-orange); }
+@media (hover: hover) and (pointer: fine) { .asn-play-option:hover { border-color: var(--primary-orange); } } /* touch: sticky :hover looked selected */
 .asn-play-option.selected { border-color: var(--primary-orange); background: rgba(255,106,0,0.07); font-weight: 600; }
 .asn-play-opt-letter {
     width: 26px; height: 26px; flex-shrink: 0;
@@ -858,3 +858,18 @@ body:has(#proctor-badge) .asn-play-body { padding-bottom: 140px; }
     justify-content: center;
 }
 .asn-result-answer-row { font-size: 0.85rem; color: var(--text-body); margin-top: 6px; }
+
+/* ── Exam-style assignment player (assignment-play.ftl reuses quiz.css's exam-mode shell) ── */
+.asn-exam-page .qplay-qtext p:last-child { margin-bottom: 0; }
+.asn-exam-page .qplay-qtext img { max-width: 100%; height: auto; }
+.asn-qhint {
+    margin: -14px 0 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #64748b;
+}
+/* The fixed live-camera badge (proctoring on) is taller than the panel's default bottom
+   padding — keep it from covering the Next/Skip bar or the submit screen's buttons. */
+body.asn-exam-page:has(#proctor-badge) .qplay-panel { padding-bottom: 140px; }

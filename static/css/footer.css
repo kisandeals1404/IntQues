@@ -245,6 +245,12 @@
     transform: scale(1);
     transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease, opacity 220ms ease, visibility 220ms;
 }
+/* Phones, marketing pages: hidden on the first screen, where it sat on the hero's own buttons
+   ("See How It Works", "Take a Quiz", "See Pricing"); fades in once the visitor scrolls past it
+   (ux-animations.js initScrollFab toggles .fab-hero-wait). */
+@media (max-width: 767px) {
+    .whatsapp-float.fab-hero-wait { opacity: 0; visibility: hidden; transform: scale(0.8); pointer-events: none; }
+}
 .whatsapp-float.fab-hidden {
     opacity: 0;
     visibility: hidden;
@@ -266,3 +272,6 @@
 
 /* Mobile bottom offset (clearing the site-wide mobile tab bar) is set unconditionally in
    ux-overrides.css, which loads last — see the MOBILE TAB BAR block there. */
+
+/* Footer contact: one-tap WhatsApp support (brief P0 #9) */
+.footer-wa i { color: #25d366; margin-right: 4px; }

@@ -56,6 +56,27 @@
 }
 
 /* ── Feature pills ── */
+.qsub-gate-note {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+    align-items: center;
+    gap: 8px;
+    margin: 0 auto 14px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    color: #9a3412;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: left;
+}
+.qsub-gate-note i { flex: none; color: #c2410c; }
+:root[data-theme="dark"] .qsub-gate-note { background: rgba(255, 106, 0, 0.12); border-color: rgba(255, 106, 0, 0.3); color: #fed7aa; }
+:root[data-theme="dark"] .qsub-gate-note i { color: #fdba74; }
+
 .qsub-features {
     display: flex;
     flex-wrap: wrap;
@@ -295,6 +316,9 @@
     text-transform: uppercase;
     outline: none;
 }
+
+/* Codes are typed in capitals, but an all-caps placeholder ("HAVE A COUPON COD…") was cut off on 320px phones. */
+.qsub-coupon-input::placeholder { text-transform: none; }
 
 .qsub-coupon-input:focus {
     border-color: #ff6a00;

@@ -59,6 +59,23 @@
 .auth-message.success { background: linear-gradient(135deg, #047857, #10b981); }
 .auth-message.info    { background: linear-gradient(135deg, #1e293b, #334155); }
 
+/* Inline error under the login email field (login.js#emailError) */
+.auth-field-error {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px;
+    margin: 8px 0 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.45;
+    color: #dc2626;
+}
+.auth-field-error[hidden] { display: none; }
+.auth-field-error a { color: #c2410c; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
+:root[data-theme="dark"] .auth-field-error { color: #fca5a5; }
+:root[data-theme="dark"] .auth-field-error a { color: #fdba74; }
+
 /* ── Responsive ─────────────────────────── */
 
 @media (max-width: 768px) {

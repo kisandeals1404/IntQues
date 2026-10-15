@@ -8,7 +8,7 @@
     margin: 0 auto 44px;
 }
 
-/* h1 on business-plans.ftl/business-ai-credits.ftl (each page's one true heading), h2
+/* h1 on business-plans.ftl (each page's one true heading), h2
    everywhere .bz-section-header is reused as an in-page section title (features, FAQ, etc). */
 .bz-section-header h1,
 .bz-section-header h2 {
@@ -455,7 +455,7 @@
     padding: 84px 16px;
     background: #fff;
 }
-/* business-plans.ftl/business-ai-credits.ftl put .bz-page-header directly above this section —
+/* business-plans.ftl put .bz-page-header directly above this section —
    its own 32px bottom padding plus this section's full 84px top padding stacked into ~116px of
    dead space between the subtitle and the content below (the active-plan banner or pricing
    grid), reading as a broken gap rather than intentional breathing room. .bz-pricing's full top
@@ -466,7 +466,7 @@
 }
 
 /* Teaser CTAs on the marketing page's #pricing anchor — the actual plan grids/checkout now
-   live on their own dedicated pages (business-plans.ftl, business-ai-credits.ftl). */
+   live on their own dedicated pages (business-plans.ftl). */
 .bz-pricing-teaser-ctas {
     display: flex;
     justify-content: center;
@@ -865,3 +865,382 @@
     .bz-plan-card { max-width: 100%; }
     .bz-trust-grid { gap: 18px; }
 }
+
+/* =========================================================================================
+   RICH LAYER — /business, /business/plans, /business/ai-credits
+   Brings the public sales pages up to the same "bold multi-hue" finish as the home hero and the
+   signed-in app (auth-vibrant.css): radial-glow section canvases, gradient-edged cards with
+   coloured ambient shadows, gradient icon chips, and evenly sized, centred CTA groups on phones
+   (the hero's Start Free / See Pricing used to stack as two different-width, left-hugging pills).
+   These pages are fixed-light regardless of theme (see ux-overrides.css), so no dark variants.
+   ========================================================================================= */
+
+:root {
+    --bz-grad: linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%);
+    --bz-grad-3: linear-gradient(90deg, #ff6a00 0%, #ff3d81 55%, #7c3aed 100%);
+    --bz-card-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 14px 32px rgba(124, 58, 237, 0.07), 0 6px 14px rgba(255, 106, 0, 0.05);
+    --bz-card-shadow-hover: 0 2px 4px rgba(15, 23, 42, 0.05), 0 24px 48px rgba(255, 61, 129, 0.14), 0 10px 22px rgba(124, 58, 237, 0.10);
+}
+
+/* ── Section headers: gradient accent bar above every title ── */
+.bz-section-header::before {
+    content: '';
+    display: block;
+    width: 52px;
+    height: 5px;
+    margin: 0 auto 18px;
+    border-radius: 999px;
+    background: var(--bz-grad-3);
+    box-shadow: 0 4px 12px rgba(255, 61, 129, 0.25);
+}
+
+/* ── Hero ── */
+.bz-hero-actions .bz-btn-primary,
+.bz-hero-actions .bz-btn-secondary {
+    justify-content: center;
+    min-width: 190px;
+}
+.bz-btn-secondary {
+    background: rgba(255, 255, 255, 0.85);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+.bz-btn-secondary:hover {
+    background: #ffffff;
+    border-color: rgba(124, 58, 237, 0.35);
+    color: #0f172a;
+    box-shadow: 0 12px 26px rgba(124, 58, 237, 0.14);
+}
+.bz-btn-primary:focus-visible,
+.bz-btn-secondary:focus-visible {
+    outline: 3px solid rgba(255, 106, 0, 0.45);
+    outline-offset: 3px;
+}
+
+/* Product mockup: sits on a soft brand glow instead of floating on the bare canvas */
+.bz-hero-visual::before {
+    content: '';
+    position: absolute;
+    inset: 8% 4%;
+    z-index: 0;
+    border-radius: 40px;
+    background:
+        radial-gradient(ellipse at 30% 30%, rgba(255, 106, 0, 0.28), transparent 60%),
+        radial-gradient(ellipse at 75% 70%, rgba(124, 58, 237, 0.24), transparent 60%);
+    filter: blur(36px);
+    pointer-events: none;
+}
+.bz-hero-visual img {
+    position: relative;
+    z-index: 1;
+    border-radius: 18px;
+    filter: drop-shadow(0 24px 40px rgba(15, 23, 42, 0.16));
+}
+.bz-hero-visual-float { z-index: 2; }
+
+@media (max-width: 991px) {
+    .bz-hero-note { text-align: center; }
+}
+
+/* Phones: one centred column of equal-width buttons, same as the home hero */
+@media (max-width: 560px) {
+    .bz-hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        max-width: 360px;
+        margin-left: auto;
+        margin-right: auto;
+        gap: 12px;
+    }
+    .bz-hero-actions .bz-btn-primary,
+    .bz-hero-actions .bz-btn-secondary {
+        width: 100%;
+        min-width: 0;
+        padding: 16px 24px;
+    }
+    .bz-hero-desc { font-size: 1rem; }
+    .bz-hero-note { font-size: 0.82rem; line-height: 1.5; }
+    .bz-hero-visual { max-width: 340px; }
+}
+
+/* ── Trust strip: dark band with a brand glow instead of flat navy ── */
+.bz-trust-strip {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse 40% 140% at 10% 50%, rgba(255, 106, 0, 0.22), transparent 70%),
+        radial-gradient(ellipse 40% 140% at 90% 50%, rgba(124, 58, 237, 0.28), transparent 70%),
+        linear-gradient(90deg, #0f172a, #1e1b4b 50%, #0f172a);
+}
+.bz-trust-item i {
+    background: var(--bz-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+/* Phones: an even two-column grid of glass chips rather than a ragged centred wrap */
+@media (max-width: 560px) {
+    .bz-trust-strip { padding: 20px 16px; }
+    .bz-trust-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    .bz-trust-item {
+        flex-direction: column;
+        justify-content: center;
+        gap: 6px;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.3;
+        font-size: 0.8rem;
+        padding: 12px 8px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.10);
+    }
+    .bz-trust-item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+
+/* ── Features ── */
+.bz-features {
+    background:
+        radial-gradient(ellipse 50% 40% at 0% 10%, rgba(255, 106, 0, 0.07), transparent 70%),
+        radial-gradient(ellipse 50% 40% at 100% 90%, rgba(124, 58, 237, 0.07), transparent 70%),
+        #ffffff;
+}
+.bz-feature-card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(170deg, #ffffff 55%, #fffaf6 100%);
+    border: 1px solid rgba(124, 58, 237, 0.10);
+    box-shadow: var(--bz-card-shadow);
+    transition: transform 260ms cubic-bezier(0.2, 0.9, 0.2, 1), box-shadow 260ms ease, border-color 260ms ease;
+}
+/* Gradient top edge that draws in on hover */
+.bz-feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--bz-grad-3);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 360ms ease;
+}
+.bz-feature-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255, 61, 129, 0.25);
+    box-shadow: var(--bz-card-shadow-hover);
+}
+.bz-feature-card:hover::before { transform: scaleX(1); }
+.bz-feature-icon {
+    background: var(--bz-grad);
+    color: #ffffff;
+    box-shadow: 0 8px 18px rgba(255, 61, 129, 0.28);
+    transition: transform 260ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+.bz-feature-card:hover .bz-feature-icon { transform: scale(1.08) rotate(-4deg); }
+/* Cycle a few brand hues so a grid of eight reads as a colourful set, not eight orange squares */
+.bz-feature-card:nth-child(4n+2) .bz-feature-icon { background: linear-gradient(135deg, #7c3aed, #c026d3); box-shadow: 0 8px 18px rgba(124, 58, 237, 0.28); }
+.bz-feature-card:nth-child(4n+3) .bz-feature-icon { background: linear-gradient(135deg, #0ea5e9, #6366f1); box-shadow: 0 8px 18px rgba(14, 165, 233, 0.28); }
+.bz-feature-card:nth-child(4n+4) .bz-feature-icon { background: linear-gradient(135deg, #10b981, #0ea5e9); box-shadow: 0 8px 18px rgba(16, 185, 129, 0.26); }
+
+/* Phones: icon beside the title so eight cards aren't a very long scroll */
+@media (max-width: 560px) {
+    .bz-features { padding: 64px 16px; }
+    .bz-feature-grid { gap: 14px; }
+    .bz-feature-card {
+        display: grid;
+        grid-template-columns: 46px 1fr;
+        column-gap: 14px;
+        align-items: center;
+        padding: 20px 18px;
+    }
+    .bz-feature-icon { margin-bottom: 0; grid-row: 1; }
+    .bz-feature-card h3 { margin: 0; grid-row: 1; grid-column: 2; }
+    .bz-feature-card p { grid-column: 1 / -1; margin-top: 12px; }
+}
+
+/* ── Comparison ── */
+.bz-compare {
+    background:
+        radial-gradient(ellipse 45% 50% at 85% 30%, rgba(124, 58, 237, 0.08), transparent 70%),
+        radial-gradient(ellipse 45% 50% at 10% 80%, rgba(255, 106, 0, 0.07), transparent 70%),
+        #f8fafc;
+}
+.bz-compare-col--old { box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04); }
+.bz-compare-col--new {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse 70% 60% at 100% 0%, rgba(124, 58, 237, 0.35), transparent 65%),
+        radial-gradient(ellipse 60% 60% at 0% 100%, rgba(255, 106, 0, 0.22), transparent 65%),
+        linear-gradient(160deg, #1e293b 0%, #0f172a 100%);
+    box-shadow: 0 24px 50px rgba(124, 58, 237, 0.22), 0 10px 24px rgba(15, 23, 42, 0.18);
+    transform: translateY(-6px);
+}
+.bz-compare-col--new::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--bz-grad-3);
+}
+@media (max-width: 700px) {
+    .bz-compare-col--new { transform: none; }
+    .bz-compare-col { padding: 24px 22px; }
+}
+
+/* ── How it works ── */
+.bz-how {
+    background:
+        radial-gradient(ellipse 50% 50% at 50% 0%, rgba(255, 106, 0, 0.07), transparent 70%),
+        #f8fafc;
+}
+.bz-how-grid { position: relative; }
+.bz-how-step {
+    position: relative;
+    border-color: rgba(124, 58, 237, 0.10);
+    box-shadow: var(--bz-card-shadow);
+    transition: transform 260ms cubic-bezier(0.2, 0.9, 0.2, 1), box-shadow 260ms ease;
+}
+.bz-how-step:hover { transform: translateY(-5px); box-shadow: var(--bz-card-shadow-hover); }
+.bz-how-num {
+    width: 48px;
+    height: 48px;
+    background: var(--bz-grad);
+    box-shadow: 0 0 0 6px rgba(255, 106, 0, 0.10), 0 10px 22px rgba(255, 61, 129, 0.30);
+}
+/* Desktop: a dashed gradient rail linking the three numbered steps */
+@media (min-width: 993px) {
+    .bz-how-grid::before {
+        content: '';
+        position: absolute;
+        top: 54px;
+        left: 17%;
+        right: 17%;
+        height: 2px;
+        background: repeating-linear-gradient(90deg, rgba(255, 106, 0, 0.45) 0 8px, transparent 8px 16px);
+        z-index: 0;
+    }
+    .bz-how-step { z-index: 1; }
+}
+/* Phones: number on the left, copy on the right — a compact vertical timeline */
+@media (max-width: 560px) {
+    .bz-how { padding: 64px 16px; }
+    .bz-how-grid { gap: 14px; }
+    .bz-how-step {
+        display: grid;
+        grid-template-columns: 48px 1fr;
+        column-gap: 16px;
+        text-align: left;
+        padding: 20px 18px;
+    }
+    .bz-how-num { margin: 0; grid-row: 1 / span 2; align-self: start; }
+    .bz-how-step h3 { grid-column: 2; margin-top: 2px; }
+    .bz-how-step p { grid-column: 2; }
+}
+
+/* ── Pricing teaser ── */
+.bz-pricing {
+    background:
+        radial-gradient(ellipse 50% 60% at 50% 100%, rgba(124, 58, 237, 0.06), transparent 70%),
+        radial-gradient(ellipse 40% 50% at 50% 0%, rgba(255, 106, 0, 0.06), transparent 70%),
+        #ffffff;
+}
+.bz-pricing-teaser-ctas .bz-plan-btn { min-width: 240px; }
+@media (max-width: 560px) {
+    .bz-pricing-teaser-ctas {
+        flex-direction: column;
+        align-items: stretch;
+        max-width: 360px;
+        margin: 0 auto;
+    }
+    .bz-pricing-teaser-ctas .bz-plan-btn { min-width: 0; width: 100%; }
+}
+
+/* ── Plans page cards ── */
+.bz-plan-card {
+    box-shadow: var(--bz-card-shadow);
+    transition: transform 260ms cubic-bezier(0.2, 0.9, 0.2, 1), box-shadow 260ms ease, border-color 260ms ease;
+}
+.bz-plan-card:hover { box-shadow: var(--bz-card-shadow-hover); }
+.bz-plan-card--popular {
+    box-shadow: 0 24px 54px rgba(255, 61, 129, 0.18), 0 10px 24px rgba(124, 58, 237, 0.12);
+}
+
+/* Plans / AI-credits page header: brand glow, and centred on phones like every other public page
+   title (ux-overrides.css left-aligns it; that sheet loads later, hence the extra `body`). */
+.bz-page-header {
+    background:
+        radial-gradient(ellipse 60% 70% at 15% -10%, rgba(255, 106, 0, 0.14), transparent 65%),
+        radial-gradient(ellipse 55% 70% at 95% 0%, rgba(124, 58, 237, 0.12), transparent 65%);
+}
+@media (max-width: 575px) {
+    body .bz-page-header,
+    body .bz-page-header .bz-section-header { text-align: center; }
+    body .bz-page-header .bz-section-header p { margin-left: auto; margin-right: auto; }
+}
+
+/* ── Final CTA ── */
+.bz-final-cta-panel {
+    background:
+        radial-gradient(ellipse 60% 80% at 0% 0%, rgba(255, 106, 0, 0.30), transparent 60%),
+        radial-gradient(ellipse 60% 80% at 100% 100%, rgba(124, 58, 237, 0.38), transparent 60%),
+        linear-gradient(160deg, #1e293b 0%, #0f172a 100%);
+    box-shadow: 0 30px 60px rgba(124, 58, 237, 0.22), 0 12px 28px rgba(15, 23, 42, 0.20);
+}
+.bz-final-cta-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--bz-grad-3);
+}
+.bz-final-cta-panel > * { position: relative; }
+@media (max-width: 560px) {
+    .bz-final-cta-panel { padding: 44px 22px; border-radius: 24px; }
+    .bz-final-cta-panel .bz-btn-primary { width: 100%; max-width: 320px; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bz-feature-card, .bz-how-step, .bz-plan-card, .bz-feature-icon { transition: none; }
+    .bz-feature-card:hover, .bz-how-step:hover, .bz-feature-card:hover .bz-feature-icon { transform: none; }
+}
+
+/* ── Book a demo (business.ftl #demo) ── */
+.bz-hero-demo { margin: 8px 0 0; font-size: 0.92rem; }
+.bz-hero-demo a { color: #c2410c; font-weight: 800; text-decoration: none; }
+.bz-hero-demo a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.bz-demo { padding: 72px 0; background: radial-gradient(50% 60% at 0% 0%, rgba(255, 106, 0, 0.08), transparent 70%), #fff; }
+.bz-demo-inner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 40px; align-items: start; }
+@media (max-width: 900px) { .bz-demo-inner { grid-template-columns: 1fr; gap: 24px; } }
+.bz-demo-eyebrow { display: inline-flex; gap: 6px; align-items: center; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #7c3aed; }
+.bz-demo-copy h2 { margin: 10px 0 10px; font-size: clamp(1.6rem, 3vw, 2.1rem); font-weight: 900; color: #0f172a; }
+.bz-demo-copy p { color: #475569; line-height: 1.6; }
+.bz-demo-copy ul { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 8px; color: #334155; }
+.bz-demo-copy li i { color: #16a34a; margin-right: 6px; }
+.bz-demo-form { padding: 24px; border-radius: 20px; background: #fff; border: 1px solid rgba(15, 23, 42, 0.08); box-shadow: 0 24px 48px -28px rgba(15, 23, 42, 0.35); }
+.bz-demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 575.98px) { .bz-demo-grid { grid-template-columns: 1fr; } }
+.bz-demo-form label { display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: 0.88rem; color: #0f172a; }
+.bz-demo-form small { font-weight: 500; color: #64748b; }
+.bz-demo-form input, .bz-demo-form select, .bz-demo-form textarea { font: inherit; font-weight: 500; min-height: 46px; padding: 10px 12px; border-radius: 12px; border: 1.5px solid rgba(15, 23, 42, 0.12); background: #fff; color: #0f172a; }
+.bz-demo-form textarea { min-height: 84px; resize: vertical; }
+.bz-demo-form input:focus, .bz-demo-form select:focus, .bz-demo-form textarea:focus { outline: none; border-color: #ff6a00; box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.15); }
+.bz-demo-full { margin-top: 14px; }
+.bz-demo-hp { position: absolute !important; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.bz-demo-form .bz-btn-primary { margin-top: 16px; width: 100%; justify-content: center; border: 0; cursor: pointer; }
+.bz-demo-msg { margin: 12px 0 0; font-weight: 700; font-size: 0.92rem; }
+.bz-demo-msg.is-ok { color: #15803d; }
+.bz-demo-msg.is-error { color: #dc2626; }

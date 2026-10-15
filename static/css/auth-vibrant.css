@@ -3,7 +3,9 @@
    (learner + business accounts, every page that isn't the standalone admin console).
 
    Scope: everything here hangs off `html[data-auth]`, which header.ftl sets only when a user is
-   signed in (data-auth="user" | "business"). Guests never match, so the public site is untouched.
+   signed in (data-auth="user" | "business"). Guests never match, so the public site is untouched —
+   EXCEPT sections 2 (navbar gradient line) and 7 (catalog banner heroes + card hover), which are
+   prefixed plain `html` so guests browsing /quizzes, /flashcards etc. get the same rich look.
    Loaded after ux-overrides.css so it is the last word; the `html[data-auth]` prefix also lifts
    specificity above the page stylesheets it re-skins, so almost nothing needs !important (the
    exceptions are KPI icon colours, which are set as inline styles in the templates).
@@ -90,8 +92,8 @@ html[data-auth] body:not(.admin-body) :is(
    2. NAVBAR — one line of the brand gradient along the bottom edge
    (same touch as .admin-top-nav::before in admin-dashboard.css)
    ═════════════════════════════════════════════════════════════════════════════════════════ */
-html[data-auth] .navbar { border-bottom-color: transparent; }
-html[data-auth] .navbar::after {
+html .navbar { border-bottom-color: transparent; }
+html .navbar::after {
     content: '';
     position: absolute;
     left: 0;
@@ -318,7 +320,7 @@ html[data-auth] body:not(.admin-body) :is(.an-filter-select, .form-control, .for
    7. BANNER HEROES — quizzes / flashcards / course pages: same mesh, bolder gradient title
    Every one of these shipped the same flat peach gradient.
    ═════════════════════════════════════════════════════════════════════════════════════════ */
-html[data-auth] :is(.of-list-hero, .qz-list-hero, .fc-list-hero, .fc-hero, .fc-study-hero, .qmode-hero-band) {
+html :is(.of-list-hero, .qz-list-hero, .fc-list-hero, .fc-hero, .fc-study-hero, .qmode-hero-band) {
     background:
         radial-gradient(ellipse 55% 90% at 8% 0%, rgba(255, 106, 0, 0.24) 0%, transparent 65%),
         radial-gradient(ellipse 50% 90% at 100% 20%, rgba(124, 58, 237, 0.18) 0%, transparent 65%),
@@ -326,7 +328,7 @@ html[data-auth] :is(.of-list-hero, .qz-list-hero, .fc-list-hero, .fc-hero, .fc-s
         linear-gradient(165deg, #fff8f1 0%, #fffefc 50%, #faf5ff 100%);
     border-bottom-color: rgba(124, 58, 237, 0.12);
 }
-html[data-auth] :is(.of-list-hero-title, .qz-list-hero-title, .fc-list-hero-title) {
+html :is(.of-list-hero-title, .qz-list-hero-title, .fc-list-hero-title) {
     font-size: clamp(1.9rem, 4vw, 2.6rem);
     letter-spacing: -0.035em;
     background: linear-gradient(120deg, #0f172a 0%, #0f172a 30%, #ff6a00 72%, #ff3d81 100%);
@@ -334,14 +336,14 @@ html[data-auth] :is(.of-list-hero-title, .qz-list-hero-title, .fc-list-hero-titl
     background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-html[data-auth] :is(.of-list-hero-sub, .qz-list-hero-sub, .fc-list-hero-sub) { color: #64748b; }
-html[data-auth] :is(.of-list-hero-icon, .qz-list-hero-icon, .fc-list-hero-icon) { background: var(--vb-grad); box-shadow: 0 8px 22px rgba(255, 61, 129, 0.32); }
-html[data-auth] :is(.of-list-hero-badge, .qz-list-hero-badge, .fc-list-hero-badge) { background: var(--vb-grad); box-shadow: 0 6px 16px rgba(255, 61, 129, 0.28); }
-html[data-auth] :is(.of-list-hero-orb, .qz-hero-orb, .fc-hero-orb) { background: rgba(124, 58, 237, 0.08); }
-html[data-auth] :is(.of-list-hero-orb--1, .qz-hero-orb--1, .fc-hero-orb--1) { background: rgba(255, 106, 0, 0.10); }
+html :is(.of-list-hero-sub, .qz-list-hero-sub, .fc-list-hero-sub) { color: #64748b; }
+html :is(.of-list-hero-icon, .qz-list-hero-icon, .fc-list-hero-icon) { background: linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%); box-shadow: 0 8px 22px rgba(255, 61, 129, 0.32); }
+html :is(.of-list-hero-badge, .qz-list-hero-badge, .fc-list-hero-badge) { background: linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%); box-shadow: 0 6px 16px rgba(255, 61, 129, 0.28); }
+html :is(.of-list-hero-orb, .qz-hero-orb, .fc-hero-orb) { background: rgba(124, 58, 237, 0.08); }
+html :is(.of-list-hero-orb--1, .qz-hero-orb--1, .fc-hero-orb--1) { background: rgba(255, 106, 0, 0.10); }
 
 /* Course / quiz / flashcard cards — a colourful lift on hover */
-html[data-auth] body:not(.admin-body) .of-card:hover {
+html body:not(.admin-body) .of-card:hover {
     border-color: rgba(255, 61, 129, 0.28);
     box-shadow: 0 2px 4px rgba(15, 23, 42, 0.05), 0 22px 44px rgba(255, 61, 129, 0.14), 0 8px 18px rgba(124, 58, 237, 0.10);
 }
@@ -389,18 +391,18 @@ html[data-auth][data-theme="dark"] .an-filter-select { color: #0f172a; }
 html[data-auth][data-theme="dark"] body:not(.admin-body) :is(.admin-card-header, .dash-card-header) {
     background: linear-gradient(90deg, rgba(255, 106, 0, 0.12), rgba(124, 58, 237, 0.10) 60%, transparent);
 }
-html[data-auth][data-theme="dark"] :is(.of-list-hero, .qz-list-hero, .fc-list-hero, .fc-hero, .fc-study-hero, .qmode-hero-band) {
+html[data-theme="dark"] :is(.of-list-hero, .qz-list-hero, .fc-list-hero, .fc-hero, .fc-study-hero, .qmode-hero-band) {
     background:
         radial-gradient(ellipse 55% 90% at 8% 0%, rgba(255, 106, 0, 0.22) 0%, transparent 65%),
         radial-gradient(ellipse 50% 90% at 100% 20%, rgba(124, 58, 237, 0.26) 0%, transparent 65%),
         #0f172a;
 }
-html[data-auth][data-theme="dark"] :is(.of-list-hero-title, .qz-list-hero-title, .fc-list-hero-title) {
+html[data-theme="dark"] :is(.of-list-hero-title, .qz-list-hero-title, .fc-list-hero-title) {
     background: linear-gradient(120deg, #f1f5f9 0%, #f1f5f9 30%, #ff8c3a 72%, #ff5c9a 100%);
     -webkit-background-clip: text;
     background-clip: text;
 }
-html[data-auth][data-theme="dark"] :is(.of-list-hero-sub, .qz-list-hero-sub, .fc-list-hero-sub) { color: #94a3b8; }
+html[data-theme="dark"] :is(.of-list-hero-sub, .qz-list-hero-sub, .fc-list-hero-sub) { color: #94a3b8; }
 
 /* ═════════════════════════════════════════════════════════════════════════════════════════
    9. MOTION / SMALL SCREENS
