@@ -3324,6 +3324,10 @@ body.admin-body .admin-form-actions > span[style*="94a3b8"] { color: #64748b !im
 @media (max-width: 575px) {
     .rv-style-picker { flex: 1 1 100%; }
     .rv-style-picker .rv-sp-select { flex: 1; width: 100%; max-width: none; }
+    /* Once the picker and buttons wrap, the sticky toolbar is ~200px tall: on an iPhone SE it
+       left ~40% of the screen for the resume, with resume text showing through its glass
+       backdrop. On phones it scrolls away with the page instead of staying pinned. */
+    .rv-toolbar { position: static; }
 }
 
 /* Activity timeline on phones: the date column squeezed long descriptions into a one-word-wide
