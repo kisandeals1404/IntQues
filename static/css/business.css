@@ -1244,3 +1244,9 @@
 .bz-demo-msg { margin: 12px 0 0; font-weight: 700; font-size: 0.92rem; }
 .bz-demo-msg.is-ok { color: #15803d; }
 .bz-demo-msg.is-error { color: #dc2626; }
+
+/* /business/plans → the business Plans & Credits page (AI credits, usage, receipts). */
+.bz-plans-hub-link { margin: 0 0 22px; padding: 12px 16px; border-radius: 14px; background: rgba(255, 106, 0, 0.07); border: 1px solid rgba(255, 106, 0, 0.22); color: #334155; font-size: 0.92rem; text-align: center; }
+.bz-plans-hub-link i { color: #ff6a00; margin-right: 6px; }
+.bz-plans-hub-link a { font-weight: 700; }
+:root[data-theme="dark"] .bz-plans-hub-link { background: rgba(255, 106, 0, 0.12); border-color: rgba(255, 138, 61, 0.3); color: #cbd5e1; }

@@ -1053,3 +1053,69 @@
 :root[data-theme="dark"] .ac-delete-err { color: #fca5a5; }
 :root[data-theme="dark"] .ac-delete-body { color: #cbd5e1; }
 :root[data-theme="dark"] .ac-delete-ok { color: #86efac; }
+
+/* ── Plans & Credits (account-subscription.ftl): Pro + AI credits side by side, then buy / usage / receipts ── */
+.pw-head { margin: 4px 0 14px; }
+.pw-title { margin: 0; font-size: clamp(1.6rem, 3.4vw, 2.1rem); font-weight: 900; letter-spacing: -0.02em; color: #0f172a; }
+.pw-sub { margin: 6px 0 0; color: #475569; font-size: 1rem; }
+.pw-flash { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding: 12px 16px; border-radius: 14px; background: #f0fdf4; border: 1px solid rgba(22, 163, 74, 0.25); color: #15803d; font-weight: 700; }
+.pw-jump { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.pw-jump a { display: inline-flex; align-items: center; gap: 7px; min-height: 40px; padding: 0 14px; border-radius: 999px; background: #fff; border: 1px solid rgba(15, 23, 42, 0.1); color: #334155; font-size: 0.88rem; font-weight: 700; text-decoration: none; }
+.pw-jump a:hover { border-color: rgba(255, 106, 0, 0.45); color: #c2410c; }
+.pw-jump i { color: #ff6a00; }
+.pw-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.pw-card { display: flex; flex-direction: column; gap: 10px; padding: 22px; border-radius: 20px; background: #fff; border: 1.5px solid rgba(15, 23, 42, 0.08); box-shadow: 0 10px 30px -18px rgba(15, 23, 42, 0.35); scroll-margin-top: 90px; }
+.pw-card--pro.is-active { border-color: rgba(124, 58, 237, 0.3); background: linear-gradient(160deg, rgba(124, 58, 237, 0.06), #fff 55%); }
+.pw-card--credits { border-color: rgba(255, 106, 0, 0.28); background: linear-gradient(160deg, rgba(255, 106, 0, 0.07), #fff 55%); }
+.pw-card-top { display: flex; align-items: flex-start; gap: 12px; }
+.pw-card-top > div { flex: 1; min-width: 0; }
+.pw-icon { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 14px; color: #fff; font-size: 1.1rem; }
+.pw-icon--pro { background: linear-gradient(135deg, #7c3aed, #c026d3); }
+.pw-icon--credits { background: linear-gradient(135deg, #ff6a00, #ff3d81); }
+.pw-card-title { margin: 0; font-size: 1.15rem; font-weight: 900; color: #0f172a; }
+.pw-card-kicker { margin: 2px 0 0; color: #64748b; font-size: 0.82rem; line-height: 1.4; }
+.pw-big { margin: 6px 0 0; font-size: 1.35rem; font-weight: 800; color: #0f172a; }
+.pw-num { font-size: 2.6rem; font-weight: 900; letter-spacing: -0.03em; background: linear-gradient(120deg, #ff6a00, #ff3d81); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.pw-meta { margin: 0; color: #475569; font-size: 0.9rem; }
+.pw-meter { height: 8px; border-radius: 999px; background: #eef2f7; overflow: hidden; }
+.pw-meter span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #ff6a00, #ff3d81); }
+.pw-lines { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 6px; }
+.pw-lines li { display: flex; gap: 8px; align-items: baseline; color: #334155; font-size: 0.88rem; }
+.pw-lines i { color: #ff6a00; flex: none; width: 16px; text-align: center; }
+.pw-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto; padding-top: 8px; }
+.pw-section { margin-top: 30px; scroll-margin-top: 90px; }
+.pw-section-title { display: flex; align-items: center; gap: 10px; margin: 0 0 6px; font-size: 1.25rem; font-weight: 900; color: #0f172a; }
+.pw-section-title i { color: #ff6a00; }
+.pw-section-sub { margin: 0 0 14px; color: #475569; font-size: 0.92rem; }
+.pw-section .pr-plans--packs { max-width: none; }
+.pw-section .pr-packs-sub { text-align: left; margin-left: 0; }
+.pw-section .bz-coupon-wrap { margin-left: 0; }
+.pw-empty { margin: 0; padding: 18px; border-radius: 16px; background: #fff; border: 1px dashed rgba(15, 23, 42, 0.15); color: #64748b; }
+.pw-empty i { color: #94a3b8; margin-right: 6px; }
+.pw-kind { color: #ff6a00; margin-right: 4px; }
+.pw-payid { font-size: 0.78rem; color: #94a3b8; font-family: monospace; word-break: break-all; }
+.pw-invoice { font-size: 0.82rem; font-weight: 600; white-space: nowrap; }
+.pr-pack-uses { color: #0f172a; font-weight: 600; }
+@media (max-width: 767.98px) {
+    .pw-grid { grid-template-columns: 1fr; }
+    .pw-card { padding: 18px; }
+    .pw-num { font-size: 2.2rem; }
+}
+:root[data-theme="dark"] .pw-title, :root[data-theme="dark"] .pw-card-title, :root[data-theme="dark"] .pw-big,
+:root[data-theme="dark"] .pw-section-title, :root[data-theme="dark"] .pr-pack-uses { color: #f1f5f9; }
+:root[data-theme="dark"] .pw-sub, :root[data-theme="dark"] .pw-meta, :root[data-theme="dark"] .pw-section-sub,
+:root[data-theme="dark"] .pw-lines li { color: #cbd5e1; }
+:root[data-theme="dark"] .pw-card-kicker, :root[data-theme="dark"] .pw-empty { color: #94a3b8; }
+:root[data-theme="dark"] .pw-card, :root[data-theme="dark"] .pw-empty, :root[data-theme="dark"] .pw-jump a { background: #1a2332; border-color: rgba(255, 255, 255, 0.08); }
+:root[data-theme="dark"] .pw-card--pro.is-active { background: linear-gradient(160deg, rgba(124, 58, 237, 0.18), #1a2332 60%); border-color: rgba(167, 139, 250, 0.35); }
+:root[data-theme="dark"] .pw-card--credits { background: linear-gradient(160deg, rgba(255, 106, 0, 0.16), #1a2332 60%); border-color: rgba(255, 138, 61, 0.35); }
+:root[data-theme="dark"] .pw-jump a { color: #e2e8f0; }
+:root[data-theme="dark"] .pw-meter { background: #334155; }
+:root[data-theme="dark"] .pw-flash { background: rgba(22, 163, 74, 0.14); color: #86efac; border-color: rgba(74, 222, 128, 0.3); }
+.pw-anchor { scroll-margin-top: 90px; }
+
+/* Billing details (business-ai-credits.ftl) */
+.bz-billing-form { display: grid; gap: 12px; max-width: 560px; }
+.bz-billing-form label { display: grid; gap: 6px; font-weight: 700; font-size: 0.88rem; }
+.bz-billing-form input, .bz-billing-form textarea { padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border-color, #e2e8f0); background: var(--bg-card, #fff); color: inherit; font: inherit; font-weight: 400; }
+.bz-billing-form button { justify-self: start; }

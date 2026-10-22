@@ -2732,6 +2732,9 @@ body.admin-body [id] { scroll-margin-top: 84px; }
 
 /* Coupon field: the (uppercase-transformed) long placeholder was clipped mid-word. */
 .bz-coupon-input::placeholder { text-transform: none; letter-spacing: normal; }
+/* A text input's intrinsic width (~20ch) still counts toward its flex row's min-content even with
+   min-width: 0, which pushed the Plans & Credits page 20px past a 320px phone. flex: 1 grows it. */
+.bz-coupon-row .bz-coupon-input { width: 0; }
 
 /* Native "Choose File" widgets (roster / question / flashcard / quiz-course imports) rendered as raw
    grey system buttons that overhung the card padding on phones. */
@@ -3794,3 +3797,17 @@ html[data-theme][data-theme] body:not(.admin-body) .lbrd-list--history .lbrd-ite
 /* KPI numbers use gradient-clipped text at line-height 1.05 inside overflow:hidden, which shaved the
    top off taller glyphs such as "%" (e.g. "0%" on /business/recruitment). */
 html[data-auth] .an-kpi-value { line-height: 1.2; padding-block: 1px; }
+
+/* A form already sent (csrf.js holds a second submit): the button says so instead of looking idle. */
+.is-submitting { cursor: progress !important; opacity: .7; }
+
+/* Flashcard topics + quiz mode hero: the back pill and progress/leaderboard pill are absolutely
+   positioned at left/right:0 of the .container, i.e. outside its 12px padding — flush against the
+   screen edge on tablets (the phone rule above only covered < 768px). Inset them to the gutter. */
+.fc-hero-back, .qmode-hero-back { left: calc(var(--bs-gutter-x, 1.5rem) * 0.5); }
+.qmode-hero-back--right { left: auto; right: calc(var(--bs-gutter-x, 1.5rem) * 0.5); }
+.fc-hero-progress { right: calc(var(--bs-gutter-x, 1.5rem) * 0.5); }
+
+/* Business assignment results: the long "Auto-released — candidates see their score…" pill was a
+   single nowrap line that ran out of its card on phones. */
+.asn-badge--released { white-space: normal; line-height: 1.35; max-width: 100%; }

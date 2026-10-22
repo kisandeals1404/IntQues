@@ -216,7 +216,8 @@
 /* On-screen interviewer (sections/interviewer-avatar.ftl). State comes from interview-room.js via data-state. */
 .iv-call { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 22px; align-items: center; padding: 16px; }
 .iv-tile { position: relative; display: flex; align-items: flex-end; justify-content: center; aspect-ratio: 4 / 5; border-radius: 16px; overflow: hidden;
-    background: radial-gradient(60% 45% at 50% 38%, rgba(255, 255, 255, 0.85), transparent 70%), linear-gradient(170deg, #fde7d3 0%, #f5d0fe 55%, #c4b5fd 100%);
+    /* A softly lit office wall behind her (window light, a plant), as on a real video call. */
+    background: radial-gradient(55% 40% at 50% 36%, rgba(255, 255, 255, 0.7), transparent 70%), radial-gradient(16% 24% at 10% 34%, rgba(122, 160, 112, 0.42), transparent 70%), radial-gradient(14% 20% at 90% 20%, rgba(255, 226, 180, 0.7), transparent 70%), linear-gradient(180deg, #ebe5dc 0%, #ddd5ca 62%, #c9bfb2 100%);
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25), 0 18px 36px -18px rgba(0, 0, 0, 0.6); transition: box-shadow 0.3s ease; }
 .iv-stage[data-state="speaking"] .iv-tile { box-shadow: inset 0 0 0 3px #fb923c, 0 18px 36px -18px rgba(0, 0, 0, 0.6); }
 .iv-face { display: block; width: 100%; height: auto; overflow: visible; }
@@ -232,9 +233,12 @@
 .iv-stage-state { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 800; color: #e0e7ff; }
 .iv-bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
 .iv-bars i { width: 3px; height: 30%; border-radius: 2px; background: #fdba74; }
-.iv-face-head, .iv-face-eyes, .iv-face-body { transform-box: fill-box; transform-origin: 50% 100%; transition: transform 0.3s ease; }
+.iv-face-head, .iv-face-eyes, .iv-face-body, .iv-face-breathe, .iv-face-lip-low { transform-box: fill-box; transform-origin: 50% 100%; transition: transform 0.3s ease; }
+/* Always breathing a little, like a person on camera. */
+.iv-face-breathe { animation: ivBreathe 4.5s ease-in-out infinite; }
 .iv-face-eyes { transform-origin: center; animation: ivBlink 5s infinite; }
-.iv-face-mouth { opacity: 0; transform-box: fill-box; transform-origin: center; }
+.iv-face-mouth { opacity: 0; }
+.iv-face-mouth-open { transform-box: fill-box; transform-origin: 50% 0; }
 .iv-face-dots { opacity: 0; }
 .iv-hear-hint { margin: 10px 0 0; font-size: 0.85rem; font-weight: 700; color: #fdba74; }
 .iv-call-q .iv-question { margin-top: 10px; }
@@ -242,7 +246,14 @@
 
 /* speaking: mouth opens and closes with the voice, a little head movement */
 .iv-stage[data-state="speaking"] .iv-face-smile { opacity: 0; }
-.iv-stage[data-state="speaking"] .iv-face-mouth { opacity: 1; animation: ivTalk 0.9s infinite; }
+.iv-stage[data-state="speaking"] .iv-face-mouth { opacity: 1; }
+/* The mouth opens from the upper lip down while the lower lip drops with the jaw, in step. */
+.iv-stage[data-state="speaking"] .iv-face-mouth-open { animation: ivTalk 0.9s infinite; }
+.iv-stage[data-state="speaking"] .iv-face-lip-low { animation: ivJaw 0.9s infinite; }
+/* Word-level lip sync (interview-room.js mouthWord): the voice reports each word, so the loop stops and
+   the mouth rests nearly closed between words. */
+.iv-stage.is-lipsync[data-state="speaking"] .iv-face-mouth-open { animation: none; transform: scaleY(0.25); }
+.iv-stage.is-lipsync[data-state="speaking"] .iv-face-lip-low { animation: none; transform: translateY(0.8px); }
 .iv-stage[data-state="speaking"] .iv-face-head { animation: ivSway 2.6s ease-in-out infinite; }
 .iv-stage[data-state="speaking"] .iv-bars i { animation: ivBar 0.8s ease-in-out infinite; }
 /* listening: slow nods, bars follow the candidate's words (is-hearing pulses on each recognised phrase) */
@@ -261,6 +272,8 @@
 .iv-bars i:nth-child(4) { animation-delay: 0.45s !important; }
 
 @keyframes ivTalk { 0%, 100% { transform: scaleY(0.25); } 15% { transform: scaleY(1); } 30% { transform: scaleY(0.45); } 45% { transform: scaleY(0.9); } 60% { transform: scaleY(0.3); } 78% { transform: scaleY(0.75); } }
+@keyframes ivJaw { 0%, 100% { transform: translateY(0.8px); } 15% { transform: translateY(3.2px); } 30% { transform: translateY(1.4px); } 45% { transform: translateY(2.9px); } 60% { transform: translateY(1px); } 78% { transform: translateY(2.4px); } }
+@keyframes ivBreathe { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.2px); } }
 @keyframes ivBlink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.1); } }
 @keyframes ivSway { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(1.5deg); } }
 @keyframes ivNod { 0%, 100% { transform: rotate(0) translateY(0); } 30% { transform: rotate(2deg) translateY(1.5px); } 60% { transform: rotate(0) translateY(0); } }
@@ -276,7 +289,8 @@
 @keyframes ivDot { 0%, 100% { opacity: 0.3; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-3px); } }
 @media (prefers-reduced-motion: reduce) {
     .iv-face *, .iv-bars i, .iv-live-dot, #ivReplay { animation: none !important; }
-    .iv-stage[data-state="speaking"] .iv-face-mouth { transform: scaleY(0.6); }
+    .iv-stage[data-state="speaking"] .iv-face-mouth-open { transform: scaleY(0.6); }
+    .iv-stage[data-state="speaking"] .iv-face-lip-low { transform: translateY(2px); }
 }
 .iv-topic { display: inline-block; padding: 3px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); color: #e0e7ff; font-size: 0.78rem; font-weight: 700; }
 .iv-topic:empty { display: none; }
@@ -389,7 +403,7 @@ body.iv-room-page .mobile-tab-bar, body.iv-room-page .whatsapp-float, body.iv-ro
 .iv-personal-hint i { color: #7c3aed; }
 .iv-rep-tags { list-style: none; margin: 4px 0 14px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .iv-rep-tag { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; font-size: 0.82rem; font-weight: 700; background: rgba(124, 58, 237, 0.08); color: #6d28d9; }
-.iv-rep-tag--up { background: rgba(22, 163, 74, 0.1); color: #15803d; }
+.iv-rep-tag--up { background: rgba(22, 163, 74, 0.1); color: #166534; }
 .iv-rep-tag--down { background: rgba(220, 38, 38, 0.08); color: #b91c1c; }
 .iv-rep-tag--flat { background: rgba(100, 116, 139, 0.1); color: #475569; }
 :root[data-theme="dark"] .iv-check { background: #1a2332; border-color: rgba(255, 255, 255, 0.1); }
@@ -733,11 +747,21 @@ body.iv-room-page .navbar, body.iv-room-page .footer-section { visibility: hidde
 .ivz-stage { min-height: 0; display: flex; flex-direction: column; gap: 12px; }
 .ivz-grid { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .ivz-tile { position: relative; min-height: 0; border-radius: 14px; overflow: hidden; background: #1f232b; box-shadow: inset 0 0 0 2px transparent; transition: box-shadow 0.25s ease; }
-/* Active speaker: green frame, as in a video call. */
-.iv-stage[data-state="speaking"] .ivz-tile--ai, .iv-stage.is-hearing .ivz-tile--self { box-shadow: inset 0 0 0 3px #22c55e; }
+/* Active speaker: green frame, as in a video call. Drawn on an overlay above the tile content: as an
+   inset shadow on the tile itself, the camera video (and the portrait) covered it. */
+.ivz-tile::after { content: ""; position: absolute; inset: 0; z-index: 4; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 0 3px transparent; transition: box-shadow 0.2s ease; }
+.iv-stage[data-state="speaking"] .ivz-tile--ai::after, .iv-stage.is-hearing .ivz-tile--self::after, .iv-stage.is-voice .ivz-tile--self::after { box-shadow: inset 0 0 0 3px #22c55e; }
 .ivz-ai-feed { position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: center;
-    background: radial-gradient(60% 45% at 50% 38%, rgba(255, 255, 255, 0.85), transparent 70%), linear-gradient(170deg, #fde7d3 0%, #f5d0fe 55%, #c4b5fd 100%); }
-.ivz-ai-feed .iv-face { width: auto; height: 92%; max-width: 100%; }
+    background: radial-gradient(55% 40% at 50% 36%, rgba(255, 255, 255, 0.7), transparent 70%), radial-gradient(16% 24% at 10% 34%, rgba(122, 160, 112, 0.42), transparent 70%), radial-gradient(14% 20% at 90% 20%, rgba(255, 226, 180, 0.7), transparent 70%), linear-gradient(180deg, #ebe5dc 0%, #ddd5ca 62%, #c9bfb2 100%); }
+.ivz-ai-feed .iv-face { width: auto; height: 100%; max-width: 100%; }
+/* Camera feel over the portrait: a soft vignette and faint sensor grain, like a real webcam feed. */
+.ivz-ai-feed::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(120% 95% at 50% 40%, transparent 55%, rgba(20, 14, 10, 0.28) 100%),
+        url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27160%27%20height=%27160%27%3E%3Cfilter%20id=%27n%27%3E%3CfeTurbulence%20type=%27fractalNoise%27%20baseFrequency=%270.9%27%20numOctaves=%272%27%20stitchTiles=%27stitch%27/%3E%3C/filter%3E%3Crect%20width=%27100%25%27%20height=%27100%25%27%20filter=%27url(%23n)%27%20opacity=%270.5%27/%3E%3C/svg%3E");
+    opacity: 0.55; mix-blend-mode: soft-light; }
+/* A person on camera is never perfectly still: a slow drift of the head while waiting. */
+.iv-stage[data-state="idle"] .iv-face-head { animation: ivDrift 7s ease-in-out infinite; }
+@keyframes ivDrift { 0%, 100% { transform: rotate(0) translateX(0); } 35% { transform: rotate(-0.8deg) translateX(-0.4px); } 70% { transform: rotate(0.6deg) translateX(0.3px); } }
 .ivz-name { position: absolute; left: 10px; bottom: 10px; z-index: 2; display: inline-flex; align-items: center; gap: 6px; max-width: calc(100% - 20px);
     padding: 4px 10px; border-radius: 8px; background: rgba(0, 0, 0, 0.62); color: #fff; font-size: 0.82rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ivz-name .iv-stage-name { font-size: inherit; }
@@ -766,6 +790,18 @@ body.iv-room-page .navbar, body.iv-room-page .footer-section { visibility: hidde
     background: #0b0d12; color: #f3f4f6; border: 1.5px solid rgba(255, 255, 255, 0.12); }
 .ivz-panel textarea::placeholder { color: #6b7280; }
 .ivz-panel textarea:focus { outline: none; border-color: #ff6a00; box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.2); }
+/* Your voice (interview-room.js meter): a scrolling waveform while Speak is on. */
+.ivz-wave { display: flex; align-items: center; gap: 12px; padding: 8px 12px; border-radius: 12px; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.28); }
+.ivz-wave[hidden] { display: none; }
+.ivz-wave-label { display: inline-flex; align-items: center; gap: 7px; flex: none; font-size: 0.82rem; font-weight: 800; color: #86efac; }
+.ivz-wave-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; animation: ivLive 1.4s ease-in-out infinite; }
+.ivz-wave-bars { flex: 1; min-width: 0; height: 34px; display: flex; align-items: center; justify-content: space-between; gap: 2px; overflow: hidden; }
+.ivz-wave-bars i { flex: 1 1 0; max-width: 4px; height: 100%; border-radius: 2px; background: linear-gradient(180deg, #4ade80, #22c55e 50%, #4ade80); transform: scaleY(0.08); transition: transform 0.08s linear; }
+/* On your tile: a small level indicator, and the active-speaker frame whenever you're audible. */
+.ivz-voice { position: absolute; right: 8px; bottom: 8px; z-index: 3; display: inline-flex; align-items: center; gap: 2px; height: 22px; padding: 4px 7px; border-radius: 999px; background: rgba(17, 24, 39, 0.72); }
+.ivz-voice i { width: 3px; height: 100%; border-radius: 2px; background: #4ade80; transform: scaleY(0.15); transition: transform 0.08s linear; }
+.iv-stage.is-voice .ivz-tile--self .ivz-name-mic { color: #4ade80; }
+@media (prefers-reduced-motion: reduce) { .ivz-wave-dot { animation: none; } .ivz-wave-bars i, .ivz-voice i { transition: none; } }
 .ivz-panel .iv-status { min-height: 1.2em; font-size: 0.85rem; color: #9ca3af; }
 .ivz-panel .iv-status:empty { display: none; }
 .ivz-panel .iv-error { margin: 0; padding: 8px 12px; border-radius: 10px; background: rgba(239, 68, 68, 0.14); color: #fca5a5; font-size: 0.88rem; }
@@ -826,3 +862,81 @@ button.ivz-ctl:hover { background: rgba(255, 255, 255, 0.08); }
     .ivz-leave { padding: 0 14px; }
 }
 @media (max-width: 359.98px) { .ivz-leave span { display: none; } }
+
+/* ── Interview report insights (InterviewInsightsService): profile radar, how you spoke, per-question timing ── */
+.iv-insights { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 18px; margin: 18px 0; }
+.iv-radar { display: block; width: 100%; max-width: 380px; margin: 4px auto 0; }
+.iv-radar-ring { fill: none; stroke: rgba(15, 23, 42, 0.1); stroke-width: 1; }
+.iv-radar-axis { stroke: rgba(15, 23, 42, 0.12); stroke-width: 1; }
+.iv-radar-area { fill: rgba(124, 58, 237, 0.22); stroke: #7c3aed; stroke-width: 2; stroke-linejoin: round; }
+.iv-radar-label { font-size: 10px; font-weight: 700; fill: #334155; }
+.iv-radar-val { font-weight: 900; fill: #7c3aed; }
+.iv-delivery-score { margin-left: auto; padding: 3px 10px; border-radius: 999px; background: rgba(14, 165, 233, 0.12); color: #0369a1; font-size: 0.85rem; font-weight: 900; }
+.iv-delivery .iv-card-title { display: flex; align-items: center; gap: 8px; }
+.iv-delivery-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 12px 0; }
+.iv-stat { display: grid; gap: 4px; padding: 12px; border-radius: 14px; background: #f8fafc; border: 1px solid rgba(15, 23, 42, 0.06); }
+.iv-stat-val { font-size: 1.6rem; font-weight: 900; color: #0f172a; line-height: 1; }
+.iv-stat-label { font-size: 0.78rem; color: #475569; line-height: 1.35; }
+.iv-stat-label em { font-style: normal; font-weight: 700; color: #0f172a; }
+.iv-delivery-tips { margin: 6px 0 0; }
+.iv-qrev-meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0 44px; }
+.iv-qrev-meta span { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border-radius: 999px; background: #f1f5f9; color: #475569; font-size: 0.76rem; font-weight: 700; }
+.iv-qrev-meta span.iv-flag { background: #fef3c7; color: #92400e; }
+/* A reviewer's own score (organisation view) and the candidate's final-score note */
+.iv-review { margin: 18px 0; border-left: 4px solid #7c3aed; }
+.iv-review .iv-card-title i { color: #7c3aed; }
+.iv-review-current { margin: 0 0 12px; color: #334155; }
+.iv-review-form { display: grid; gap: 12px; }
+.iv-review-label { display: grid; gap: 6px; font-weight: 700; font-size: 0.88rem; color: #0f172a; }
+.iv-review-score { width: 120px; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(15, 23, 42, 0.16); font-size: 1rem; }
+.iv-review-form textarea { padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(15, 23, 42, 0.16); font: inherit; font-weight: 400; resize: vertical; }
+.iv-review-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.iv-review-final { margin: 18px 0; display: flex; gap: 10px; align-items: baseline; color: #334155; }
+.iv-review-final i { color: #7c3aed; }
+:root[data-theme="dark"] .iv-review-current, :root[data-theme="dark"] .iv-review-final { color: #cbd5e1; }
+:root[data-theme="dark"] .iv-review-label { color: #f1f5f9; }
+:root[data-theme="dark"] .iv-review-score, :root[data-theme="dark"] .iv-review-form textarea { background: #0f172a; color: #f1f5f9; border-color: rgba(255, 255, 255, 0.16); }
+/* Integrity signals (organisation view only) */
+.iv-integrity { margin: 18px 0; border-left: 4px solid #16a34a; }
+.iv-integrity .iv-card-title i { color: #16a34a; }
+.iv-integrity--review { border-left-color: #d97706; background: #fffbeb; }
+.iv-integrity--review .iv-card-title i { color: #d97706; }
+.iv-integrity-note { margin: 10px 0 0; color: #64748b; font-size: 0.8rem; }
+:root[data-theme="dark"] .iv-integrity--review { background: rgba(217, 119, 6, 0.1); }
+:root[data-theme="dark"] .iv-integrity-note { color: #94a3b8; }
+:root[data-theme="dark"] .iv-qrev-meta span.iv-flag { background: rgba(217, 119, 6, 0.2); color: #fcd34d; }
+@media (max-width: 767.98px) {
+    .iv-insights { grid-template-columns: 1fr; }
+    .iv-qrev-meta { margin-left: 0; }
+}
+@media (max-width: 420px) { .iv-delivery-stats { grid-template-columns: 1fr; } }
+:root[data-theme="dark"] .iv-radar-ring, :root[data-theme="dark"] .iv-radar-axis { stroke: rgba(255, 255, 255, 0.12); }
+:root[data-theme="dark"] .iv-radar-label { fill: #cbd5e1; }
+:root[data-theme="dark"] .iv-radar-val { fill: #c4b5fd; }
+:root[data-theme="dark"] .iv-radar-area { fill: rgba(167, 139, 250, 0.25); stroke: #a78bfa; }
+:root[data-theme="dark"] .iv-stat { background: #111827; border-color: rgba(255, 255, 255, 0.08); }
+:root[data-theme="dark"] .iv-stat-val, :root[data-theme="dark"] .iv-stat-label em { color: #f1f5f9; }
+:root[data-theme="dark"] .iv-stat-label { color: #94a3b8; }
+:root[data-theme="dark"] .iv-qrev-meta span { background: #1e293b; color: #cbd5e1; }
+:root[data-theme="dark"] .iv-delivery-score { background: rgba(14, 165, 233, 0.18); color: #7dd3fc; }
+@media print { .iv-insights { grid-template-columns: 1fr 1fr; } }
+
+/* "Tailor it to a job" on the interview start form (interviews.ftl). */
+.iv-jd { margin: 4px 0 14px; padding: 12px 14px; border-radius: 14px; border: 1px dashed rgba(124, 58, 237, 0.35); background: rgba(124, 58, 237, 0.04); }
+.iv-jd summary { cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; color: #0f172a; }
+.iv-jd summary::-webkit-details-marker { display: none; }
+.iv-jd summary i { color: #7c3aed; }
+.iv-jd summary small { color: #64748b; font-weight: 600; }
+.iv-jd textarea { width: 100%; margin-top: 10px; padding: 12px 14px; border-radius: 12px; border: 1.5px solid rgba(15, 23, 42, 0.12); font: inherit; line-height: 1.5; resize: vertical; background: #fff; color: #0f172a; }
+.iv-jd textarea:focus { outline: none; border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15); }
+.iv-jd-count { display: block; margin-top: 6px; color: #64748b; font-size: 0.8rem; min-height: 1em; }
+:root[data-theme="dark"] .iv-jd { background: rgba(167, 139, 250, 0.07); border-color: rgba(167, 139, 250, 0.35); }
+:root[data-theme="dark"] .iv-jd summary { color: #f1f5f9; }
+:root[data-theme="dark"] .iv-jd textarea { background: #0f172a; color: #f1f5f9; border-color: rgba(255, 255, 255, 0.12); }
+
+/* Dark-mode contrast (axe WCAG AA, 4.5:1): the report's role/level line and disclaimer, and the
+   dashboards' subtitles, used light-mode slate/orange on the dark background (3.4–3.8:1). */
+:root[data-theme="dark"] .iv-room-track { color: #fdba74; }
+:root[data-theme="dark"] .iv-disclaimer, :root[data-theme="dark"] .dash-subtitle { color: #94a3b8; }
+/* A link inside a sentence must not rely on colour alone (WCAG 1.4.1). */
+.iv-personal-hint a { text-decoration: underline; text-underline-offset: 2px; }

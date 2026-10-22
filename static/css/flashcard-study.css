@@ -1054,3 +1054,20 @@
     opacity: 1;
     transform: translate(-50%, 0);
 }
+
+/* How to study (flashcard-study.ftl): a short guide to the modes and Smart Review. */
+.fc-howto-toggle { display: inline-flex; align-items: center; gap: 6px; margin: 10px auto 0; padding: 6px 12px; border-radius: 999px;
+    border: 1px solid rgba(15, 23, 42, 0.12); background: #fff; color: #475569; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
+.fc-howto-toggle:hover { color: #c2410c; border-color: rgba(255, 106, 0, 0.4); }
+.fc-howto { position: relative; margin: 10px 0 4px; padding: 14px 40px 12px 16px; border-radius: 16px; text-align: left;
+    background: linear-gradient(135deg, rgba(255, 106, 0, 0.07), rgba(124, 58, 237, 0.06)); border: 1px solid rgba(255, 106, 0, 0.2); }
+.fc-howto[hidden] { display: none; }
+.fc-howto-close { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: #64748b; cursor: pointer; }
+.fc-howto-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.fc-howto-list li { display: flex; gap: 10px; align-items: baseline; color: #334155; font-size: 0.88rem; line-height: 1.45; }
+.fc-howto-list i { color: #ff6a00; width: 16px; text-align: center; flex: none; }
+.fc-howto-foot { margin: 10px 0 0; color: #64748b; font-size: 0.8rem; }
+:root[data-theme="dark"] .fc-howto-toggle { background: #1a2332; border-color: rgba(255, 255, 255, 0.1); color: #cbd5e1; }
+:root[data-theme="dark"] .fc-howto { background: linear-gradient(135deg, rgba(255, 138, 61, 0.1), rgba(167, 139, 250, 0.08)); border-color: rgba(255, 138, 61, 0.25); }
+:root[data-theme="dark"] .fc-howto-list li { color: #e2e8f0; }
+:root[data-theme="dark"] .fc-howto-foot, :root[data-theme="dark"] .fc-howto-close { color: #94a3b8; }

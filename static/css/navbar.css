@@ -937,3 +937,47 @@ body.nav-drawer-open {
 .nav-drawer-text { display: flex; flex-direction: column; min-width: 0; }
 .nav-drawer-sub { font-size: 0.78rem; font-weight: 500; color: #64748b; line-height: 1.35; }
 :root[data-theme="dark"] .nav-drawer-sub { color: #94a3b8; }
+
+/* =========================================
+   WALLET — AI credits left + Go Pro (nav.ftl, GlobalModelAttributes#navWallet)
+   Always visible for learners so buying Pro or credits is never more than one tap away.
+========================================= */
+.nav-wallet-chip {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 12px;
+    border-radius: 999px; background: rgba(255, 106, 0, 0.08); border: 1px solid rgba(255, 106, 0, 0.28);
+    color: #c2410c; font-size: 0.85rem; font-weight: 800; text-decoration: none; white-space: nowrap;
+    transition: background 180ms ease, border-color 180ms ease;
+}
+.nav-wallet-chip:hover { background: rgba(255, 106, 0, 0.14); border-color: rgba(255, 106, 0, 0.5); color: #c2410c; }
+.nav-wallet-chip i { font-size: 0.8rem; }
+.nav-wallet-label { font-weight: 700; }
+.nav-gopro-btn {
+    display: inline-flex; align-items: center; gap: 7px; min-height: 38px; padding: 0 14px; border-radius: 999px;
+    background: linear-gradient(120deg, #7c3aed, #c026d3); color: #fff; font-size: 0.85rem; font-weight: 800;
+    text-decoration: none; white-space: nowrap; box-shadow: 0 8px 18px -10px rgba(124, 58, 237, 0.8);
+    transition: transform 180ms ease, box-shadow 180ms ease;
+}
+.nav-gopro-btn:hover { color: #fff; transform: translateY(-1px); box-shadow: 0 12px 22px -10px rgba(124, 58, 237, 0.9); }
+@media (max-width: 1199.98px) { .nav-wallet-label { display: none; } }
+.nav-wallet-chip--mobile { min-height: 34px; padding: 0 10px; margin-left: 4px; font-size: 0.82rem; }
+.nav-mobile-notif + .nav-wallet-chip--mobile { margin-left: 4px; }
+.nav-wallet-chip--mobile + .nav-mobile-account { margin-left: 2px; }
+
+/* Drawer (phones): Pro and AI credits first, so they're never hunted for. */
+.nav-drawer-wallet { display: grid; gap: 8px; padding: 12px 16px 4px; }
+.nav-drawer-wallet-row {
+    display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px;
+    background: rgba(255, 106, 0, 0.06); border: 1px solid rgba(255, 106, 0, 0.18); color: #0f172a; text-decoration: none;
+}
+.nav-drawer-wallet-row > .fa-chevron-right { margin-left: auto; color: #94a3b8; font-size: 0.8rem; }
+.nav-drawer-wallet-ico {
+    flex: none; width: 34px; height: 34px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #ff6a00, #ff3d81); color: #fff; font-size: 0.9rem;
+}
+.nav-drawer-wallet-ico--pro { background: linear-gradient(135deg, #7c3aed, #c026d3); }
+.nav-drawer-wallet-text { display: grid; gap: 1px; min-width: 0; }
+.nav-drawer-wallet-text strong { font-size: 0.92rem; font-weight: 800; }
+.nav-drawer-wallet-text small { font-size: 0.76rem; color: #64748b; }
+:root[data-theme="dark"] .nav-wallet-chip { background: rgba(255, 138, 61, 0.12); border-color: rgba(255, 138, 61, 0.35); color: #fdba74; }
+:root[data-theme="dark"] .nav-drawer-wallet-row { background: rgba(255, 138, 61, 0.08); border-color: rgba(255, 138, 61, 0.22); color: #f1f5f9; }
+:root[data-theme="dark"] .nav-drawer-wallet-text small { color: #94a3b8; }

@@ -209,11 +209,11 @@ input.is-invalid:focus, select.is-invalid:focus, textarea.is-invalid:focus {
     .cp-premium-wrapper,
     #instructors,
     #testimonials,
-    #certificate,
-    #pricing,
-    #faq {
+    #certificate {
         content-visibility: auto;
-        contain-intrinsic-size: 700px;
+        /* #pricing / #faq are deliberately not here: their placeholder height was wrong (the pricing
+           teaser is ~1100px on phones), so it overlapped the FAQ and #faq jumps landed short. */
+        contain-intrinsic-size: auto 700px;
     }
 }
 
@@ -724,7 +724,7 @@ section > .curr-container {
     font-family: inherit;
     color: var(--text-main);
     outline: none;
-    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff6a00' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat 14px center;
+    background: #fff url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%23ff6a00'%20stroke-width='2.5'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Ccircle%20cx='11'%20cy='11'%20r='7'/%3E%3Cline%20x1='21'%20y1='21'%20x2='16.65'%20y2='16.65'/%3E%3C/svg%3E") no-repeat 14px center;
     background-size: 15px 15px;
     box-shadow: 0 1px 3px rgba(15,23,42,0.04);
     transition: border-color 0.15s ease, box-shadow 0.15s ease;

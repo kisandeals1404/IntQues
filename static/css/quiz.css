@@ -3267,3 +3267,15 @@ body.quiz-exam-lockdown .whatsapp-float {
 .qresult-iv-ico { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #ff6a00, #ff3d81); }
 .qresult-iv-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .qresult-iv-text span { color: #c7d2fe; font-size: 0.88rem; }
+
+/* Report a problem with a question (quiz-result.ftl) */
+.qresult-report { margin-top: 10px; font-size: 0.85rem; }
+.qresult-report summary { cursor: pointer; color: var(--text-subtle, #64748b); list-style: none; display: inline-flex; gap: 6px; align-items: center; }
+.qresult-report summary::-webkit-details-marker { display: none; }
+.qresult-report summary:hover { color: #c2410c; }
+.qresult-report-form { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; align-items: center; }
+.qresult-report-form select, .qresult-report-form input { padding: 7px 10px; border-radius: 8px; border: 1px solid var(--border-color, #e2e8f0); background: var(--bg-card, #fff); color: inherit; font: inherit; min-width: 0; }
+.qresult-report-form input { flex: 1 1 200px; }
+.qresult-report-form button { padding: 7px 14px; border-radius: 8px; border: 0; background: #ff6a00; color: #fff; font-weight: 700; cursor: pointer; }
+.qresult-report-form button:disabled { opacity: .6; cursor: default; }
+.qresult-report-status { flex-basis: 100%; color: var(--text-subtle, #64748b); }
