@@ -4,6 +4,11 @@
     var loaderEl = null;
     var stylesReady = false;
 
+    // Skeleton, not a spinner: the header and tab bar stay put and the content area shows a
+    // shimmering page outline plus a thin progress bar at the top (the Flipkart / Swiggy / YouTube
+    // pattern). A white sheet with "Opening page…" read as the whole site reloading. Fades in after
+    // 150ms so a fast navigation never flashes it. Colours come from the theme tokens, so it is
+    // right in dark mode too.
     function injectStyles() {
         if (stylesReady) {
             return;
@@ -12,16 +17,27 @@
         var style = document.createElement('style');
         style.id = 'page-navigation-loader-styles';
         style.textContent = [
-            '.page-nav-loader{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,0.88);z-index:2500;pointer-events:none;}',
-            '.page-nav-loader.is-visible{display:flex;}',
-            '.page-nav-loader__content{display:flex;flex-direction:column;align-items:center;gap:10px;color:#111827;font:600 14px/1.3 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;}',
-            '.page-nav-loader__spinner{width:34px;height:34px;border-radius:50%;border:3px solid rgba(17,24,39,0.18);border-top-color:#ff6a00;animation:pageNavSpin .8s linear infinite;}',
-            '@keyframes pageNavSpin{to{transform:rotate(360deg);}}',
-            '@media (prefers-reduced-motion: reduce){.page-nav-loader__spinner{animation-duration:1.6s;}}'
+            '.page-nav-loader{position:fixed;left:0;right:0;bottom:0;top:calc(60px + env(safe-area-inset-top,0px));display:none;z-index:1250;pointer-events:none;background:var(--light-bg,#f8fafc);overflow:hidden;}',
+            '@media (min-width:992px){.page-nav-loader{top:68px;}}',
+            '.page-nav-loader.is-visible{display:block;animation:pnlIn .2s ease .15s both;}',
+            '.page-nav-progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:2600;background:linear-gradient(90deg,#ff6a00,#ff3d81);box-shadow:0 0 8px rgba(255,106,0,.5);pointer-events:none;opacity:0;}',
+            '.page-nav-progress.is-visible{opacity:1;animation:pnlBar 8s cubic-bezier(.1,.7,.2,1) forwards;}',
+            '.pnl-wrap{max-width:1140px;margin:0 auto;padding:24px 16px;display:flex;flex-direction:column;gap:14px;}',
+            '.pnl-b{border-radius:10px;background:var(--border-color,#e2e8f0);position:relative;overflow:hidden;}',
+            '.pnl-b::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);animation:pnlShine 1.2s ease-in-out infinite;}',
+            ':root[data-theme="dark"] .pnl-b::after{background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);}',
+            '.pnl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:8px;}',
+            '.pnl-card{height:150px;border-radius:16px;}',
+            '@keyframes pnlIn{from{opacity:0}to{opacity:1}}',
+            '@keyframes pnlShine{to{transform:translateX(100%);}}',
+            '@keyframes pnlBar{0%{width:0}20%{width:45%}60%{width:75%}100%{width:92%}}',
+            '@media (prefers-reduced-motion: reduce){.pnl-b::after{animation:none;}.page-nav-progress.is-visible{animation:none;width:70%;}}'
         ].join('');
         document.head.appendChild(style);
         stylesReady = true;
     }
+
+    var progressEl = null;
 
     function ensureLoader() {
         if (loaderEl) {
@@ -33,10 +49,20 @@
         loaderEl = document.createElement('div');
         loaderEl.className = 'page-nav-loader';
         loaderEl.setAttribute('aria-hidden', 'true');
-        loaderEl.innerHTML = '<div class="page-nav-loader__content" role="status" aria-live="polite">' +
-            '<span class="page-nav-loader__spinner" aria-hidden="true"></span>' +
-            '<span>Opening page\u2026</span></div>';
+        loaderEl.innerHTML = '<div class="pnl-wrap" role="status" aria-live="polite">' +
+            '<span class="visually-hidden">Loading page…</span>' +
+            '<div class="pnl-b" style="height:26px;width:55%"></div>' +
+            '<div class="pnl-b" style="height:14px;width:80%"></div>' +
+            '<div class="pnl-b" style="height:44px;width:100%;border-radius:12px"></div>' +
+            '<div class="pnl-grid">' +
+            '<div class="pnl-b pnl-card"></div><div class="pnl-b pnl-card"></div><div class="pnl-b pnl-card"></div>' +
+            '<div class="pnl-b pnl-card"></div><div class="pnl-b pnl-card"></div><div class="pnl-b pnl-card"></div>' +
+            '</div></div>';
         document.body.appendChild(loaderEl);
+        progressEl = document.createElement('div');
+        progressEl.className = 'page-nav-progress';
+        progressEl.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(progressEl);
         return loaderEl;
     }
 
@@ -52,6 +78,7 @@
             return;
         }
         loaderEl.classList.remove('is-visible');
+        if (progressEl) progressEl.classList.remove('is-visible');
         loaderEl.setAttribute('aria-hidden', 'true');
         document.body.removeAttribute('aria-busy');
     }
@@ -69,7 +96,7 @@
     }
 
     /**
-     * Navigate to `url`, showing a full-page loader.
+     * Navigate to `url`, showing the page skeleton + top progress bar.
      *
      * Key iOS Chrome / WebKit requirements that drove this design:
      *  1. event.preventDefault() MUST be called first so the native anchor

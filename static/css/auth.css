@@ -837,6 +837,14 @@
     color: #047857;
 }
 
+.otp-inline-error {
+    margin: 10px 0 0;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #dc2626;
+}
+
 .otp-box.otp-error {
     border-color: #dc2626;
     background: #fef2f2;

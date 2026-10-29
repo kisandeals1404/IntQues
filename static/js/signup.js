@@ -28,9 +28,27 @@
 
     function el(id) { return document.getElementById(id); }
 
+    // One tap from the code screen to the inbox, for the big webmail providers (their links open the
+    // mail app on a phone). Unknown domains get nothing rather than a guess.
+    function setOpenMailLink(link, email) {
+        if (!link) return;
+        var domain = String(email || "").split("@")[1] || "";
+        domain = domain.toLowerCase();
+        var target = null;
+        if (/^(gmail|googlemail).com$/.test(domain)) target = ["Open Gmail", "https://mail.google.com/mail/u/0/#search/from%3Aintques"];
+        else if (/^(outlook|hotmail|live|msn).(com|in|co.uk)$/.test(domain)) target = ["Open Outlook", "https://outlook.live.com/mail/"];
+        else if (/^(yahoo|ymail|rocketmail).(com|co.in|in|co.uk)$/.test(domain)) target = ["Open Yahoo Mail", "https://mail.yahoo.com/"];
+        link.hidden = !target;
+        if (!target) return;
+        link.href = target[1];
+        link.innerHTML = "<i class=\"fa-regular fa-envelope-open\" aria-hidden=\"true\"></i> " + target[0];
+    }
+
     var els = {
         step1:            el('signupStep1'),
         step2:            el('signupStep2'),
+        otpSentEmail:     el('signupOtpSentEmail'),
+        openMail:         el('signupOpenMail'),
         firstName:        el('firstName'),
         lastName:         el('lastName'),
         email:            el('email'),
@@ -65,6 +83,9 @@
             els.acctTypeBusiness.setAttribute('aria-checked', String(isBusiness));
         }
         if (els.companyNameField) els.companyNameField.hidden = !isBusiness;
+        // The work-email note only matters to someone choosing Business.
+        var bizHint = document.getElementById('acctTypeBusinessHint');
+        if (bizHint) bizHint.hidden = !isBusiness;
     }
 
     if (els.acctTypeIndividual) {
@@ -265,6 +286,10 @@
             })
             .catch(function (err) {
                 state.completing = false;
+                // Sign-up finishes by itself once the code is accepted; this button only appears
+                // as the way to retry when that last step fails (it used to sit there greyed out
+                // next to Verify, two buttons for one action).
+                els.goToLoginBtn.hidden = false;
                 els.goToLoginBtn.disabled = false;
                 if (span) span.textContent = 'Continue';
                 toast(err.message || 'Could not complete signup. Please try again.', 'error', 2);
@@ -361,9 +386,11 @@
                 state.completing     = false;
                 if (emailOtpBoxes)  emailOtpBoxes.reset();
                 updateVerificationState();
+                if (els.otpSentEmail) els.otpSentEmail.textContent = email;
+                setOpenMailLink(els.openMail, email);
                 showStep2();
                 startResendCountdown(res.resendAfterSeconds || 30);
-                toast('OTP sent. Verify your email to continue.', 'success', 2);
+                toast('Code sent. Check your email to continue.', 'success', 2);
                 if (emailOtpBoxes) emailOtpBoxes.focusFirst();
             })
             .catch(function (err) {
@@ -383,8 +410,17 @@
     });
 
     // ── OTP verify helpers ───────────────────────────────────────
+    // A wrong code is explained right under the boxes, where the user is looking.
+    function showOtpError(text) {
+        var box = document.getElementById('signupOtpError');
+        if (!box) { if (text) toast(text, 'error', 2); return; }
+        box.textContent = text || '';
+        box.hidden = !text;
+    }
+
     function triggerVerifyEmail(otp) {
         if (!state.userId || state.emailVerified) return;
+        showOtpError('');
         els.verifyEmailBtn.disabled = true;
         if (els.emailOtpLoader) els.emailOtpLoader.hidden = false;
         postJson('/api/auth/signup/verify', { userId: state.userId, otp: otp })
@@ -400,7 +436,7 @@
             .catch(function (err) {
                 if (emailOtpBoxes) emailOtpBoxes.setError();
                 els.verifyEmailBtn.disabled = false;
-                toast(err.message, 'error', 2);
+                showOtpError(err.message);
             })
             .finally(function () {
                 if (els.emailOtpLoader) els.emailOtpLoader.hidden = true;
@@ -443,7 +479,8 @@
         postJson('/api/auth/signup/resend', { userId: state.userId })
             .then(function (res) {
                 if (emailOtpBoxes) emailOtpBoxes.reset();
-                toast('Email OTP resent.', 'success', 2);
+                showOtpError('');
+                toast('A new code has been sent to your email.', 'success', 2);
                 startResendCountdown((res && res.resendAfterSeconds) || 30);
                 if (emailOtpBoxes) emailOtpBoxes.focusFirst();
             })

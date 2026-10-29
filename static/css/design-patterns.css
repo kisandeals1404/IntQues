@@ -1,0 +1,621 @@
+/* =========================================================================================
+   Design patterns borrowed from India's big consumer apps (Amazon.in, Flipkart, Swiggy,
+   Testbook, PW): a search box always in the header, full-screen filters on phones, skeleton
+   placeholders while content loads, and checkout trust cues (savings, tax-inclusive price, UPI).
+   Site-wide; colours come from the theme tokens in global.css, so dark mode follows.
+========================================================================================= */
+
+/* ── Header search box (navbar on desktop, bar under the navbar on phones) ─────────────── */
+.iq-search-form {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+.iq-search-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    pointer-events: none;
+}
+.iq-search-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 14px 0 38px;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: var(--light-bg);
+    color: var(--text-main);
+    font-size: 0.92rem;
+    transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease, width 200ms ease;
+}
+.iq-search-input::placeholder { color: var(--text-muted); }
+.iq-search-input:focus {
+    outline: none;
+    background: var(--white);
+    border-color: rgba(255, 106, 0, 0.55);
+    box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.15);
+}
+/* The native clear "x" in WebKit sits on top of the rounded edge; keep it but give it room. */
+.iq-search-input::-webkit-search-cancel-button { margin-right: 2px; cursor: pointer; }
+
+/* Desktop navbar: a real box from 1200px, the round magnifier below that. */
+.nav-search-form { display: none; }
+@media (min-width: 1200px) {
+    .nav-search-form { display: flex; width: 240px; }
+    .nav-search-form:focus-within { width: 320px; }
+    .nav-search-form .iq-search-input { height: 38px; }
+    .nav-search-btn--compact { display: none !important; }
+}
+
+/* Phones: full-width bar right under the fixed navbar, scrolls with the page. */
+.nav-searchbar {
+    padding: 10px 16px 6px;
+}
+.nav-searchbar .iq-search-input {
+    height: 46px;
+    font-size: 16px; /* 16px stops iOS zooming the page on focus */
+    background: var(--white);
+    box-shadow: var(--shadow-xs);
+}
+.nav-searchbar .iq-search-icon { left: 16px; font-size: 1rem; }
+@media (max-width: 991.98px) {
+    /* While the bar is on screen the header magnifier is a duplicate (nav-search.js). */
+    html.nav-searchbar-visible .nav-mobile-account { visibility: hidden; }
+}
+@media (min-width: 992px) {
+    .nav-searchbar { display: none; }
+}
+
+/* ── Live suggestions under any header search box ─────────────────────────────────────── */
+.iq-suggest {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    min-width: 280px;
+    max-height: 420px;
+    overflow-y: auto;
+    z-index: 1400;
+    padding: 6px;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background: var(--white);
+    box-shadow: var(--shadow-lg);
+}
+.nav-search-form .iq-suggest { left: auto; width: 360px; }
+.iq-suggest-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    color: var(--text-main);
+    text-decoration: none;
+}
+.iq-suggest-item:hover,
+.iq-suggest-item.is-active { background: rgba(255, 106, 0, 0.08); color: var(--text-main); }
+.iq-suggest-icon {
+    flex: 0 0 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: rgba(255, 106, 0, 0.10);
+    color: #ea580c;
+    font-size: 0.85rem;
+}
+.iq-suggest-text { display: flex; flex-direction: column; min-width: 0; }
+.iq-suggest-name { font-weight: 600; font-size: 0.92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iq-suggest-meta { font-size: 0.78rem; color: var(--text-muted); }
+.iq-suggest-empty { padding: 12px 10px 6px; color: var(--text-muted); font-size: 0.88rem; }
+.iq-suggest-all {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+    padding: 10px;
+    border-top: 1px solid var(--border-color);
+    color: #c2410c;
+    font-weight: 600;
+    font-size: 0.86rem;
+    text-decoration: none;
+}
+:root[data-theme="dark"] .iq-suggest-all { color: #fdba74; }
+.iq-suggest-match { background: none; color: inherit; padding: 0; font-weight: 800; }
+/* Empty-box state: recent searches + popular topics (nav-search.js). */
+.iq-suggest-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+.iq-suggest-clear {
+    border: 0;
+    background: none;
+    padding: 6px 4px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 0;
+    color: #c2410c;
+    cursor: pointer;
+}
+.iq-suggest-recent { display: flex; align-items: center; }
+.iq-suggest-recent .iq-suggest-item { flex: 1; min-width: 0; }
+.iq-suggest-icon--muted { background: var(--bg-light, rgba(100, 116, 139, 0.1)); color: var(--text-muted); }
+.iq-suggest-remove {
+    flex: 0 0 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 10px;
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+.iq-suggest-remove:hover { background: rgba(100, 116, 139, 0.1); color: var(--text-main); }
+.iq-suggest-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 6px 10px 10px; }
+.iq-suggest-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 6px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    color: var(--text-main);
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+.iq-suggest-chip i { color: #ea580c; font-size: 0.75rem; }
+.iq-suggest-chip:hover { border-color: rgba(255, 106, 0, 0.45); background: rgba(255, 106, 0, 0.06); color: var(--text-main); }
+:root[data-theme="dark"] .iq-suggest-clear { color: #fdba74; }
+.search-recent-chip i { font-size: 0.75rem; opacity: 0.7; }
+
+/* ── Filters: inline on desktop, full-screen sheet on phones (filter-sheet.js) ─────────── */
+.fs-bar { display: none; }
+.fs-sheet[hidden] { display: none !important; }
+
+@media (max-width: 768px) {
+    .fs-enhanced select[data-facet] { display: none !important; }
+    /* Phones: the keyboard's Search key submits and "Clear all" sits in the chip row, so the
+       stacked full-width Search / Clear buttons go. */
+    .fs-enhanced button[type="submit"],
+    .fs-enhanced > .admin-search-clear,
+    .fs-enhanced > [data-filter-clear] { display: none !important; }
+    .fs-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding: 2px 0;
+    }
+    .fs-bar::-webkit-scrollbar { display: none; }
+}
+.fs-trigger {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--text-main);
+    font-weight: 600;
+    font-size: 0.88rem;
+}
+.fs-trigger-count {
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: #ff6a00;
+    color: #fff;
+    font-size: 0.72rem;
+    line-height: 20px;
+    text-align: center;
+}
+.fs-trigger-count[hidden] { display: none; }
+.fs-chips { display: flex; gap: 8px; }
+.fs-chip {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 36px;
+    padding: 0 12px;
+    border: 1px solid rgba(255, 106, 0, 0.45);
+    border-radius: 999px;
+    background: rgba(255, 106, 0, 0.08);
+    color: #c2410c;
+    font-weight: 600;
+    font-size: 0.82rem;
+    white-space: nowrap;
+}
+:root[data-theme="dark"] .fs-chip { color: #fdba74; }
+.fs-chip--clear {
+    border-color: var(--border-color);
+    background: transparent;
+    color: var(--text-body);
+    text-decoration: none;
+}
+:root[data-theme="dark"] .fs-chip--clear { color: var(--text-body); }
+
+html.fs-open, html.fs-open body { overflow: hidden; }
+.fs-sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 1700; /* above the nav drawer (1600) and the tab bar */
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    color: var(--text-main);
+    animation: fsUp 220ms cubic-bezier(.2, .8, .2, 1);
+}
+@keyframes fsUp { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .fs-sheet { animation: none; } }
+.fs-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 56px;
+    padding: env(safe-area-inset-top, 0px) 8px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+.fs-close, .fs-clear {
+    min-width: 44px;
+    min-height: 44px;
+    border: 0;
+    background: transparent;
+    color: var(--text-main);
+    font-size: 1.05rem;
+}
+.fs-title { flex: 1; margin: 0; font-size: 1.05rem; font-weight: 700; }
+.fs-clear { padding: 0 10px; color: #c2410c; font-size: 0.9rem; font-weight: 700; }
+.fs-clear:disabled { color: var(--text-subtle); }
+:root[data-theme="dark"] .fs-clear:not(:disabled) { color: #fdba74; }
+.fs-body { flex: 1; display: flex; min-height: 0; }
+.fs-rail {
+    flex: 0 0 38%;
+    max-width: 180px;
+    overflow-y: auto;
+    background: var(--light-bg);
+    border-right: 1px solid var(--border-color);
+}
+.fs-tab {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    width: 100%;
+    min-height: 56px;
+    padding: 12px 14px;
+    border: 0;
+    border-left: 3px solid transparent;
+    background: transparent;
+    color: var(--text-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: left;
+}
+.fs-tab[aria-selected="true"] {
+    background: var(--white);
+    border-left-color: #ff6a00;
+    color: var(--text-main);
+    font-weight: 700;
+}
+.fs-tab-dot { width: 8px; height: 8px; border-radius: 50%; background: #ff6a00; visibility: hidden; flex: 0 0 8px; }
+.fs-tab.has-value .fs-tab-dot { visibility: visible; }
+.fs-panels { flex: 1; overflow-y: auto; padding: 4px 16px 16px; }
+.fs-panel { margin: 0; padding: 0; border: 0; min-width: 0; }
+.fs-panel-title {
+    float: none;
+    width: auto;
+    margin: 12px 0 4px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+.fs-opt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 52px;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+.fs-opt input { width: 20px; height: 20px; accent-color: #ff6a00; flex: 0 0 20px; margin: 0; }
+/* Native radios follow color-scheme — without this, unchecked ones were bright white discs in dark mode. */
+:root[data-theme="dark"] .fs-sheet { color-scheme: dark; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fs-sheet { color-scheme: dark; } }
+.fs-opt:has(input:checked) .fs-opt-text { font-weight: 700; }
+.fs-sheet--single .fs-rail { display: none; }
+.fs-foot {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid var(--border-color);
+    box-shadow: 0 -6px 18px rgba(15, 23, 42, 0.06);
+}
+.fs-foot-count { flex: 1; color: var(--text-muted); font-size: 0.85rem; }
+.fs-apply {
+    flex: 0 0 55%;
+    min-height: 48px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--primary-gradient);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+/* ── Skeleton placeholders ───────────────────────────────────────────────────────────── */
+.iq-skel {
+    display: block;
+    height: 12px;
+    border-radius: 6px;
+    background: var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+.iq-skel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+    animation: iqSkelShine 1.2s ease-in-out infinite;
+}
+:root[data-theme="dark"] .iq-skel::after { background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.07), transparent); }
+@keyframes iqSkelShine { to { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) { .iq-skel::after { animation: none; } }
+.iq-skel--sm { height: 10px; }
+.iq-skel--circle { flex: 0 0 36px; width: 36px; height: 36px; border-radius: 50%; }
+.iq-skel-list { display: flex; flex-direction: column; }
+.iq-skel-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; }
+.iq-skel-lines { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+/* ── Checkout trust cues: savings, tax-inclusive price, payment methods ──────────────── */
+.iq-save-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #dcfce7;
+    color: #15803d;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+}
+:root[data-theme="dark"] .iq-save-badge { background: rgba(34, 197, 94, 0.16); color: #4ade80; }
+.iq-tax-note { display: block; margin-top: 2px; font-size: 0.75rem; color: var(--text-muted); }
+.iq-pay-methods {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px 14px;
+    margin-top: 10px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+.iq-pay-methods span { display: inline-flex; align-items: center; gap: 6px; }
+.iq-pay-methods i { color: var(--text-body); }
+
+/* ── Payment confirmation (payment-status.js): confirming / success / failed / pending ──── */
+html.pay-open, html.pay-open body { overflow: hidden; }
+.pay-sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 2000; /* above the filter sheet and nav drawer; Razorpay's own window sits higher */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(15, 23, 42, 0.55);
+}
+.pay-sheet[hidden] { display: none !important; }
+.pay-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 28px 24px 24px;
+    border-radius: 20px;
+    background: var(--white);
+    color: var(--text-main);
+    text-align: center;
+    box-shadow: var(--shadow-xl);
+    animation: fsUp 220ms cubic-bezier(.2, .8, .2, 1);
+}
+@media (max-width: 575.98px) {
+    .pay-sheet { align-items: flex-end; padding: 0; }
+    .pay-card { max-width: none; border-radius: 22px 22px 0 0; padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+}
+.pay-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.7rem;
+    color: #fff;
+}
+.pay-icon--spin {
+    border: 4px solid rgba(255, 106, 0, 0.18);
+    border-top-color: #ff6a00;
+    animation: paySpin 0.9s linear infinite;
+}
+@keyframes paySpin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .pay-icon--spin { animation-duration: 2.4s; } }
+.pay-icon--ok { background: #16a34a; box-shadow: 0 0 0 8px rgba(22, 163, 74, 0.15); }
+.pay-icon--fail { background: #dc2626; box-shadow: 0 0 0 8px rgba(220, 38, 38, 0.14); }
+.pay-icon--wait { background: #d97706; box-shadow: 0 0 0 8px rgba(217, 119, 6, 0.15); }
+.pay-title { margin: 0 0 6px; font-size: 1.25rem; font-weight: 800; }
+.pay-line { display: flex; justify-content: center; align-items: baseline; flex-wrap: wrap; gap: 8px; margin: 0 0 8px; }
+.pay-amount { font-size: 1.5rem; font-weight: 900; }
+.pay-what { color: var(--text-muted); font-size: 0.9rem; }
+.pay-timer { margin: 0 0 6px; font-variant-numeric: tabular-nums; color: var(--text-muted); font-weight: 700; }
+.pay-ref { margin: 0 0 6px; font-size: 0.8rem; color: var(--text-muted); word-break: break-all; }
+.pay-reason { margin: 4px 0 8px; font-weight: 700; color: #b91c1c; }
+:root[data-theme="dark"] .pay-reason { color: #fca5a5; }
+.pay-note { margin: 0 0 4px; font-size: 0.88rem; line-height: 1.5; color: var(--text-body); }
+.pay-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+.pay-btn {
+    min-height: 48px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--primary-gradient);
+    color: #fff;
+    font-weight: 800;
+    font-size: 1rem;
+}
+.pay-btn--ghost { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
+
+.pay-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 16px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(217, 119, 6, 0.35);
+    background: rgba(245, 158, 11, 0.10);
+    color: var(--text-main);
+    font-size: 0.9rem;
+}
+.pay-banner > span:not(.pay-banner-spin) { flex: 1; }
+.pay-banner--ok { border-color: rgba(22, 163, 74, 0.35); background: rgba(34, 197, 94, 0.10); }
+.pay-banner--ok i { color: #16a34a; }
+.pay-banner-spin {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2.5px solid rgba(217, 119, 6, 0.25);
+    border-top-color: #d97706;
+    animation: paySpin 0.9s linear infinite;
+}
+.pay-banner-btn {
+    flex: 0 0 auto;
+    min-height: 36px;
+    padding: 0 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 0.82rem;
+}
+
+/* ── Voice search mic (voice-search.js) ─────────────────────────────────────────────── */
+.iq-voice-btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: color 150ms ease, background 150ms ease;
+}
+.iq-voice-btn:hover { color: #ea580c; background: rgba(255, 106, 0, 0.08); }
+.iq-voice-btn:focus-visible { outline: 2px solid #ff6a00; outline-offset: 2px; }
+.is-listening .iq-voice-btn {
+    color: #fff;
+    background: #dc2626;
+    animation: iqMicPulse 1.2s ease-out infinite;
+}
+@keyframes iqMicPulse {
+    0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.45); }
+    100% { box-shadow: 0 0 0 12px rgba(220, 38, 38, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .is-listening .iq-voice-btn { animation: none; } }
+/* Header boxes: the input carries the border, so the mic sits inside it on the right. */
+.iq-search-form.has-voice .iq-search-input { padding-right: 46px; }
+.iq-search-form .iq-voice-btn { position: absolute; right: 3px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; }
+.nav-searchbar .iq-search-form .iq-voice-btn { width: 40px; height: 40px; right: 4px; }
+/* The native clear "x" would sit under the mic. */
+.has-voice input[type="search"]::-webkit-search-cancel-button { display: none; }
+/* Catalog search (/quizzes, /flashcards): the autocomplete wrapper fills the row, the mic sits at
+   its end, before the clear (x) link. */
+.of-search-wrap .course-combobox { flex: 1; min-width: 0; }
+.of-search-wrap .iq-voice-btn { margin-right: 8px; }
+
+/* Login: "Trouble signing in?" support line — a highlighted card when the visitor came from Help. */
+.ls-help-line { color: var(--text-muted); }
+.ls-help-line a { font-weight: 600; white-space: nowrap; }
+.ls-help-line--lead {
+    margin-top: 16px !important;
+    padding: 12px 14px;
+    border: 1px solid rgba(22, 163, 74, 0.3);
+    border-radius: 12px;
+    background: rgba(34, 197, 94, 0.08);
+    color: var(--text-main);
+    font-size: 0.92rem !important;
+}
+
+/* Resume builder toolbar on phones: a save message ("2 fields need fixing before saving.") sat
+   in the same one-line row as ⋮ · Save · Save & Preview, squeezing Save under Save & Preview and
+   pushing the row off-screen. The message gets its own full-width line above the buttons. */
+@media (max-width: 576px) {
+    html[data-theme][data-theme] body:not(.admin-body) .rb-header .rb-header-actions { flex-wrap: wrap; }
+    html[data-theme][data-theme] body:not(.admin-body) .rb-header .rb-save-status:not(:empty) {
+        flex: 1 0 100%;
+        order: -1;
+        text-align: center;
+        font-size: 0.85rem;
+        line-height: 1.3;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .rb-header .rb-header-actions > .rb-btn-save { flex: 1 1 0; min-width: 0; }
+}
+
+/* Readability floor on phones: these labels rendered at 10.2–10.6px. */
+html[data-theme][data-theme] body:not(.admin-body) .aiv-cmp thead th { font-size: 0.75rem; }
+html[data-theme][data-theme] body:not(.admin-body) .an-radial-grid .an-radial-label { font-size: 0.75rem; }
+.search-popular[hidden] { display: none; }
+
+/* "Open Gmail" under the OTP prompt (login.js / signup.js) — one tap to the inbox on a phone. */
+.otp-open-mail {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    margin-top: 10px;
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 0.88rem;
+    text-decoration: none;
+}
+.otp-open-mail:hover { border-color: rgba(255, 106, 0, 0.45); color: var(--text-main); }
+.otp-open-mail i { color: #ea580c; }
+.otp-open-mail[hidden] { display: none; }

@@ -981,3 +981,21 @@ body.nav-drawer-open {
 :root[data-theme="dark"] .nav-wallet-chip { background: rgba(255, 138, 61, 0.12); border-color: rgba(255, 138, 61, 0.35); color: #fdba74; }
 :root[data-theme="dark"] .nav-drawer-wallet-row { background: rgba(255, 138, 61, 0.08); border-color: rgba(255, 138, 61, 0.22); color: #f1f5f9; }
 :root[data-theme="dark"] .nav-drawer-wallet-text small { color: #94a3b8; }
+
+/* Visitors: explicit Log in + Start free (desktop). Phones keep the account icon / bottom tab. */
+.nav-login-link, .nav-signup-btn { display: none; }
+@media (min-width: 992px) {
+    .nav-login-link {
+        display: inline-flex; align-items: center; min-height: 38px; padding: 0 12px; border-radius: 999px;
+        color: #0f172a; font-size: 0.92rem; font-weight: 700; text-decoration: none; white-space: nowrap;
+    }
+    .nav-login-link:hover { color: #ea580c; background: rgba(255, 106, 0, 0.08); }
+    .nav-signup-btn {
+        display: inline-flex; align-items: center; min-height: 38px; padding: 0 16px; border-radius: 999px;
+        background: #ff6a00; color: #fff; font-size: 0.92rem; font-weight: 800; text-decoration: none; white-space: nowrap;
+        box-shadow: 0 8px 18px -10px rgba(255, 106, 0, 0.8); transition: transform 180ms ease, background 180ms ease;
+    }
+    .nav-signup-btn:hover { color: #fff; background: #ea580c; transform: translateY(-1px); }
+    .nav-account-guest { display: none; }
+}
+html[data-theme="dark"] .nav-login-link { color: #e2e8f0; }

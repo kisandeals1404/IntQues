@@ -651,6 +651,13 @@ html[data-theme="dark"][data-theme] body:not(.admin-body) .auth-shell :where(.fo
     border-color: rgba(100, 116, 139, 0.25);
     color: #0f172a;
 }
+/* The sign-up code panel sits inside that light card: it took the dark glass fill, leaving its
+   dark heading and "Pending" badge unreadable on slate. */
+html[data-theme="dark"][data-theme] body:not(.admin-body) .auth-shell .otp-card {
+    background: #f8fafc;
+    border-color: rgba(100, 116, 139, 0.25);
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) .auth-shell .otp-card.verified { background: #f0fdf4; }
 /* Guest catalogue heroes in dark mode: same navy mesh the signed-in skin uses (the light peach
    band sat as a bright strip under the dark nav). */
 html:not([data-auth])[data-theme="dark"] body:not(.admin-body) :where(.of-list-hero, .qz-list-hero, .fc-list-hero) {
@@ -1102,3 +1109,569 @@ html[data-theme="dark"][data-theme] body:not(.admin-body) .hero-v3-content h1 { 
 html[data-theme="dark"][data-theme] body:not(.admin-body) .hero-v3-desc { color: #cbd5e1; }
 
 } /* @media screen */
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   MOBILE BROWSER FIXES (iPhone Chrome review, 2026-10-22)
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    /* On-screen keyboard open (html.kb-open, set by navbar-collapse.js): the fixed tab bar rode up
+       above the keyboard and covered search suggestions. */
+    html.kb-open .mobile-tab-bar,
+    html.kb-open .whatsapp-float,
+    html.kb-open .btt-btn { display: none !important; }
+
+    /* Quiz top bar: the 4px mode-colour strip at the screen edge read as a rendering glitch. */
+    .qplay-topbar::before { display: none; }
+
+    /* Practice/exam finish: one primary + a ragged row of pills (and an orphan "All Quizzes")
+       becomes a tidy stack — full-width primary, equal-width secondaries in a 2-col grid. */
+    html[data-theme][data-theme] body:not(.admin-body) .qplay-finish-btns { align-items: stretch; }
+    html[data-theme][data-theme] body:not(.admin-body) .qplay-finish-btns > .qplay-cta-btn {
+        justify-content: center;
+        width: 100%;
+        min-height: 50px;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .qplay-finish-secondary {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        width: 100%;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .qplay-finish-secondary > .qplay-ghost-btn {
+        justify-content: center;
+        min-height: 46px;
+        border-radius: 14px;
+        font-size: 0.9rem;
+    }
+    /* odd count → last button spans the full row instead of sitting alone on the left */
+    html[data-theme][data-theme] body:not(.admin-body) .qplay-finish-secondary > .qplay-ghost-btn:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+    }
+
+    /* Account hero: CTA and Sign Out were two different widths/heights/shapes stacked off-centre. */
+    html[data-theme][data-theme] body:not(.admin-body) .account-actions {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        max-width: 340px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .account-actions > .btn {
+        justify-content: center;
+        width: 100%;
+        min-height: 48px;
+        border-radius: 14px;
+        margin: 0;
+    }
+
+    /* Home interview card: the "Start" CTA was hidden on phones, leaving a banner with no visible
+       action. Show it as a full-width pill under the text. */
+    .iv-dash-card { flex-wrap: wrap; align-items: flex-start; }
+    .iv-dash-text { flex-basis: calc(100% - 58px); }
+}
+@media (max-width: 575.98px) {
+    .iv-dash-cta {
+        display: inline-flex !important;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        margin-top: 4px;
+        padding: 11px 16px;
+        border-radius: 999px;
+        background: linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%);
+        color: #fff;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Phone drawer: the big "Go Pro" + "AI credits" cards ate the top third of the menu. Credits
+       already live in the header chip and Plans & Credits in Account, so drop them here. */
+    .nav-drawer .nav-drawer-wallet { display: none !important; }
+
+    /* Practice/exam play: Prev / Next pinned to the bottom of the screen so a long question or
+       answer list never forces a scroll to reach them. .qplay-panel already reserves 80px. */
+    html[data-theme][data-theme] body:not(.admin-body) .qplay-nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 300; /* below the question palette (overlay 400, drawer 500) and modals (600) */
+        justify-content: space-between;
+        padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
+        background: rgba(255, 255, 255, 0.94);
+        -webkit-backdrop-filter: blur(14px);
+        backdrop-filter: blur(14px);
+        border-top: 1px solid #e8edf4;
+        box-shadow: 0 -6px 20px rgba(15, 23, 42, 0.08);
+    }
+    html[data-theme="dark"][data-theme] body:not(.admin-body) .qplay-nav {
+        background: rgba(15, 23, 42, 0.94);
+        border-top-color: rgba(255, 255, 255, 0.08);
+    }
+    html.kb-open[data-theme][data-theme] body:not(.admin-body) .qplay-nav { position: static; box-shadow: none; }
+    html[data-theme][data-theme] body:not(.admin-body) .qplay-panel { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+}
+@media (max-width: 768px) {
+    /* Proctor webcam thumbnail sat bottom-right — right on top of the now-pinned Next button. */
+    .proctor-badge { bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
+    body.asn-exam-page:has(#proctor-badge) .qplay-panel { padding-bottom: 180px; }
+}
+
+@media (max-width: 991px) {
+    /* Phone header: the wordmark was absolutely centred, so with bell + credits + search on the
+       right it looked jammed against them. Sit it left, right after the menu button. */
+    .navbar .navbar-brand {
+        position: static;
+        transform: none;
+        margin: 0 auto 0 10px;
+    }
+    .navbar .container { flex-wrap: nowrap; }
+}
+
+/* iOS: 100vh is the toolbar-collapsed height, so a pop-up sized from it put its bottom buttons
+   behind Safari/Chrome's toolbar. dvh tracks the visible area (ignored where unsupported). */
+.tsw-modal, .pgate-modal { max-height: calc(100dvh - 32px); }
+.dc-modal { max-height: calc(100dvh - 32px); }
+
+/* Catalog search (/quizzes, /flashcards): the suggestions anchored to the inner .course-combobox
+   (which starts after the magnifier icon), so the list sat shifted right of the bar. Anchor it to
+   the whole pill instead. */
+.of-search-wrap .course-combobox { position: static; }
+.of-search-wrap .course-combobox-list { left: 0; right: 0; top: calc(100% + 6px); }
+
+@media (max-width: 576px) {
+    /* Search + filter forms (Exam History, business lists): the input shrank until its placeholder
+       was cut off and Search wrapped onto a line of its own. Input gets the full row; the filter
+       and buttons share the row below. */
+    body:not(.admin-body) .admin-search-form {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: stretch;
+    }
+    body:not(.admin-body) .admin-search-form .admin-search-input { grid-column: 1 / -1; width: 100%; min-height: 48px; }
+    body:not(.admin-body) .admin-search-form select.admin-btn { width: 100%; min-width: 0; }
+    body:not(.admin-body) .admin-search-form .admin-btn { justify-content: center; min-height: 46px; }
+    body:not(.admin-body) .admin-search-form .admin-search-clear { grid-column: 1 / -1; }
+}
+
+@media (max-width: 768px) {
+    /* Finish screens: stat boxes wrapped 2 + 1 (the "For review" box alone on a row) — one equal row. */
+    html[data-theme][data-theme] body:not(.admin-body) .qplay-finish-stats {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 1fr;
+        gap: 8px;
+        width: 100%;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .qplay-finish-stat { min-width: 0; padding: 12px 6px; }
+    html[data-theme][data-theme] body:not(.admin-body) .qplay-finish-stat-l { font-size: 0.62rem; letter-spacing: 0.03em; }
+    /* "Review Questions" (and any secondary directly under the primary) sat left-aligned in a full-width box. */
+    html[data-theme][data-theme] body:not(.admin-body) .qplay-finish-btns > .qplay-ghost-btn {
+        justify-content: center;
+        width: 100%;
+        min-height: 48px;
+        border-radius: 999px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* The floating WhatsApp bubble sat on top of CTAs, table ticks and body text on every page.
+       On phones the chat is in the menu drawer (and FAQ / Help / footer) instead. */
+    .whatsapp-float,
+    body:has(.hero-v3, .about-hero, .bz-hero, #faqAccordion) .whatsapp-float { display: none !important; }
+}
+.nav-drawer-wa .nav-drawer-icon { color: #16a34a; }
+
+/* Login reached from a members-only page: "Create a free account" is a real secondary button, not
+   a small link under the form (see login.ftl). */
+#lsSignupHint:has(.ls-signup-cta) { font-size: 0; }
+a.ls-signup-cta {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 48px; margin-top: 4px; border-radius: 14px;
+    border: 1.5px solid rgba(255, 106, 0, 0.45); background: #fff7f0;
+    font-size: 0.98rem; font-weight: 700; text-decoration: none;
+}
+html[data-theme="dark"] a.ls-signup-cta { background: rgba(255, 106, 0, 0.08); }
+
+@media (max-width: 768px) {
+    /* Business Quiz/Flashcard Courses: the "New Course" form came first, so on a phone you scrolled
+       past a whole form to reach your own courses. List first, create form after it. */
+    .dash-main .container:has(> #ccFormCard):has(> #ccListCard) { display: flex; flex-direction: column; }
+    .dash-main .container > #ccFormCard { order: 1; margin-top: 24px; }
+}
+
+/* ── Dark mode readability (phone walkthrough 2026-10-22) ── */
+/* Notification dropdown: titles were #0f172a on the dark menu — invisible. */
+html[data-theme="dark"] .nav-notif-title { color: #f1f5f9; }
+html[data-theme="dark"] .nav-notif-message { color: #cbd5e1; }
+html[data-theme="dark"] .nav-notif-item.nav-notif-unread { background: rgba(255, 106, 0, 0.08); }
+/* Toasts: white card with the dark theme's light text colour — unreadable. */
+html[data-theme="dark"][data-theme] body:not(.admin-body) .iq-toast {
+    background: rgba(17, 26, 46, 0.96);
+    border-color: rgba(255, 255, 255, 0.10);
+    color: #e2e8f0;
+}
+/* Flashcard Listen player: bright white bar on the dark page. */
+html[data-theme="dark"] .fc-audio-bar {
+    background: rgba(17, 26, 46, 0.92);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+html[data-theme="dark"] .fc-audio-speed { background: #0f172a; color: #e2e8f0; border-color: rgba(255, 255, 255, 0.14); }
+/* Business question bank / builder in dark mode */
+html[data-theme="dark"] .asn-type-btn:not(.is-active) { background: rgba(255, 255, 255, 0.04); color: #cbd5e1; border-color: rgba(255, 255, 255, 0.14); }
+html[data-theme="dark"] .ql-toolbar.ql-snow { border-color: rgba(255, 255, 255, 0.12); }
+html[data-theme="dark"] .ql-snow .ql-stroke { stroke: #cbd5e1; }
+html[data-theme="dark"] .ql-snow .ql-fill, html[data-theme="dark"] .ql-snow .ql-stroke.ql-fill { fill: #cbd5e1; }
+html[data-theme="dark"] .ql-snow .ql-picker { color: #cbd5e1; }
+html[data-theme="dark"] .ql-container.ql-snow { border-color: rgba(255, 255, 255, 0.12); }
+html[data-theme="dark"] .ql-editor.ql-blank::before { color: #94a3b8; }
+html[data-theme="dark"] .bz-coupon-btn { background: transparent; color: #fb923c; }
+
+/* Sign-up / login code card: the grid column sized to its content (6 boxes + gaps + padding), so on
+   a 320–360px phone the 6th box and the Verify button ran off the right edge. */
+@media (max-width: 640px) { .otp-grid { grid-template-columns: minmax(0, 1fr) !important; } }
+.otp-grid > *, .otp-card { min-width: 0; }
+@media (max-width: 380px) {
+    .otp-card { padding: 14px 10px; }
+    .otp-boxes { gap: 5px; }
+    .otp-box { height: 46px; font-size: 1.2rem; }
+}
+.iq-toast, .iq-toast * { overflow-wrap: anywhere; min-width: 0; }
+@media (max-width: 768px) {
+    /* Room reserved for the (now phone-hidden) WhatsApp bubble left a tall empty band under the footer. */
+    html[data-theme] .footer-bottom { padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
+}
+
+@media (max-width: 576px) {
+    /* Pro upgrade page: each plan was a ~200px tall card, so "Get Pro" sat two screens down.
+       Compact two-line rows (name + days on the left, price on the right), and the button stays
+       pinned above the tab bar while you compare. */
+    html[data-theme][data-theme] body:not(.admin-body) .qsub-plans { gap: 12px; margin-bottom: 18px; }
+    html[data-theme][data-theme] body:not(.admin-body) .qsub-plan {
+        max-width: none; flex: 1 1 100%;
+        display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "radio name price" "radio dur perday";
+        align-items: center; column-gap: 12px; row-gap: 2px; padding: 16px 16px;
+    }
+    .qsub-plan .qsub-plan-radio { grid-area: radio; position: static; }
+    .qsub-plan .qsub-plan-name { grid-area: name; margin: 0; }
+    .qsub-plan .qsub-plan-price { grid-area: price; margin: 0; justify-self: end; }
+    .qsub-plan .qsub-plan-amount { font-size: 1.7rem; }
+    .qsub-plan .qsub-plan-duration { grid-area: dur; margin: 0; }
+    .qsub-plan .qsub-plan-per-day { grid-area: perday; margin: 0; justify-self: end; }
+    .qsub-cta-wrap {
+        position: sticky; bottom: calc(70px + env(safe-area-inset-bottom, 0px)); z-index: 5;
+        padding: 10px 0 6px; background: linear-gradient(to top, #fdf7ff 70%, rgba(253, 247, 255, 0));
+    }
+}
+@media (max-width: 576px) {
+    html[data-theme="dark"] .qsub-cta-wrap { background: linear-gradient(to top, #0b1120 70%, rgba(11, 17, 32, 0)); }
+}
+
+/* Result / completion action rows: a sideways-scrolling row hid "Share Result" / "Challenge a
+   Friend" off the edge on tablets and phones — nobody swipes a row of buttons. Wrap instead. */
+html[data-theme][data-theme] body:not(.admin-body) :is(.qresult-actions, .gresult-actions, .fc-done-actions) {
+    flex-wrap: wrap;
+    overflow: visible;
+    justify-content: center;
+    -webkit-mask-image: none; mask-image: none;
+}
+@media (max-width: 576px) {
+    html[data-theme][data-theme] body:not(.admin-body) :is(.qresult-actions, .gresult-actions, .fc-done-actions) {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) :is(.qresult-actions, .gresult-actions, .fc-done-actions) > * {
+        justify-content: center; min-height: 46px; white-space: normal; text-align: center;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) :is(.qresult-actions, .gresult-actions, .fc-done-actions) > :first-child,
+    html[data-theme][data-theme] body:not(.admin-body) :is(.qresult-actions, .gresult-actions, .fc-done-actions) > :last-child:nth-child(even) {
+        grid-column: 1 / -1;
+    }
+}
+/* Tablets: the WhatsApp bubble covered answer-review cards and list actions too. */
+@media (max-width: 1024px) and (pointer: coarse) {
+    .whatsapp-float,
+    body:has(.hero-v3, .about-hero, .bz-hero, #faqAccordion) .whatsapp-float { display: none !important; }
+}
+@media (max-width: 991.98px) { .nav-drawer .nav-drawer-wallet { display: none !important; } }
+
+@media (min-width: 769px) and (max-width: 959.98px) {
+    /* Tablets (no question sidebar below 960px): pin Prev / Next like on phones. */
+    html[data-theme][data-theme] body:not(.admin-body) .qplay-nav {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 300;
+        padding: 12px 24px calc(12px + env(safe-area-inset-bottom, 0px));
+        background: rgba(255, 255, 255, 0.94);
+        -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+        border-top: 1px solid #e8edf4; box-shadow: 0 -6px 20px rgba(15, 23, 42, 0.08);
+    }
+    html[data-theme="dark"][data-theme] body:not(.admin-body) .qplay-nav { background: rgba(15, 23, 42, 0.94); border-top-color: rgba(255, 255, 255, 0.08); }
+    html[data-theme][data-theme] body:not(.admin-body) .qplay-panel { padding-bottom: 110px; }
+    .proctor-badge { bottom: 90px; }
+}
+@media (min-width: 769px) and (max-width: 1024px) {
+    .dash-main .container:has(> #ccFormCard):has(> #ccListCard) { display: flex; flex-direction: column; }
+    .dash-main .container > #ccFormCard { order: 1; margin-top: 24px; }
+}
+
+@media (min-width: 960px) {
+    /* Laptop (720px tall): once the answer feedback opened, Prev / Next fell below the fold on every
+       question. Keep the bar stuck to the bottom of the quiz column while it scrolls. */
+    html[data-theme][data-theme] body:not(.admin-body) .qplay-panel .qplay-nav {
+        position: sticky; bottom: 0; z-index: 20;
+        margin: 8px -12px 0; padding: 12px;
+        background: linear-gradient(to top, rgba(253, 247, 255, 0.98) 75%, rgba(253, 247, 255, 0));
+    }
+    html[data-theme="dark"][data-theme] body:not(.admin-body) .qplay-panel .qplay-nav {
+        background: linear-gradient(to top, rgba(11, 17, 32, 0.98) 75%, rgba(11, 17, 32, 0));
+    }
+}
+
+/* Laptops (1200–1399px), free learners: credits chip + "Go Pro" + 4 icons overran the header by
+   ~90px and cut the account avatar off. Credits chip shows just ⚡N here, gaps tighten. */
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+    .navbar:has(.nav-gopro-btn) .nav-wallet-label { display: none; }
+    .navbar:has(.nav-gopro-btn) .nav-right-actions { gap: 6px; }
+    .navbar:has(.nav-gopro-btn) .navbar-nav .nav-link { padding-left: 9px !important; padding-right: 9px !important; }
+}
+@media (min-width: 769px) {
+    /* Flashcard study: on a 720px-tall laptop the card + its Back / Next card buttons didn't fit, so
+       every card needed a scroll to reach Next. The card now sizes to what's left of the window. */
+    .fc-card-viewport { height: clamp(260px, calc(100vh - 360px), 460px); }
+}
+
+/* Plans & Credits cards: "Buy AI credits" / "Start an AI interview" (and "Get Pro" / "Compare plans")
+   were two different widths stacked off-centre on phones. Equal, full-width buttons. */
+@media (max-width: 576px) {
+    html[data-theme][data-theme] body:not(.admin-body) .pw-actions {
+        display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .pw-actions > .ac-sub-btn {
+        width: 100%; justify-content: center; min-height: 48px; margin: 0;
+    }
+}
+
+@media (max-width: 576px) {
+    /* Stacked action buttons at different widths (home final CTA, business Assignments header):
+       every button in these groups spans the full row. */
+    html[data-theme][data-theme] body:not(.admin-body) .fcta-actions { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    html[data-theme][data-theme] body:not(.admin-body) .fcta-actions > .fcta-btn { width: 100%; justify-content: center; margin: 0; }
+    body:not(.admin-body) .dash-header-actions { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; }
+    body:not(.admin-body) .dash-header-actions > :is(a, button) { width: 100%; justify-content: center; margin: 0; min-height: 46px; }
+
+    /* Business question types: a sideways-scrolling row hid True/False, Short Answer, Essay and
+       Fill in the Blank off-screen. They're form choices, not tags — wrap into a 2-column grid. */
+    html body *:has(> .asn-type-btn) {
+        display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px;
+        overflow: visible !important; -webkit-mask-image: none; mask-image: none;
+    }
+    html body *:has(> .asn-type-btn) > .asn-type-btn { white-space: normal; justify-content: center; text-align: center; min-height: 44px; }
+}
+/* Tap targets under 40px tall. */
+.qprof-retry-btn, #deleteAccountBtn, .dash-btn { min-height: 44px; }
+@media (max-width: 576px) {
+    /* Three-way toggles (assignment question source) stay on one row of three. */
+    html body *:has(> .asn-type-btn:nth-child(3):last-child) { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 400px) {
+    /* Resume builder toolbar on 320–400px phones: Save and Save & Preview wrapped onto two rows of
+       different widths. One row: ⋮ · Save · Save & Preview, sharing the width. */
+    html[data-theme][data-theme] body:not(.admin-body) .rb-header .rb-header-actions { flex-wrap: nowrap; gap: 6px; }
+    html[data-theme][data-theme] body:not(.admin-body) .rb-header .rb-header-actions > .rb-btn-save { flex: 1 1 0; min-width: 0; padding-left: 8px; padding-right: 8px; justify-content: center; font-size: 0.85rem; }
+    html[data-theme][data-theme] body:not(.admin-body) .rb-header .rb-header-actions > .rb-btn-save:not(.rb-btn-save-only) { flex-grow: 1.6; }
+    html[data-theme][data-theme] body:not(.admin-body) .rb-header .rb-save-status:empty { display: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   Catalogue cards on phones (/quizzes, /flashcards): each course filled a whole screen (a
+   big banner repeating the title, then the title again, then a full-width button), so people
+   could only ever compare one course at a time. Compact row instead: icon tile · badges,
+   title, one line of description, a small Start pill. The whole card stays tappable.
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 576px) {
+    html[data-theme][data-theme] body:not(.admin-body) .of-card {
+        display: grid; grid-template-columns: 76px minmax(0, 1fr); column-gap: 14px;
+        align-items: start; padding: 14px; border-radius: 18px;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .of-card .of-thumb {
+        width: 76px; height: 76px; aspect-ratio: auto; border-radius: 16px; overflow: hidden; margin: 0;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .of-card .of-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-card .of-thumb i { font-size: 1.6rem; margin: 0; }
+    .of-card .of-thumb-course-name { display: none !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-card .of-card-body { padding: 0; gap: 6px; min-width: 0; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-card .of-name { font-size: 1.02rem; margin: 2px 0 0; line-height: 1.3; -webkit-line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-card :is(.qz-card-desc, .of-desc, .fc-card-desc) {
+        font-size: 0.84rem; margin: 0; -webkit-line-clamp: 1; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .of-card .of-topics { display: none !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-card .of-card-meta { margin: 0; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-card .of-card-footer { padding: 6px 0 0; border: 0; margin: 0; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-card .of-card-footer .of-btn-enroll {
+        width: auto; min-height: 38px; padding: 8px 16px; font-size: 0.86rem; border-radius: 999px;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .of-card:hover { transform: none; }
+    body:not(.admin-body) .of-list { gap: 12px !important; }
+}
+@media (max-width: 576px) {
+    html[data-theme][data-theme] body:not(.admin-body) .of-card .of-card-meta,
+    html[data-theme][data-theme] body:not(.admin-body) .of-card .of-name { min-height: 0; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-card .of-card-body { gap: 4px; padding: 0; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-card .of-card-footer { padding-top: 6px; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-card .of-card-footer .of-btn-enroll { align-self: flex-start; flex: 0 0 auto; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-card .of-card-footer { justify-content: flex-start; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-card .of-card-badges > * { font-size: 0.72rem; padding: 3px 8px; }
+}
+
+@media (max-width: 576px) {
+    /* Practice / Exam choice (quiz-mode, my-course-quiz-mode): each card was a full screen of icon,
+       bullet list and stats, so Exam mode sat entirely below the fold and Start Practice under the
+       tab bar. On phones: icon beside the title, no bullets (the description already says it), no
+       duplicate exam stats box — both choices and both Start buttons fit on one screen. */
+    .qmode-card .qmode-card-features, .qmode-card .qmode-exam-kpis { display: none !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-card { padding: 18px 18px 18px; }
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-card .qmode-card-icon { width: 44px; height: 44px; font-size: 1.1rem; margin: 0 0 8px; border-radius: 12px; }
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-card .qmode-card-title { font-size: 1.15rem; margin: 0 0 4px; }
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-card .qmode-card-desc { margin: 0 0 12px; font-size: 0.9rem; }
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-card .qmode-count-box { margin: 0 0 12px; padding: 10px 12px; }
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-cards-inner { gap: 14px; }
+}
+
+/* Flashcards: the "+1 point" bubble popped up over the answer text mid-card. A small badge under
+   the header's right edge instead, out of the reading area. */
+.fc-points-toast {
+    left: auto; right: 16px; bottom: auto; top: calc(76px + env(safe-area-inset-top, 0px));
+    transform: translateY(-8px); padding: 6px 12px; font-size: 0.8rem;
+}
+.fc-points-toast--show { transform: translateY(0); }
+@media (max-width: 991px) { .fc-points-toast { top: calc(68px + env(safe-area-inset-top, 0px)); } }
+
+@media (max-width: 768px) {
+    /* Quiz result: "Points earned" / "Badge unlocked" banners filled the first screen and pushed
+       the actual score below the fold. Score first, then the counts, then the rewards. */
+    .qresult-wrap { display: flex; flex-direction: column; }
+    .qresult-wrap > :is(.ach-earn-banner, .share-outcome-banner) { order: 1; }
+    .qresult-wrap > .qresult-actions ~ * { order: 2; }
+    html[data-theme][data-theme] body:not(.admin-body) .qresult-wrap > .ach-earn-banner { padding: 12px 14px; margin-bottom: 10px; }
+    html[data-theme][data-theme] body:not(.admin-body) .qresult-wrap > .ach-earn-banner .ach-earn-icon { width: 40px; height: 40px; font-size: 1rem; }
+    html[data-theme][data-theme] body:not(.admin-body) .qresult-wrap > .ach-earn-banner .ach-earn-title { font-size: 1rem; }
+}
+@media (max-width: 576px) {
+    html[data-theme][data-theme] body:not(.admin-body) .qresult-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+    html[data-theme][data-theme] body:not(.admin-body) .qresult-stat { padding: 12px 4px; min-width: 0; }
+    html[data-theme][data-theme] body:not(.admin-body) .qresult-stat .qresult-stat-num,
+    html[data-theme][data-theme] body:not(.admin-body) .qresult-stat > div:first-child { font-size: 1.4rem; }
+    html[data-theme][data-theme] body:not(.admin-body) .qresult-stat .qresult-stat-label { font-size: 0.68rem; line-height: 1.2; }
+    html[data-theme][data-theme] body:not(.admin-body) .qresult-hero { padding: 20px 16px; }
+    html[data-theme][data-theme] body:not(.admin-body) .qresult-score-circle { transform: scale(0.82); margin: -14px auto; }
+}
+@media (max-width: 576px) {
+    /* AI interview: the long intro duplicates "How it works" below; keep the setup form near the top. */
+    .iv-hero .pr-sub { display: none; }
+    html[data-theme][data-theme] body:not(.admin-body) .iv-hero { padding-top: 18px; padding-bottom: 8px; }
+}
+
+/* Learner home: detailed charts fold behind a button on phones (home-individual.ftl). */
+.an-more-toggle { display: none; }
+@media (max-width: 768px) {
+    .an-more-toggle {
+        display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+        min-height: 48px; margin: 4px 0 16px; border-radius: 14px; cursor: pointer;
+        border: 1.5px solid rgba(255, 106, 0, 0.35); background: #fff7f0; color: #c2410c; font-weight: 700; font-size: 0.95rem;
+    }
+    html[data-theme="dark"] .an-more-toggle { background: rgba(255, 106, 0, 0.08); color: #fb923c; }
+    .an-more:not(.is-open) { display: none; }
+}
+
+@media (max-width: 576px) {
+    /* Learner home: seven big stat tiles were a screen and a half on a phone. Compact 3-across. */
+    html[data-theme][data-theme] body:not(.admin-body) .an-kpi-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    html[data-theme][data-theme] body:not(.admin-body) .an-kpi-grid .an-kpi-card { padding: 10px 10px 12px; min-height: 0; grid-column: auto !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .an-kpi-grid .an-kpi-icon { width: 28px; height: 28px; font-size: 0.8rem; border-radius: 8px; margin-bottom: 6px; }
+    html[data-theme][data-theme] body:not(.admin-body) .an-kpi-grid .an-kpi-value { font-size: 1.3rem; line-height: 1.1; }
+    html[data-theme][data-theme] body:not(.admin-body) .an-kpi-grid .an-kpi-label { font-size: 0.7rem; line-height: 1.25; }
+}
+@media (max-width: 576px) {
+    /* 7th tile: full row, icon + number + label side by side (no lone tile). */
+    html[data-theme][data-theme] body:not(.admin-body) .an-kpi-grid > .an-kpi-card:last-child:nth-child(3n+1) {
+        grid-column: 1 / -1 !important; display: grid; grid-template-columns: auto auto 1fr; align-items: center; column-gap: 10px;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .an-kpi-grid > .an-kpi-card:last-child:nth-child(3n+1) .an-kpi-icon { margin: 0; }
+    /* Progress rings: four across, small. */
+    html[data-theme][data-theme] body:not(.admin-body) .an-radial-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+    html[data-theme][data-theme] body:not(.admin-body) .an-radial-grid > * { padding: 10px 2px; min-width: 0; }
+    html[data-theme][data-theme] body:not(.admin-body) .an-radial-grid svg,
+    html[data-theme][data-theme] body:not(.admin-body) .an-radial-grid canvas { width: 58px !important; height: 58px !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .an-radial-grid .an-radial-label { font-size: 0.66rem; line-height: 1.2; text-align: center; }
+}
+@media (max-width: 576px) {
+    html[data-theme][data-theme] body:not(.admin-body) .an-radial-grid .an-ring { width: 60px; height: 60px; }
+    html[data-theme][data-theme] body:not(.admin-body) .an-radial-grid .an-ring-value { font-size: 0.85rem; }
+    html[data-theme][data-theme] body:not(.admin-body) .an-radial-grid .an-radial-card { padding: 10px 4px; gap: 6px; }
+}
+@media (max-width: 576px) {
+    /* Resume preview: Edit / PDF / Word were three different widths that didn't fill the row. */
+    html[data-theme][data-theme] body:not(.admin-body) .rv-toolbar-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; width: 100%; }
+    html[data-theme][data-theme] body:not(.admin-body) .rv-toolbar-actions > :is(a, button) { width: 100%; justify-content: center; min-height: 46px; margin: 0; padding-left: 6px; padding-right: 6px; }
+    html[data-theme][data-theme] body:not(.admin-body) .rv-toolbar-actions > :not(a):not(button) { grid-column: 1 / -1; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   "Explore" mega menu (layout/nav.ftl, desktop): promo panel + three columns, centred under the
+   header — replaces six top-level links and two dropdowns.
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+@media (min-width: 992px) {
+    .navbar > .container { position: relative; }
+    .navbar .nav-mega-wrap { position: static; }
+    html[data-theme][data-theme] body:not(.admin-body) .navbar .dropdown-menu.nav-mega {
+        left: 50%; right: auto; top: calc(100% - 4px); transform: translateX(-50%);
+        width: min(1040px, calc(100vw - 48px)); max-width: none; padding: 14px;
+        border-radius: 22px; box-shadow: 0 30px 70px -20px rgba(15, 23, 42, 0.35);
+    }
+    .navbar .dropdown-menu.nav-mega.show {
+        display: grid; grid-template-columns: 270px repeat(3, minmax(0, 1fr)); gap: 6px 14px; align-items: start;
+    }
+    .nav-mega-promo {
+        grid-row: span 1; align-self: stretch; display: flex; flex-direction: column; gap: 10px;
+        padding: 22px 20px; border-radius: 16px; text-decoration: none; color: #fff;
+        background: radial-gradient(120% 90% at 0% 0%, #ff6a00 0%, transparent 55%), radial-gradient(120% 90% at 100% 100%, #7c3aed 0%, transparent 60%), #1e1b4b;
+    }
+    .nav-mega-promo:hover { color: #fff; filter: brightness(1.06); }
+    .nav-mega-promo-eyebrow { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.9; }
+    .nav-mega-promo-title { font-size: 1.3rem; font-weight: 900; line-height: 1.2; letter-spacing: -0.01em; }
+    .nav-mega-promo-text { font-size: 0.86rem; line-height: 1.5; color: rgba(255, 255, 255, 0.85); }
+    .nav-mega-promo-cta { margin-top: auto; display: inline-flex; align-items: center; gap: 8px; align-self: flex-start;
+        padding: 9px 14px; border-radius: 999px; background: #fff; color: #c2410c; font-weight: 800; font-size: 0.84rem; }
+    .nav-mega-col { display: flex; flex-direction: column; gap: 2px; padding: 10px 4px; min-width: 0; }
+    .nav-mega-label { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #94a3b8; padding: 0 10px 8px; }
+    .nav-mega-item { display: flex; align-items: center; gap: 12px; padding: 9px 10px; border-radius: 12px; text-decoration: none; color: inherit; }
+    .nav-mega-item:hover, .nav-mega-item:focus-visible { background: rgba(255, 106, 0, 0.07); text-decoration: none; }
+    .nav-mega-item .nav-di-name { font-size: 0.92rem; font-weight: 700; color: #0f172a; }
+    .nav-mega-item .nav-di-meta { font-size: 0.78rem; color: #64748b; }
+    html[data-theme="dark"] .nav-mega-item .nav-di-name { color: #f1f5f9; }
+    html[data-theme="dark"] .nav-mega-item .nav-di-meta { color: #94a3b8; }
+}
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .navbar .dropdown-menu.nav-mega.show { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .nav-mega-promo { display: none; }
+}
+@media (min-width: 992px) {
+    .navbar #navbarNav > .navbar-nav { margin-left: 28px !important; margin-right: auto !important; }
+}
+@media (min-width: 992px) {
+    html[data-theme][data-theme] body:not(.admin-body) .navbar .dropdown-menu.nav-mega {
+        background: #ffffff; -webkit-backdrop-filter: none; backdrop-filter: none; border: 1px solid rgba(15, 23, 42, 0.08);
+    }
+    html[data-theme="dark"][data-theme] body:not(.admin-body) .navbar .dropdown-menu.nav-mega { background: #111a2e; border-color: rgba(255, 255, 255, 0.08); }
+    .nav-mega-promo-cta { white-space: nowrap; }
+}
+@media (min-width: 992px) {
+    /* Centre the mega menu without transform: the shared dropdown open animation (dropdownFade)
+       animates transform, which dropped the translateX(-50%) mid-animation — the menu appeared on
+       the right and then slid left. */
+    html[data-theme][data-theme] body:not(.admin-body) .navbar .dropdown-menu.nav-mega {
+        left: 0; right: 0; margin-left: auto; margin-right: auto; transform: none;
+    }
+}
+.nav-mega-label i { color: #ff6a00; margin-right: 4px; }

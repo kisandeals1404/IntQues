@@ -1483,7 +1483,7 @@ body.quiz-exam-lockdown .whatsapp-float {
         overflow-y: auto;
     }
     .qp-close-btn { display: none; }
-    .qplay-tb-palette-btn { display: none; }
+    .qplay-tb-palette-btn:not(.qplay-voice-btn) { display: none; }
     .qplay-nav-pos { display: none; }
 }
 
@@ -3279,3 +3279,62 @@ body.quiz-exam-lockdown .whatsapp-float {
 .qresult-report-form button { padding: 7px 14px; border-radius: 8px; border: 0; background: #ff6a00; color: #fff; font-weight: 700; cursor: pointer; }
 .qresult-report-form button:disabled { opacity: .6; cursor: default; }
 .qresult-report-status { flex-basis: 100%; color: var(--text-subtle, #64748b); }
+
+/* ── Voice mode (static/js/quiz-voice.js) ── */
+.qplay-tb-right { display: flex; gap: 8px; align-items: center; }
+.qplay-voice-btn.is-on { background: linear-gradient(120deg, #ff6a00, #ff3d81); color: #fff; border-color: transparent; }
+.qplay-voice-pill {
+    position: fixed; left: 50%; transform: translateX(-50%); z-index: 350;
+    bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+    display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px);
+    padding: 8px 8px 8px 14px; border-radius: 999px;
+    background: #0f172a; color: #f8fafc; font-size: 0.86rem; font-weight: 600;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.3);
+}
+.qplay-voice-pill[hidden] { display: none; }
+.qplay-voice-dot { width: 10px; height: 10px; border-radius: 50%; background: #ef4444; flex: none; animation: proctorPulse 1.6s infinite; }
+.qplay-voice-text { min-width: 0; overflow-wrap: anywhere; }
+.qplay-voice-pill button { flex: none; width: 34px; height: 34px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, 0.12); color: #fff; cursor: pointer; }
+.qplay-voice-pill button:hover { background: rgba(255, 255, 255, 0.22); }
+@media (min-width: 960px) { .qplay-voice-pill { bottom: 28px; left: calc(50% - 140px); } }
+@media (max-width: 400px) { .qplay-voice-btn .qplay-tb-palette-label { display: none; } }
+.qplay-voice-tip {
+    position: fixed; z-index: 360; max-width: 240px; padding: 10px 14px; border-radius: 14px;
+    background: #0f172a; color: #f8fafc; font-size: 0.84rem; font-weight: 600; line-height: 1.4;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.3); cursor: pointer;
+}
+.qplay-voice-tip::before { content: ''; position: absolute; top: -6px; left: var(--tip-arrow-x, calc(100% - 34px)); width: 12px; height: 12px; background: #0f172a; transform: rotate(45deg); }
+/* Voice button outside the quiz top bar (my-course-quiz-play.ftl header). */
+.mcq-header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.mcq-header-actions .qplay-voice-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1.5px solid #e2e8f0; background: #fff; color: #334155; font-weight: 700; cursor: pointer; }
+.mcq-header-actions .qplay-voice-btn.is-on { background: linear-gradient(120deg, #ff6a00, #ff3d81); color: #fff; border-color: transparent; }
+/* My Courses quiz (my-course-quiz-play.ftl). The nav row's flex lives here, not inline: the exam
+   start gate clears the row's inline display, which used to drop it back to block on phones. */
+.mcq-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.mcq-review-btn { margin-left: auto; }
+.mcq-review-btn.marked { background: #fef3c7; border-color: #fcd34d; color: #92400e; }
+.mcq-palette-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.mcq-palette-title { font-size: 1rem; margin: 0; }
+.mcq-palette-stat { font-size: 0.85rem; color: var(--text-muted); }
+.mcq-palette-legend { padding: 0 0 12px; border-bottom: 0; }
+.mcq-palette-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); gap: 8px; }
+.mcq-palette-grid .qp-num { min-height: 44px; }
+@media (max-width: 576px) {
+    /* Prev + Next share the first row, "Mark for review" gets its own full-width row. */
+    .mcq-nav { flex-wrap: wrap; }
+    .mcq-nav #mcqNextBtn { flex: 1; justify-content: center; }
+    .mcq-review-btn { order: 3; flex-basis: 100%; margin-left: 0; justify-content: center; }
+    /* Mic · timer · Exit in one row, not three full-width stacked buttons. */
+    body:not(.admin-body) .dash-header-actions.mcq-header-actions { display: flex; flex-wrap: nowrap; align-items: center; gap: 8px; width: 100%; }
+    body:not(.admin-body) .dash-header-actions.mcq-header-actions > :is(a, button, span) { width: auto; flex: 0 0 auto; margin: 0; min-height: 40px; }
+    body:not(.admin-body) .dash-header-actions.mcq-header-actions > a { margin-left: auto; }
+    .mcq-header-actions #mcqTimer { display: inline-flex; align-items: center; }
+}
+/* Voice status inside the Prev / Next bar. */
+.qplay-voice-pill.qplay-voice-pill--inline {
+    position: static; transform: none; left: auto; bottom: auto; box-shadow: none;
+    padding: 4px 4px 4px 10px; gap: 6px; font-size: 0.8rem; max-width: none; flex: 0 1 auto; min-width: 0;
+}
+.qplay-voice-pill--inline .qplay-voice-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.qplay-voice-pill--inline button { width: 30px; height: 30px; }
+@media (max-width: 400px) { .qplay-voice-pill--inline .qplay-voice-repeat { display: none; } }

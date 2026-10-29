@@ -8,6 +8,22 @@
 
     function el(id) { return document.getElementById(id); }
 
+    // One tap from the code screen to the inbox, for the big webmail providers (their links open the
+    // mail app on a phone). Unknown domains get nothing rather than a guess.
+    function setOpenMailLink(link, email) {
+        if (!link) return;
+        var domain = String(email || "").split("@")[1] || "";
+        domain = domain.toLowerCase();
+        var target = null;
+        if (/^(gmail|googlemail).com$/.test(domain)) target = ["Open Gmail", "https://mail.google.com/mail/u/0/#search/from%3Aintques"];
+        else if (/^(outlook|hotmail|live|msn).(com|in|co.uk)$/.test(domain)) target = ["Open Outlook", "https://outlook.live.com/mail/"];
+        else if (/^(yahoo|ymail|rocketmail).(com|co.in|in|co.uk)$/.test(domain)) target = ["Open Yahoo Mail", "https://mail.yahoo.com/"];
+        link.hidden = !target;
+        if (!target) return;
+        link.href = target[1];
+        link.innerHTML = "<i class=\"fa-regular fa-envelope-open\" aria-hidden=\"true\"></i> " + target[0];
+    }
+
     var els = {
         // Step 1
         step1:          el('ls1'),
@@ -27,11 +43,13 @@
         sendOtpLoader:   el('lsSendOtpLoader'),
         otpVerifyState:  el('lsOtpVerifyState'),
         otpSentEmail:    el('lsOtpSentEmail'),
+        openMail:        el('lsOpenMail'),
         verifyOtpBtn:    el('lsVerifyOtpBtn'),
         verifyOtpLoader: el('lsVerifyOtpLoader'),
         resendOtpBtn:    el('lsResendOtpBtn'),
 
         message:         el('lsMessage'),
+        otpError:        el('lsOtpError'),
         emailError:      el('lsEmailError')
     };
 
@@ -136,6 +154,12 @@
         toastTimer = setTimeout(function () { els.message.classList.remove('is-visible'); }, 6000);
     }
 
+    function showOtpError(text) {
+        if (!els.otpError) { if (text) toast(text, 'error'); return; }
+        els.otpError.textContent = text || '';
+        els.otpError.hidden = !text;
+    }
+
     function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
 
     // Keeps the visual invalid state (is-invalid) in sync with the ARIA state, so screen
@@ -208,6 +232,7 @@
         if (els.emailDisplay)  els.emailDisplay.textContent  = state.email;
         if (els.otpTargetEmail) els.otpTargetEmail.textContent = state.email;
         if (els.otpSentEmail)  els.otpSentEmail.textContent  = state.email;
+        setOpenMailLink(els.openMail, state.email);
 
         if (state.otpSent) {
             showOtpVerifyState();
@@ -226,7 +251,7 @@
                 state.userId  = res.userId;
                 state.otpSent = true;
                 showOtpVerifyState();
-                toast('Login OTP sent to ' + state.email + '.', 'success');
+                toast('Code sent to ' + state.email + '.', 'success');
                 // The server refuses another send until its cooldown is up — say so on the button.
                 startResendCountdown(els.resendOtpBtn, res.resendAfterSeconds || 30);
             })
@@ -345,7 +370,8 @@
                 .then(function (res) {
                     state.userId = res.userId;
                     if (loginOtpBoxes) loginOtpBoxes.reset();
-                    toast('A new OTP has been sent to ' + state.email + '.', 'success');
+                    showOtpError('');
+                    toast('A new code has been sent to ' + state.email + '.', 'success');
                     startResendCountdown(els.resendOtpBtn, res.resendAfterSeconds || 30);
                 })
                 .catch(function (err) {
@@ -359,7 +385,8 @@
 
     if (els.verifyOtpBtn) {
         els.verifyOtpBtn.addEventListener('click', function () {
-            if (!state.userId) { toast('Please request an OTP first.', 'error'); return; }
+            if (!state.userId) { toast('Request a code first.', 'error'); return; }
+            showOtpError('');
             setLoading(els.verifyOtpBtn, els.verifyOtpLoader, true);
             postJson('/api/auth/login/verify', {
                 userId: state.userId,
@@ -369,7 +396,8 @@
             // only showed an "OTP not sent yet" error.
             .then(handleLoginSuccess)
             .catch(function (err) {
-                toast(err.message, 'error');
+                // Next to the boxes, where the user is looking — not only in the toast at the top.
+                showOtpError(err.message);
                 if (loginOtpBoxes) loginOtpBoxes.setError();
                 setLoading(els.verifyOtpBtn, els.verifyOtpLoader, false);
             });

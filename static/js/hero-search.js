@@ -33,10 +33,28 @@
         input.removeAttribute('aria-activedescendant');
     }
 
+    // Phones: keep the suggestions above the on-screen keyboard (same approach as course-combobox.js).
+    var isTouch = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+    function fitToKeyboard() {
+        if (!isTouch || box.hidden) return;
+        var viewH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+        var navbar = document.querySelector('.navbar');
+        var topGap = (navbar ? navbar.getBoundingClientRect().bottom : 0) + 12;
+        var rect = input.getBoundingClientRect();
+        if (rect.bottom + 180 > viewH && rect.top > topGap) {
+            window.scrollBy(0, rect.top - topGap);
+            rect = input.getBoundingClientRect();
+        }
+        box.style.maxHeight = Math.max(140, viewH - rect.bottom - 16) + 'px';
+        box.style.overflowY = 'auto';
+    }
+    if (isTouch && window.visualViewport) window.visualViewport.addEventListener('resize', fitToKeyboard);
+
     function renderEmpty(message) {
         box.innerHTML = '<div class="hvss-empty">' + escapeHtml(message) + '</div>';
         box.hidden = false;
         input.setAttribute('aria-expanded', 'true');
+        fitToKeyboard();
     }
 
     function render(results) {
@@ -60,6 +78,7 @@
         }).join('');
         box.hidden = false;
         input.setAttribute('aria-expanded', 'true');
+        fitToKeyboard();
     }
 
     function fetchSuggestions(query) {
@@ -125,7 +144,8 @@
        visitor focuses or types anything real; only ever touches the `placeholder` attribute,
        never the input's actual value. ── */
     var EXAMPLES = ['Java', 'SQL', 'Spring Boot', 'Kafka', 'System Design', 'React', 'DSA'];
-    var PREFIX = 'Search quizzes or flashcards — ';
+    // Narrow phones: the long prefix left no room for the example being typed (it ran off the box).
+    var PREFIX = window.innerWidth < 420 ? 'Try ' : 'Search quizzes or flashcards — ';
     var TYPE_MS = 70;
     var DELETE_MS = 35;
     var HOLD_MS = 1400;
