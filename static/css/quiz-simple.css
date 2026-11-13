@@ -1,0 +1,79 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   QUIZ PLAY — SIMPLE & SPACIOUS (2026-11-04)
+   Same pattern as the flashcard study page: one quiet top bar with the progress as a thin line
+   on its edge, the question sitting directly on the page on phones (no card-inside-a-page
+   padding), compact options, and each number shown once. Bundled after premium.css; selectors
+   carry body.quiz-play-page + doubled [data-theme] so they win in dev too.
+═══════════════════════════════════════════════════════════════════════ */
+
+/* Progress line on the top bar's bottom edge (replaces the separate bar + % row) */
+.qplay-tb-progress {
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 3px;
+    background: rgba(148,163,184,0.18);
+    pointer-events: none;
+}
+.qplay-tb-progress > #qplay-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff6a00, #ff3d81);
+    transition: width 0.3s ease;
+}
+.qplay-topbar { position: sticky; }
+html[data-theme][data-theme] body.quiz-play-page .qplay-pgbar-wrap { display: none; }
+/* The colour stripe on the left edge said "mode" in a way nobody decodes — the timer already does. */
+.qplay-topbar::before { display: none; }
+
+/* Question meta: "Question 3 of 20" + tags on one small line */
+html[data-theme][data-theme] body.quiz-play-page .qplay-qcard-top { margin-bottom: 10px; gap: 8px; align-items: center; }
+html[data-theme][data-theme] body.quiz-play-page .qplay-qtag { font-size: 0.68rem; padding: 2px 8px; }
+
+html[data-theme="dark"][data-theme] body.quiz-play-page .qplay-qtag:not([class*="qplay-qtag--"]) { background: rgba(255,255,255,0.08); color: #cbd5e1; }
+
+/* Legend: fewer, smaller chips — the colours explain themselves in the grid */
+html[data-theme][data-theme] body.quiz-play-page .qp-legend { gap: 6px 10px; padding-top: 8px; padding-bottom: 8px; }
+
+@media (max-width: 768px) {
+    /* Edge-to-edge reading area: the page padding is the only margin. */
+    html[data-theme][data-theme] body.quiz-play-page:not(.admin-body) .qplay-panel { padding: 14px 16px 92px; }
+    html[data-theme][data-theme] body.quiz-play-page:not(.admin-body) .qplay-qcard {
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+        padding: 0;
+        border-radius: 0;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+    html[data-theme][data-theme] body.quiz-play-page .qplay-qtext { font-size: 1.12rem; line-height: 1.5; margin-bottom: 16px; }
+
+    /* Compact options: one comfortable thumb row each, not a tall tile */
+    html[data-theme][data-theme] body.quiz-play-page:not(.admin-body) .qplay-options { gap: 10px; }
+    html[data-theme][data-theme] body.quiz-play-page:not(.admin-body) .qplay-option {
+        padding: 12px 14px;
+        min-height: 54px;
+        border-radius: 14px;
+        gap: 12px;
+        font-size: 0.98rem;
+        align-items: center;
+    }
+    html[data-theme][data-theme] body.quiz-play-page .qplay-opt-letter { margin-top: 0; }
+    html[data-theme][data-theme] body.quiz-play-page .qplay-opt-letter { width: 30px; height: 30px; min-width: 30px; font-size: 0.8rem; border-radius: 9px; }
+
+    /* Feedback: one compact note */
+    html[data-theme][data-theme] body.quiz-play-page .qplay-feedback { margin-top: 14px; border-radius: 14px; }
+    html[data-theme][data-theme] body.quiz-play-page .qplay-fb-verdict-row { padding: 10px 14px; }
+    html[data-theme][data-theme] body.quiz-play-page .qplay-fb-body { padding: 10px 14px 12px; }
+
+    /* Bottom bar: the number already sits above the question, so the bar is just actions. */
+    html[data-theme][data-theme] body.quiz-play-page .qplay-nav-pos { display: none; }
+    html[data-theme][data-theme] body.quiz-play-page .qplay-nav { justify-content: space-between; }
+    html[data-theme][data-theme] body.quiz-play-page .qplay-nav-btn--prev { padding: 0; width: 48px; min-width: 48px; }
+    html[data-theme][data-theme] body.quiz-play-page .qplay-nav-btn--prev span { display: none; }
+    html[data-theme][data-theme] body.quiz-play-page .qplay-nav-right { flex: 1; flex-wrap: nowrap; justify-content: flex-end; }
+    html[data-theme][data-theme] body.quiz-play-page .qplay-nav-btn--next { flex: 1; max-width: 260px; }
+
+    /* Exam top bar: the timer is what matters; the course name is already known. */
+    html[data-theme][data-theme] body.quiz-play-page .qplay-topbar--exam .qplay-tb-left .qplay-tb-course { display: none; }
+    html[data-theme][data-theme] body.quiz-play-page .qplay-tb-inner { height: 54px; }
+}

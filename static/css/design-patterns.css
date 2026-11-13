@@ -222,7 +222,7 @@
     height: 20px;
     padding: 0 6px;
     border-radius: 999px;
-    background: #ff6a00;
+    background: #cc4a00;
     color: #fff;
     font-size: 0.72rem;
     line-height: 20px;
@@ -396,6 +396,7 @@ html.fs-open, html.fs-open body { overflow: hidden; }
 /* ── Checkout trust cues: savings, tax-inclusive price, payment methods ──────────────── */
 .iq-save-badge {
     display: inline-flex;
+    align-self: flex-start; /* hug its text inside flex-column cards (pricing) */
     align-items: center;
     gap: 4px;
     padding: 3px 10px;

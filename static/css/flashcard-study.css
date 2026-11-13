@@ -151,7 +151,7 @@
 }
 .fc-mode-btn:hover { border-color: #ff6a00; color: #ff6a00; }
 .fc-mode-btn.is-active {
-    background: linear-gradient(135deg, #ff6a00 0%, #ff8c3a 100%);
+    background: linear-gradient(135deg, #cc4a00 0%, #ff8c3a 100%);
     border-color: transparent;
     color: #fff;
     box-shadow: 0 4px 14px rgba(255,106,0,0.28);
@@ -209,7 +209,7 @@
     flex-shrink: 0;
 }
 .fc-read-listen-btn:hover { border-color: #ff6a00; background: rgba(255,106,0,0.08); }
-.fc-read-listen-btn.is-speaking { background: #ff6a00; border-color: #ff6a00; color: #fff; }
+.fc-read-listen-btn.is-speaking { background: #cc4a00; border-color: #ff6a00; color: #fff; }
 
 .fc-read-q {
     font-size: 0.98rem;
@@ -263,7 +263,7 @@
 .fc-audio-btn--play {
     width: 52px;
     height: 52px;
-    background: linear-gradient(135deg, #ff6a00 0%, #ff8c3a 100%);
+    background: linear-gradient(135deg, #cc4a00 0%, #ff8c3a 100%);
     color: #fff;
     font-size: 1.1rem;
     box-shadow: 0 4px 14px rgba(255,106,0,0.32);
@@ -557,7 +557,7 @@
     height: 46px;
     border-radius: 999px;
     border: none;
-    background: linear-gradient(135deg, #ff6a00 0%, #ff8c3a 100%);
+    background: linear-gradient(135deg, #cc4a00 0%, #ff8c3a 100%);
     color: #fff;
     font-size: 0.9rem;
     font-weight: 800;
@@ -610,7 +610,7 @@
     justify-content: center;
     text-align: center;
     padding: 48px 28px;
-    background: linear-gradient(155deg, #ffa060 0%, #ff8040 55%, #ff6a00 100%);
+    background: linear-gradient(155deg, #ffa060 0%, #ff8040 55%, #cc4a00 100%);
     color: #fff;
     animation: fc-card-enter 0.35s cubic-bezier(0,0,0.2,1);
 }
@@ -733,7 +733,7 @@
     place-items: center;
     border-radius: 15px;
     border: 3px solid #fff;
-    background: linear-gradient(135deg, #ff3d81 0%, #a83bea 100%);
+    background: linear-gradient(135deg, #e11d6b 0%, #a83bea 100%);
     color: #fff;
     font-size: 1.05rem;
     box-shadow: 0 8px 18px -6px rgba(15, 23, 42, 0.35);
@@ -904,141 +904,13 @@
     .fc-nav-prev, .fc-nav-next { height: 46px; }
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   SMART REVIEW (flashcard-review.ftl) — deliberately its own card style,
-   not reused from .fc-card: the swipe-mode card shows question+answer
-   stacked and always visible, but review needs the answer hidden until
-   the learner deliberately reveals it (that's the whole point of
-   spaced-repetition self-testing).
-═══════════════════════════════════════════════════════════════════════ */
-
-.fcr-panel {
-    width: 100%;
-    max-width: 560px;
-    margin: 32px auto;
-}
-
-.fcr-card {
-    background: #fff;
-    border: 1.5px solid #f0e8e0;
-    border-radius: 20px;
-    padding: 32px 28px;
-    min-height: 220px;
-    cursor: pointer;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.05);
-}
-
-.fcr-topic-tag {
-    display: inline-block;
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: #ff6a00;
-    background: rgba(255,106,0,0.08);
-    border-radius: 999px;
-    padding: 3px 12px;
-    margin-bottom: 14px;
-}
-
-.fcr-q-label, .fcr-a-label {
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: #a8988a;
-    margin-bottom: 8px;
-}
-
-.fcr-q-text {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #1c1917;
-    line-height: 1.5;
-}
-
-.fcr-divider {
-    height: 1px;
-    background: #f0e8e0;
-    margin: 20px 0;
-}
-
-.fcr-a-text {
-    font-size: 1rem;
-    color: #44403c;
-    line-height: 1.6;
-    white-space: pre-wrap;
-}
-
-.fcr-reveal-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    margin-top: 18px;
-    padding: 13px 20px;
-    background: #ff6a00;
-    color: #fff;
-    font-weight: 700;
-    font-size: 0.95rem;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    text-decoration: none;
-}
-
-.fcr-reveal-btn:hover { background: #e65f00; color: #fff; }
-
-.fcr-rate-row {
-    display: flex;
-    gap: 12px;
-    margin-top: 18px;
-}
-
-.fcr-rate-btn {
-    flex: 1 1 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 13px 16px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    cursor: pointer;
-    border: 1.5px solid transparent;
-}
-
-.fcr-rate-btn--again {
-    background: #fff7ed;
-    border-color: #fed7aa;
-    color: #9a3412;
-}
-.fcr-rate-btn--again:hover { background: #ffedd5; }
-
-.fcr-rate-btn--good {
-    background: #f0fdf4;
-    border-color: #bbf7d0;
-    color: #15803d;
-}
-.fcr-rate-btn--good:hover { background: #dcfce7; }
-
-.fcr-done-inner {
-    text-align: center;
-    padding: 40px 24px;
-}
-
-@media (max-width: 576px) {
-    .fcr-card { padding: 24px 20px; min-height: 180px; }
-    .fcr-q-text { font-size: 1.05rem; }
-}
-
 /* ── "+N points" toast (flashcard study) ─────────────────────────────── */
 .fc-points-toast {
     position: fixed;
     left: 50%;
     bottom: 90px;
     transform: translate(-50%, 12px);
-    background: var(--primary-orange);
+    background: var(--primary-orange-solid);
     color: #fff;
     font-weight: 800;
     font-size: 0.92rem;
@@ -1055,8 +927,10 @@
     transform: translate(-50%, 0);
 }
 
-/* How to study (flashcard-study.ftl): a short guide to the modes and Smart Review. */
-.fc-howto-toggle { display: inline-flex; align-items: center; gap: 6px; margin: 10px auto 0; padding: 6px 12px; border-radius: 999px;
+/* How to study (flashcard-study.ftl): a short guide to the study modes. */
+/* Block-level flex + fit-content so the auto margins actually centre it under the mode switch
+   (inline-flex ignored them: it sat left-aligned, flush against the card's top edge). */
+.fc-howto-toggle { display: flex; width: fit-content; align-items: center; gap: 6px; margin: 0 auto 12px; padding: 6px 12px; border-radius: 999px;
     border: 1px solid rgba(15, 23, 42, 0.12); background: #fff; color: #475569; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
 .fc-howto-toggle:hover { color: #c2410c; border-color: rgba(255, 106, 0, 0.4); }
 .fc-howto { position: relative; margin: 10px 0 4px; padding: 14px 40px 12px 16px; border-radius: 16px; text-align: left;

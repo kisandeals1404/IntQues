@@ -22,7 +22,7 @@
 
 .game-btn--primary {
     background: var(--primary-gradient);
-    color: var(--white);
+    color: #fff;
     box-shadow: var(--shadow-orange-sm);
 }
 .game-btn--primary:hover:not(:disabled) { box-shadow: var(--shadow-orange-md); transform: translateY(-1px); }
@@ -218,7 +218,7 @@
     width: 36px; height: 36px;
     border-radius: 50%;
     background: var(--primary-gradient);
-    color: var(--white);
+    color: #fff;
     display: flex; align-items: center; justify-content: center;
     font-weight: 700;
     font-size: var(--text-sm);
@@ -252,7 +252,7 @@ body.game-play-page .btt-btn { display: none !important; }
 @media (max-width: 768px) { body.game-play-page { padding-bottom: env(safe-area-inset-bottom, 0px) !important; } }
 .gplay-wrap { max-width: 640px; margin: 0 auto; padding: 90px 20px 40px; }
 
-.gplay-topbar { display: flex; justify-content: space-between; align-items: center; color: var(--white); margin-bottom: 10px; gap: 12px; }
+.gplay-topbar { display: flex; justify-content: space-between; align-items: center; color: #fff; margin-bottom: 10px; gap: 12px; }
 .gplay-qpos { font-weight: 700; font-size: var(--text-lg); }
 .gplay-streak {
     font-weight: 800;
@@ -319,7 +319,7 @@ body.game-play-page .btt-btn { display: none !important; }
     font-size: var(--text-sm);
     flex-shrink: 0;
 }
-.gplay-option.selected .gplay-opt-letter { background: var(--primary-orange); color: var(--white); }
+.gplay-option.selected .gplay-opt-letter { background: var(--primary-orange-solid); color: #fff; }
 
 .gplay-waiting { text-align: center; color: var(--text-muted); margin: 20px 0 0; font-size: var(--text-sm); }
 
@@ -400,7 +400,7 @@ body.game-play-page .btt-btn { display: none !important; }
     width: 48px; height: 48px;
     border-radius: 50%;
     background: var(--primary-gradient);
-    color: var(--white);
+    color: #fff;
     display: flex; align-items: center; justify-content: center;
     font-weight: 700;
     margin-bottom: 6px;
@@ -415,7 +415,7 @@ body.game-play-page .btt-btn { display: none !important; }
     display: flex; align-items: flex-start; justify-content: center;
     padding-top: 6px;
     font-weight: 800;
-    color: var(--white);
+    color: #fff;
 }
 .gresult-podium-bar--1 { height: 92px; background: linear-gradient(180deg,#f59e0b,#d97706); }
 .gresult-podium-bar--2 { height: 66px; background: linear-gradient(180deg,#94a3b8,#64748b); }
@@ -521,7 +521,7 @@ body.game-play-page .btt-btn { display: none !important; }
     width: 40px; height: 40px; border-radius: 12px;
     background: #f1f5f9; color: #475569; font-weight: 900; font-size: 0.95rem;
 }
-.game-recent-rank--win { background: linear-gradient(135deg, #f59e0b, #ea580c); color: #fff; }
+.game-recent-rank--win { background: linear-gradient(135deg, #f59e0b, #b34100); color: #fff; }
 .game-recent-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .game-recent-course { font-weight: 800; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .game-recent-meta { font-size: 0.82rem; color: #64748b; }
@@ -536,6 +536,22 @@ body.game-play-page .btt-btn { display: none !important; }
 @media (max-width: 860px) { .game-how { grid-template-columns: 1fr; } }
 .game-how li { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 14px; background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(15, 23, 42, 0.06); color: #475569; font-size: 0.9rem; line-height: 1.45; }
 .game-how strong { color: #0f172a; }
-.game-how-num { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(120deg, #ff6a00, #ff3d81); color: #fff; font-weight: 900; font-size: 0.8rem; }
+.game-how-num { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(120deg, #cc4a00, #e11d6b); color: #fff; font-weight: 900; font-size: 0.8rem; }
 :root[data-theme="dark"] .game-how li { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.08); color: #cbd5e1; }
 :root[data-theme="dark"] .game-how strong { color: #f1f5f9; }
+
+/* ── Play: simple & spacious (2026-11-04) — thin progress line, compact bar, and on phones the
+   page padding is the only margin (no 32px card padding inside 20px page padding). ── */
+.gplay-progress-track { height: 3px; margin-bottom: 18px; }
+.gplay-qpos { font-size: var(--text-base); }
+.gplay-timer { font-variant-numeric: tabular-nums; }
+@media (max-width: 640px) {
+    .gplay-wrap { padding-left: 12px; padding-right: 12px; }
+    .gplay-question-card, .gplay-reveal-card { padding: 20px 16px; border-radius: 20px; }
+    .gplay-qtext { font-size: 1.15rem; margin-bottom: 16px; }
+    .gplay-options { gap: 10px; }
+    .gplay-option { padding: 12px 14px; }
+}
+/* The game stage is always dark, but --white flips to a dark surface in dark theme, which made the
+   question count and timer near-invisible there. Pin the bar's text to light. */
+.gplay-topbar { color: #f8fafc; }

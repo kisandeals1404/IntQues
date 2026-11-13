@@ -51,7 +51,7 @@
 .hp-content-side { text-align: left; }
 .hp-cta-group{ display:flex; gap:16px; margin-bottom:20px; justify-content: flex-start; }
 .hp-btn-shiny, .hp-btn-outline { border-radius:12px; padding:12px 18px; font-weight:700; font-size:0.95rem; display:inline-flex; align-items:center; gap:10px; text-decoration:none; }
-.hp-btn-shiny{ background:linear-gradient(135deg,var(--hp-primary),#ff7a1a); color:#fff; box-shadow:0 10px 25px rgba(255,106,0,0.18); position:relative; overflow:hidden; }
+.hp-btn-shiny{ background:linear-gradient(135deg,var(--hp-primary),#cc4a00); color:#fff; box-shadow:0 10px 25px rgba(255,106,0,0.18); position:relative; overflow:hidden; }
 .hp-btn-shiny::after{ content:""; position:absolute; left:-40%; top:0; width:40%; height:100%; background: linear-gradient(120deg, rgba(255,255,255,0.18), rgba(255,255,255,0.05)); transform: skewX(-20deg); transition: transform .9s ease; }
 .hp-btn-shiny:hover{ transform:translateY(-3px); box-shadow:0 14px 30px rgba(255,106,0,0.22); }
 .hp-btn-shiny:hover::after{ transform: translateX(220%) skewX(-20deg); }

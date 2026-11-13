@@ -65,7 +65,7 @@
     width: 56px;
     height: 56px;
     border-radius: 16px;
-    background: linear-gradient(135deg, #ff6a00, #ff8c3a);
+    background: linear-gradient(135deg, #cc4a00, #ff8c3a);
     color: #fff;
     display: flex;
     align-items: center;
@@ -97,7 +97,7 @@
     margin-left: auto;
     padding: 6px 18px;
     border-radius: 999px;
-    background: linear-gradient(135deg, #ff6a00, #ff8c3a);
+    background: linear-gradient(135deg, #cc4a00, #ff8c3a);
     color: #fff;
     font-size: 0.8rem;
     font-weight: 800;
@@ -555,62 +555,190 @@
     .fc-topic-num  { display: none; }
 }
 
-/* ── Smart Review banner (flashcard-topics.ftl) ─────────────────────────── */
-
-.fc-review-banner {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 18px 20px;
-    margin-bottom: 18px;
-    background: linear-gradient(135deg, #fff7ed 0%, #fff 100%);
-    border: 1.5px solid #ffd7ad;
+/* ── Course page: choose how to study (once, for the whole course) — 2026-11-04 ── */
+.fc-pick-section { padding-bottom: 0 !important; }
+.fc-pick {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    padding: 4px;
     border-radius: 16px;
-    text-decoration: none;
-    color: inherit;
-    transition: border-color 0.18s, box-shadow 0.18s, transform 0.15s;
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
 }
-
-.fc-review-banner:hover {
-    border-color: #ff6a00;
-    box-shadow: 0 4px 20px rgba(255, 106, 0, 0.12);
-    transform: translateY(-1px);
-    color: inherit;
-    text-decoration: none;
+.fc-pick-opt {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 10px 4px 8px;
+    border: 0; border-radius: 12px;
+    background: transparent;
+    color: #64748b;
+    font-size: 0.8rem; font-weight: 800;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
 }
+.fc-pick-opt i { font-size: 1.05rem; }
+.fc-pick-opt[aria-checked="true"] { background: linear-gradient(135deg, #cc4a00, #e11d6b); color: #fff; box-shadow: 0 6px 16px rgba(255, 106, 0, 0.25); }
+.fc-pick-hint { margin: 8px 2px 0; font-size: 0.8rem; color: #64748b; text-align: center; }
+html[data-theme="dark"] .fc-pick { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.1); }
+html[data-theme="dark"] .fc-pick-opt { color: #94a3b8; }
+html[data-theme="dark"] .fc-pick-opt[aria-checked="true"] { color: #fff; }
+html[data-theme="dark"] .fc-pick-hint { color: #94a3b8; }
 
-.fc-review-banner-icon {
-    flex-shrink: 0;
-    width: 46px;
-    height: 46px;
-    border-radius: 12px;
-    background: #ff6a00;
-    color: #fff;
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Topic summaries (2026-11-08) — a 3–4 minute read per topic, before its cards.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Topics list: the row opens the cards; the chip beside it opens the summary. */
+.fc-topic-row { position: relative; }
+.fc-topic-item--has-sum .fc-topic-body { padding-right: 112px; }
+.fc-topic-sum {
+    position: absolute;
+    top: 50%;
+    right: 56px;
+    transform: translateY(-50%);
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #b45309;
+    background: rgba(255, 106, 0, 0.08);
+    border: 1px solid rgba(255, 106, 0, 0.2);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s;
+}
+.fc-topic-sum:hover { background: rgba(255, 106, 0, 0.14); border-color: #ff6a00; color: #9a3412; text-decoration: none; }
+.fc-topic-sum:focus-visible { outline: 2px solid #ff6a00; outline-offset: 2px; }
+.fc-topic-sum-min::before { content: "\00b7"; margin: 0 4px 0 0; }
+@media (max-width: 575.98px) {
+    .fc-topic-item--has-sum .fc-topic-body { padding-right: 76px; }
+    .fc-topic-sum { right: 40px; padding: 6px 10px; }
+    .fc-topic-sum-word { display: none; }
+    .fc-topic-sum-min::before { content: none; }
+}
+html[data-theme="dark"] .fc-topic-sum { color: #fdba74; background: rgba(255, 138, 0, 0.1); border-color: rgba(255, 138, 0, 0.28); }
+html[data-theme="dark"] .fc-topic-sum:hover { color: #fed7aa; background: rgba(255, 138, 0, 0.16); }
+
+/* Summary page */
+.fc-sum-course {
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #a0785a;
+    margin-bottom: 2px;
+}
+.fc-hero .fc-sum-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; z-index: 2; }
+.fc-sum-progress span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #ff6a00, #ff8c3a); transition: width 0.1s linear; }
+
+.fc-sum-section { padding: 28px 0 72px; background: #f7f3ef; }
+.fc-sum {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 36px;
+    background: #fff;
+    border: 1px solid #f0e8e0;
+    border-radius: 16px;
+    color: #2b2118;
+    font-size: 1.02rem;
+    line-height: 1.75;
+}
+.fc-sum p { margin: 0 0 14px; }
+.fc-sum section.fc-sum-part { padding: 0; background: none; }
+.fc-sum-meta {
     display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    font-size: 0.82rem !important;
+    font-weight: 600;
+    color: #a0785a;
+    margin-bottom: 12px !important;
+}
+.fc-sum-meta span { display: inline-flex; align-items: center; gap: 6px; }
+.fc-sum-meta span + span::before { content: "·"; margin-right: 10px; }
+.fc-sum-lead { font-size: 1.1rem; line-height: 1.7; color: #1a1208; font-weight: 500; margin-bottom: 22px !important; }
+.fc-sum-part { margin-top: 26px; }
+.fc-sum-h { font-size: 1.12rem; font-weight: 800; color: #1a1208; margin: 0 0 8px; letter-spacing: -0.01em; line-height: 1.35; }
+.fc-sum code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.88em;
+    padding: 1px 6px;
+    border-radius: 6px;
+    background: #fff4ed;
+    color: #9a3412;
+    overflow-wrap: anywhere;
+}
+.fc-sum-box { margin-top: 28px; padding: 18px 20px; border-radius: 12px; border: 1px solid; }
+.fc-sum-box-title { display: flex; align-items: center; gap: 8px; font-size: 0.95rem; font-weight: 800; margin: 0 0 8px; }
+.fc-sum-box ul { margin: 0; padding-left: 20px; }
+.fc-sum-box li { margin: 6px 0; line-height: 1.6; }
+.fc-sum-box--key { background: #f0fdf4; border-color: #bbf7d0; }
+.fc-sum-box--key .fc-sum-box-title { color: #15803d; }
+.fc-sum-box--warn { background: #fffbeb; border-color: #fde68a; }
+.fc-sum-box--warn .fc-sum-box-title { color: #b45309; }
+
+.fc-sum-next {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #f0e8e0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+}
+.fc-sum-next-q { margin: 0 !important; font-weight: 700; color: #1a1208; }
+.fc-sum-cta {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.15rem;
-}
-
-.fc-review-banner-text { flex: 1 1 auto; min-width: 0; }
-
-.fc-review-banner-title {
+    gap: 8px;
+    min-height: 48px;
+    padding: 12px 26px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #cc4a00, #ff8c3a);
+    color: #fff;
     font-weight: 800;
-    color: #1c1917;
-    font-size: 0.98rem;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(255, 106, 0, 0.25);
+}
+.fc-sum-cta:hover { color: #fff; text-decoration: none; filter: brightness(1.05); }
+.fc-sum-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #b45309;
+    text-decoration: none;
+}
+.fc-sum-link:hover { color: #9a3412; text-decoration: underline; }
+
+@media (max-width: 575.98px) {
+    .fc-sum-section { padding: 16px 0 48px; }
+    .fc-sum { padding: 22px 18px; font-size: 1rem; border-radius: 14px; }
+    .fc-sum-lead { font-size: 1.04rem; }
+    .fc-sum-cta { width: 100%; }
 }
 
-.fc-review-banner-sub {
-    font-size: 0.82rem;
-    color: #78716c;
-    margin-top: 2px;
-}
-
-.fc-review-banner-arrow {
-    color: #ff6a00;
-    flex-shrink: 0;
-}
-
-@media (max-width: 576px) {
-    .fc-review-banner-sub { display: none; }
-}
+html[data-theme="dark"] .fc-sum-section { background: transparent; }
+html[data-theme="dark"] .fc-sum { background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.08); color: #cbd5e1; }
+html[data-theme="dark"] .fc-sum-lead,
+html[data-theme="dark"] .fc-sum-h,
+html[data-theme="dark"] .fc-sum-next-q { color: #f1f5f9; }
+html[data-theme="dark"] .fc-sum code { background: rgba(255, 138, 0, 0.12); color: #fdba74; }
+html[data-theme="dark"] .fc-sum-box--key { background: rgba(34, 197, 94, 0.08); border-color: rgba(34, 197, 94, 0.25); }
+html[data-theme="dark"] .fc-sum-box--key .fc-sum-box-title { color: #4ade80; }
+html[data-theme="dark"] .fc-sum-box--warn { background: rgba(245, 158, 11, 0.08); border-color: rgba(245, 158, 11, 0.25); }
+html[data-theme="dark"] .fc-sum-box--warn .fc-sum-box-title { color: #fbbf24; }
+html[data-theme="dark"] .fc-sum-next { border-color: rgba(255, 255, 255, 0.08); }
+html[data-theme="dark"] .fc-sum-course,
+html[data-theme="dark"] .fc-sum-meta { color: #94a3b8; }
+html[data-theme="dark"] .fc-sum-link { color: #fdba74; }

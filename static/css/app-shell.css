@@ -1,0 +1,844 @@
+/* =========================================================================================
+   App shell — density and layout for the signed-in product (2026-11-07).
+
+   The patterns most top-tier apps share (Linear, Notion, Coursera, LinkedIn Learning,
+   Duolingo web, Swiggy/Flipkart on phones):
+     • App pages are tools, not landing pages: compact left-aligned page headers, no marketing
+       footer, content starts above the fold.
+     • Wide screens get a main column + right rail instead of one stretched stack.
+     • Lists are scannable rows/cards where the whole card is the tap target; one primary
+       button per screen, not one gradient button per card.
+     • 8-pt spacing, one radius scale, hairline borders over heavy shadows.
+
+   Loaded LAST (after design-patterns.css) and mostly scoped to html[data-auth] so the public
+   marketing pages are untouched. Selectors match the specificity of the earlier layers
+   (premium.css / offerings.css use html[data-theme][data-theme] body:not(.admin-body)).
+========================================================================================= */
+
+:root {
+    --as-gap: 16px;
+    --as-radius: 16px;
+    --as-radius-sm: 12px;
+    --as-hair: rgba(15, 23, 42, 0.08);
+    --as-rail: 360px;
+}
+:root[data-theme="dark"] { --as-hair: rgba(255, 255, 255, 0.08); }
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --as-hair: rgba(255, 255, 255, 0.08); }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   1. Signed-in footer → one quiet legal line.
+   Inside the app the bottom tab bar (phones) and the navbar/menu (desktop) already carry every
+   link the marketing footer repeated; the dark 300–400px slab ended every page, often taller
+   than the content above it (an empty flashcard list, a short account page).
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-auth] body:not(.admin-body) .footer-section {
+    background: transparent;
+    padding: 20px 0 24px;
+    margin-bottom: 0;
+    border-top: 1px solid var(--as-hair);
+    color: var(--text-muted, #64748b);
+}
+html[data-auth] body:not(.admin-body) .footer-section::before,
+html[data-auth] body:not(.admin-body) .footer-section::after { display: none; }
+html[data-auth] body:not(.admin-body) .footer-section .footer-grid { display: none; }
+html[data-auth] body:not(.admin-body) .footer-section .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px 16px;
+    border-top: 0;
+    padding: 0;
+    margin: 0;
+}
+html[data-auth] body:not(.admin-body) .footer-section .footer-bottom p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--text-muted, #64748b);
+}
+html[data-auth] body:not(.admin-body) .footer-section .footer-bottom-links { gap: 16px; }
+html[data-auth] body:not(.admin-body) .footer-section .footer-bottom-links a {
+    font-size: 0.8rem;
+    color: var(--text-muted, #64748b);
+}
+html[data-auth] body:not(.admin-body) .footer-section .footer-bottom-links a:hover { color: var(--text-main, #0f172a); }
+@media (max-width: 767px) {
+    html[data-auth] body:not(.admin-body) .footer-section { padding: 16px 0 20px; text-align: center; }
+    html[data-auth] body:not(.admin-body) .footer-section .footer-bottom { justify-content: center; flex-direction: column; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   2. Dashboards (learner, business, trainer): compact left-aligned greeting; the learner home
+   also gets a main column + right rail.
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-auth] body:not(.admin-body) .an-root > .admin-hub-heading {
+    text-align: left;
+    margin: 0 0 20px;
+}
+html[data-auth] body:not(.admin-body) .an-root .admin-hub-title {
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    margin: 0 0 4px;
+}
+html[data-auth] body:not(.admin-body) .an-root .admin-hub-title::after { display: none; }
+html[data-auth] body:not(.admin-body) .an-root .admin-hub-subtitle {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* Phones/tablets: both columns flatten into one stack; assignments (a deadline) stays first. */
+.hm-layout { display: flex; flex-direction: column; }
+.hm-main, .hm-side { display: contents; }
+.hm-side > .an-asg { order: -1; }
+
+@media (min-width: 1200px) {
+    .hm-layout--split {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) var(--as-rail);
+        gap: 24px;
+        align-items: start;
+    }
+    .hm-layout--split > .hm-main { display: block; min-width: 0; }
+    .hm-layout--split > .hm-side {
+        display: flex;
+        flex-direction: column;
+        gap: var(--as-gap);
+        position: sticky;
+        top: 88px;
+    }
+    .hm-layout--split > .hm-side > * { margin: 0; }
+    .hm-layout--split > .hm-side > .an-asg { order: 0; }
+    /* In the rail the assignment pills stack instead of stretching in one long row. */
+    .hm-layout--split .hm-side .an-asg-stats { flex-wrap: wrap; }
+    /* Three stats in a 360px rail: tighter numerals. */
+    .hm-layout--split .hm-side .hm-stat strong { font-size: 1.35rem; }
+    /* The hero card had room for its streak/goal tiles only at full width. */
+    .hm-layout--split .an-next { margin-bottom: var(--as-gap); }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   3. Course catalogs (quizzes.ftl, flashcards.ftl — .of-list--compact).
+   The whole card is already a link (.of-card-link); a full-width gradient "Start Quiz" on every
+   card turned a list of 8 courses into 8 competing primary buttons. The action becomes a quiet
+   tonal pill, the card itself carries the tap, and the desktop grid fills the width.
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-theme][data-theme] body:not(.admin-body) .of-list--compact .of-btn-enroll,
+html:not([data-theme]) body:not(.admin-body) .of-list--compact .of-btn-enroll {
+    background: rgba(255, 106, 0, 0.10) !important;
+    color: #c2410c !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    min-height: 40px;
+    padding: 8px 16px !important;
+    font-size: 0.88rem !important;
+    font-weight: 700;
+    border-radius: 999px !important;
+    width: auto !important;
+    align-self: flex-start !important;
+    justify-content: center;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+/* Hover fill only where a real pointer hovers — on touch screens :hover sticks to the last tapped
+   card, so one card in the list kept a gradient button and the rest were tonal. */
+@media (hover: hover) and (pointer: fine) {
+html[data-theme][data-theme] body:not(.admin-body) .of-list--compact .of-card:hover .of-btn-enroll {
+    background: linear-gradient(135deg, #cc4a00, #e11d6b) !important;
+    color: #fff !important;
+}
+}
+html[data-theme][data-theme] body:not(.admin-body) .of-list--compact .of-btn-enroll:focus-visible {
+    background: linear-gradient(135deg, #cc4a00, #e11d6b) !important;
+    color: #fff !important;
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) .of-list--compact .of-btn-enroll {
+    background: rgba(255, 138, 61, 0.16) !important;
+    color: #fdba74 !important;
+}
+html[data-theme][data-theme] body:not(.admin-body) .of-list--compact .of-card {
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    border: 1px solid var(--as-hair);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+html[data-theme][data-theme] body:not(.admin-body) .of-list--compact .of-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 106, 0, 0.35);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+@media (min-width: 992px) {
+    /* Denser grid: 4 up on wide screens, shorter banner (it repeats the course name below it). */
+    html[data-theme][data-theme] body:not(.admin-body) .of-list--compact:not(.list-view) {
+        grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+        gap: 16px;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .of-list--compact:not(.list-view) .of-thumb {
+        aspect-ratio: auto;
+        height: 88px;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .of-list--compact:not(.list-view) .of-thumb-course-name { display: none; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-list--compact:not(.list-view) .of-thumb-grad i { font-size: 1.6rem; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-list--compact .of-card-body { padding: 14px 16px 16px; gap: 8px; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-list--compact .of-card-footer { border-top: 0; padding-top: 4px; }
+}
+
+@media (max-width: 767px) {
+    /* Phones: a tight list of tappable cards — name, meta, one line of description, a small action. */
+    html[data-theme][data-theme] body:not(.admin-body) .of-list--compact { gap: 10px; }
+    /* The card and its body both padded 14px — doubled whitespace around every course. */
+    html[data-theme][data-theme] body:not(.admin-body) .of-list--compact .of-card { padding: 0; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-list--compact .of-card-body { padding: 14px 16px; gap: 6px; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-list--compact :is(.qz-card-desc, .of-desc) {
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .of-list--compact .of-card-footer { padding-top: 4px; }
+}
+
+/* Catalog cards keep footers aligned by growing the text block, not by reserving two empty
+   lines under every one-line name (which left a hole under "java", "SQL", …). */
+html[data-theme][data-theme] body:not(.admin-body) .of-list--compact .of-card .of-name { min-height: 0; font-size: 1.05rem; }
+html[data-theme][data-theme] body:not(.admin-body) .of-list--compact :is(.qz-card-desc, .of-desc) { min-height: 0; }
+html[data-theme][data-theme] body:not(.admin-body) .of-list--compact .of-card-main { flex: 1 1 auto; display: flex; flex-direction: column; gap: 6px; }
+
+/* Section titles inside a list page are labels, not a second page title. */
+html[data-theme][data-theme] body:not(.admin-body) .of-section-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin: 4px 0 12px;
+}
+
+/* ── List-page headers (Quizzes / Flashcards): one compact band.
+   A 56px gradient tile + a 2.6rem gradient title + a gradient count pill = three loud elements
+   before the search box; app list pages (Play Store, Coursera, Udemy) lead with the search. */
+html[data-theme][data-theme] body:not(.admin-body) :is(.qz-list-hero, .fc-list-hero) { padding: 24px 0 20px; }
+html[data-theme][data-theme] body:not(.admin-body) :is(.qz-list-hero-inner, .fc-list-hero-inner) { gap: 14px; }
+html[data-theme][data-theme] body:not(.admin-body) :is(.qz-list-hero-icon, .fc-list-hero-icon) {
+    width: 44px; height: 44px; border-radius: 12px; font-size: 1.1rem; box-shadow: none;
+}
+html[data-theme][data-theme] body:not(.admin-body) :is(.qz-list-hero-title, .fc-list-hero-title) {
+    font-size: clamp(1.45rem, 2.4vw, 1.85rem);
+    margin: 0;
+}
+html[data-theme][data-theme] body:not(.admin-body) :is(.qz-list-hero-sub, .fc-list-hero-sub) { margin: 2px 0 0; font-size: 0.92rem; }
+html[data-theme][data-theme] body:not(.admin-body) :is(.qz-list-hero-badge, .fc-list-hero-badge) {
+    background: var(--white, #fff);
+    color: var(--text-main, #0f172a);
+    border: 1px solid var(--as-hair);
+    box-shadow: none;
+    font-weight: 700;
+}
+html[data-theme="dark"][data-theme] body:not(.admin-body) :is(.qz-list-hero-badge, .fc-list-hero-badge) { background: rgba(255, 255, 255, 0.06); color: #e2e8f0; }
+html[data-theme][data-theme] body:not(.admin-body) :is(.qz-list-hero, .fc-list-hero) .qz-hero-orb { display: none; }
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   4. My Account hub on phones → one grouped settings list (iOS/Android Settings, Swiggy/Zomato
+   "Account"). Seven separate floating cards (~90px each, 10px apart) became 64px rows inside a
+   single rounded group with hairline dividers; the status pill sits at the row's end.
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+    html[data-theme][data-theme] body:not(.admin-body) .ac-hub-grid {
+        gap: 0;
+        background: var(--white, #fff);
+        border: 1px solid var(--as-hair);
+        border-radius: var(--as-radius);
+        overflow: hidden;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .ac-hub-grid > .ac-hub-card {
+        display: grid;
+        grid-template-columns: 36px minmax(0, 1fr) auto;
+        align-items: center;
+        column-gap: 12px;
+        row-gap: 0;
+        min-height: 64px;
+        padding: 10px 14px;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+        transform: none;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .ac-hub-grid > .ac-hub-card + .ac-hub-card { border-top: 1px solid var(--as-hair); }
+    html[data-theme][data-theme] body:not(.admin-body) .ac-hub-grid > .ac-hub-card:active { background: rgba(15, 23, 42, 0.04); }
+    html[data-theme][data-theme] body:not(.admin-body) .ac-hub-grid .ac-hub-icon {
+        grid-row: auto;
+        width: 36px; height: 36px; border-radius: 10px; font-size: 0.95rem; margin: 0; box-shadow: none;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .ac-hub-grid .ac-hub-body { grid-column: 2; }
+    html[data-theme][data-theme] body:not(.admin-body) .ac-hub-grid .ac-hub-title { font-size: 0.95rem; margin: 0; }
+    html[data-theme][data-theme] body:not(.admin-body) .ac-hub-grid .ac-hub-desc {
+        margin: 1px 0 0;
+        font-size: 0.8rem;
+        line-height: 1.35;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .ac-hub-grid .ac-hub-foot {
+        grid-column: 3;
+        grid-row: 1;
+        margin: 0;
+        min-height: 0;
+        gap: 8px;
+        display: flex;
+        align-items: center;
+    }
+    /* The profile row's pill just repeated the name already shown in the header above. */
+    html[data-theme][data-theme] body:not(.admin-body) .ac-hub-grid .ac-hub-pill.slate { display: none; }
+    html[data-theme][data-theme] body:not(.admin-body) .ac-hub-grid .ac-hub-pill { font-size: 0.7rem; padding: 3px 8px; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   5. AI interview page: section padding + container padding + title margin stacked into a
+   108px empty band between the setup card and "AI credits". One 40px section gap instead.
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+body:not(.admin-body) .iv-start + .iv-packs,
+body:not(.admin-body) .iv-packs { margin-top: 0; padding-top: 8px; }
+body:not(.admin-body) .iv-packs .pr-section-title { margin-top: 24px; }
+body:not(.admin-body) .iv-history .pr-section-title { margin-top: 24px; }
+
+/* Account header on phones: avatar beside the name (profile row of WhatsApp/Gmail/Swiggy),
+   instead of a gradient cover + centred 80px avatar + full-width gradient button (~220px). */
+@media (max-width: 767px) {
+    html[data-theme][data-theme] body:not(.admin-body) .account-hero .account-hero-cover { display: none; }
+    html[data-theme][data-theme] body:not(.admin-body) .account-hero .account-hero-body { padding: 14px 16px; margin: 0; }
+    html[data-theme][data-theme] body:not(.admin-body) .account-hero .account-hero-grid {
+        display: grid;
+        grid-template-columns: 56px minmax(0, 1fr);
+        align-items: center;
+        gap: 6px 14px;
+        text-align: left;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .account-hero .account-avatar-wrap { margin: 0; }
+    html[data-theme][data-theme] body:not(.admin-body) .account-hero .account-avatar {
+        width: 56px; height: 56px; font-size: 1.15rem; border-width: 2px; margin: 0;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .account-hero .account-hero-copy { display: contents; }
+    html[data-theme][data-theme] body:not(.admin-body) .account-hero #account-title {
+        grid-column: 2; grid-row: 1; margin: 0 !important; font-size: 1.2rem; text-align: left;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .account-hero .account-actions {
+        grid-column: 1 / -1; margin: 8px 0 0; justify-content: stretch;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .account-hero .account-actions .btn { min-height: 44px; padding-top: 8px; padding-bottom: 8px; font-size: 0.92rem; flex: 1; }
+}
+
+/* Phone fixes found in review: the hub arrow is absolutely positioned by an earlier layer
+   (it sat on top of the "Get Pro"/"Pro" pills), and the avatar keeps a -32px pull-up meant for
+   the removed cover, so it poked out above the card. */
+@media (max-width: 767px) {
+    html[data-theme][data-theme] body:not(.admin-body) .ac-hub-grid .ac-hub-arrow { position: static; transform: none; }
+    html[data-theme][data-theme] body:not(.admin-body) .account-hero .account-avatar-wrap { margin: 0 !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .account-hero .account-avatar { width: 56px !important; height: 56px !important; font-size: 1.15rem !important; border-width: 2px; }
+}
+
+/* Section labels follow the theme (ux-overrides.css forced #0f172a !important — invisible in dark). */
+html[data-theme][data-theme] body:not(.admin-body) .of-section-title { color: var(--text-main, #0f172a) !important; }
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   6. Empty widgets: a slim inline note, not a 140px dashed box with a 56px icon.
+   A new organisation's dashboard showed ~12 of these stacked — two screens of "no data yet".
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+html[data-auth] body:not(.admin-body) .an-empty {
+    min-height: 0;
+    flex-direction: row;
+    justify-content: flex-start;
+    text-align: left;
+    gap: 12px;
+    padding: 12px 14px;
+    font-size: 0.84rem;
+    line-height: 1.45;
+    background: rgba(15, 23, 42, 0.025);
+    border: 1px dashed var(--as-hair);
+    border-radius: var(--as-radius-sm);
+}
+html[data-auth] body:not(.admin-body) .an-empty::before {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    font-size: 0.9rem;
+}
+html[data-theme="dark"][data-auth] body:not(.admin-body) .an-empty { background: rgba(255, 255, 255, 0.03); }
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   7. Page headers on phones (business + learner tool pages).
+   • "Back to Dashboard" was a full-width button under every business page title — the bottom
+     tab bar's Home does the same, one thumb-reach away (Android/iOS apps don't repeat it).
+   • Intro paragraphs ran 4–5 lines before the first control; two lines, then the page.
+   • The gradient accent bar under each title is decoration that costs a line on a 390px screen.
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+    html[data-auth] body:not(.admin-body) .dash-header-actions > a.dash-nav-link[href="/"] { display: none; }
+    html[data-auth] body:not(.admin-body) .dash-header-actions:has(> a.dash-nav-link[href="/"]:only-child) { display: none; }
+    html[data-auth] body:not(.admin-body) :is(.dash-subtitle, .admin-hub-subtitle) {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: 0.9rem;
+        line-height: 1.45;
+    }
+    html[data-auth] body:not(.admin-body) :is(.admin-hub-title, .dash-title, .admin-title)::after { display: none; }
+    html[data-auth] body:not(.admin-body) :is(.dash-title, .admin-title) { font-size: 1.5rem; margin-bottom: 4px; }
+}
+/* An empty state that carries a CTA ("Create your first assignment"): text beside the icon,
+   the button on its own line under the text. */
+html[data-auth] body:not(.admin-body) .an-empty { flex-wrap: wrap; }
+html[data-auth] body:not(.admin-body) .an-empty > div {
+    flex: 1 0 100%;
+    margin-top: 0 !important;
+    padding-left: 44px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   8. Guest home on phones — content priority. The page ran 14,000px (17 screens). On a phone:
+   • "Traditional learning vs IntQues" was the second us-vs-them comparison in a row (the AI
+     interview section's "Why not just ask ChatGPT?" table already makes the case) — hidden.
+   • The ChatGPT table: 92px tick columns and 10px cell padding on a 358px screen made every row
+     wrap to 4 lines; narrower ticks, tighter cells.
+   • The 3 AI-interview steps sit right above the 5-step "How it works": tighter rows.
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+    html:not([data-auth]) .cmp-section { display: none; }
+    html:not([data-auth]) .aiv-cmp { font-size: 0.84rem; }
+    html:not([data-auth]) .aiv-cmp :is(th, td) { padding: 8px 6px; }
+    html:not([data-auth]) .aiv-cmp td { width: 46px; padding-left: 2px; padding-right: 2px; }
+    html:not([data-auth]) .aiv-cmp thead th { font-size: 0.62rem; letter-spacing: 0.02em; line-height: 1.2; padding-left: 2px; padding-right: 2px; }
+    html:not([data-auth]) .aiv-cmp .aiv-maybe { font-size: 0.66rem; line-height: 1.2; display: inline-block; }
+    html:not([data-auth]) .aiv-why { padding: 14px 12px; }
+    html:not([data-auth]) .aiv-cmp tbody th { line-height: 1.35; }
+    html:not([data-auth]) .aiv-steps { gap: 8px; }
+    html:not([data-auth]) .aiv-steps li { padding: 12px 14px; }
+    html:not([data-auth]) .aiv-steps li p { font-size: 0.85rem; line-height: 1.45; margin: 2px 0 0; }
+}
+
+/* Guest footer on phones (957px): Learn / Company sat in half-width columns, so their chips
+   stacked one per line. Full-width rows let the chips flow; the brand blurb repeats the hero. */
+@media (max-width: 767px) {
+    html:not([data-auth]) body:not(.admin-body) .footer-grid > .footer-links { grid-column: 1 / -1; }
+    html:not([data-auth]) body:not(.admin-body) .footer-brand p { display: none; }
+    html:not([data-auth]) body:not(.admin-body) .footer-links a { min-height: 36px; padding: 0 12px; font-size: 0.82rem; }
+    html:not([data-auth]) body:not(.admin-body) .footer-grid { gap: 14px 12px; }
+}
+
+/* Flashcard course progress: a finished course shows "✓ Completed" in place of the percentage
+   and a green bar (flashcards.ftl JS adds .is-done); no separate pill above the button. */
+.fc-course-progress-wrap.is-done .fc-pct { color: #16a34a; display: inline-flex; align-items: center; gap: 4px; }
+.fc-course-progress-wrap.is-done .fc-course-progress-fill { background: linear-gradient(90deg, #16a34a, #22c55e); }
+html[data-theme="dark"] .fc-course-progress-wrap.is-done .fc-pct { color: #4ade80; }
+.of-list--compact .fc-course-progress-wrap { margin-bottom: 4px; }
+
+/* Phones: the course action spans the card (a 44px full-width thumb target, aligned card to card,
+   like list CTAs in Swiggy/Flipkart/Play Store) but stays TONAL — width gives reach, the quiet
+   fill keeps a list of courses from becoming a column of competing gradient bars. */
+@media (max-width: 767px) {
+    html[data-theme][data-theme] body:not(.admin-body) .of-list--compact .of-card-footer .of-btn-enroll {
+        width: 100% !important;
+        align-self: stretch !important;
+        min-height: 44px;
+        justify-content: center;
+    }
+}
+html[data-theme="dark"] .fc-course-progress-bar { background: rgba(255, 255, 255, 0.10); }
+
+/* "See full progress" is now a link to /progress (was a <button> toggling a folded section). */
+a.hm-more-btn { display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; }
+a.hm-more-btn:hover { text-decoration: none; }
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   Home v3 (2026-11-08) — a home that feels alive, not a list of identical grey rows:
+     • greeting with today's date + one contextual line (streak / goal done)
+     • a quick-action launcher (4 tonal tiles)
+     • "Your courses": progress cards with bars
+     • recommended as cards on wide screens; recent activity as one grouped timeline card
+     • a 7-day activity strip at the top of "Your progress"
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+.hm-date {
+    display: block; min-height: 1em; margin-bottom: 2px;
+    font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+/* Quick actions */
+.hm-quick { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 0 0 var(--as-gap); }
+.hm-qa {
+    --qa: #ff6a00; --qa-bg: rgba(255, 106, 0, .1);
+    display: flex; align-items: center; gap: 10px; min-width: 0;
+    padding: 12px; border-radius: var(--as-radius); text-decoration: none;
+    background: var(--white); border: 1px solid var(--border-color); color: var(--text-main);
+    transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.hm-qa:hover { color: var(--text-main); text-decoration: none; border-color: color-mix(in srgb, var(--qa) 40%, transparent); }
+@media (hover: hover) and (pointer: fine) {
+    .hm-qa:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -12px color-mix(in srgb, var(--qa) 60%, transparent); }
+}
+.hm-qa--qz { --qa: #0284c7; --qa-bg: rgba(14, 165, 233, .12); }
+.hm-qa--iv { --qa: #7c3aed; --qa-bg: rgba(124, 58, 237, .12); }
+.hm-qa--ct { --qa: #d97706; --qa-bg: rgba(245, 158, 11, .14); }
+.hm-qa-ico {
+    width: 40px; height: 40px; min-width: 40px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--qa-bg); color: var(--qa); font-size: 1rem;
+}
+.hm-qa-text { display: flex; flex-direction: column; min-width: 0; }
+.hm-qa-text strong { font-size: .88rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hm-qa-text span { font-size: .74rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Your courses */
+.hm-courses { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.hm-course {
+    display: flex; flex-direction: column; gap: 12px; padding: 14px;
+    background: var(--white); border: 1px solid var(--border-color); border-radius: var(--as-radius);
+    color: var(--text-main); text-decoration: none; transition: border-color .15s ease;
+}
+.hm-course:hover { color: var(--text-main); text-decoration: none; border-color: rgba(255, 106, 0, .35); }
+.hm-course-top { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.hm-course-ico {
+    width: 34px; height: 34px; min-width: 34px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: .85rem;
+    background: rgba(14, 165, 233, .12); color: #0284c7;
+}
+.hm-course-ico--fc { background: rgba(255, 106, 0, .1); color: #ff6a00; }
+.hm-course-name { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.hm-course-name strong { font-size: .9rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-transform: capitalize; }
+.hm-course-name span { font-size: .74rem; color: var(--text-muted); }
+.hm-course-pct { font-size: .95rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.hm-bar { display: block; height: 6px; border-radius: 99px; background: var(--surface-subtle, #f1f5f9); overflow: hidden; }
+.hm-bar > span { display: block; height: 100%; min-width: 4px; border-radius: inherit; background: linear-gradient(90deg, #ff8a00, #e52e71); }
+
+/* Recommended as cards on wide screens */
+@media (min-width: 768px) {
+    .hm-rows--cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .hm-rows--cards .hm-row { flex-direction: column; align-items: flex-start; gap: 10px; padding: 14px; min-height: 0; }
+    .hm-rows--cards .hm-row-text { width: 100%; }
+    .hm-rows--cards .hm-row-text span { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .hm-rows--cards .hm-row-go { display: none; }
+}
+
+/* Recent activity: one card, hairline dividers */
+.hm-rows--group {
+    gap: 0; background: var(--white); border: 1px solid var(--border-color);
+    border-radius: var(--as-radius); overflow: hidden;
+}
+.hm-rows--group .hm-row { border: 0; border-radius: 0; background: transparent; }
+.hm-rows--group .hm-row + .hm-row { border-top: 1px solid var(--as-hair); }
+.hm-rows--group a.hm-row:hover { background: var(--surface-subtle, #f8fafc); }
+
+/* 7-day strip */
+.hm-week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; list-style: none; margin: 0; padding: 0; }
+.hm-day { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.hm-day-dot {
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface-subtle, #f1f5f9); color: #fff; font-size: .7rem;
+}
+.hm-day--l1 .hm-day-dot { background: #fdba74; }
+.hm-day--l2 .hm-day-dot { background: #fb923c; }
+.hm-day--l3 .hm-day-dot { background: #f97316; }
+.hm-day--l4 .hm-day-dot { background: linear-gradient(135deg, #ff8a00, #e52e71); }
+.hm-day.is-today .hm-day-dot { box-shadow: 0 0 0 2px var(--white), 0 0 0 4px rgba(255, 106, 0, .45); }
+.hm-day-lbl { font-size: .68rem; font-weight: 700; color: var(--text-muted); }
+.hm-day.is-today .hm-day-lbl { color: #ff6a00; }
+.hm-week-sum { margin: 8px 0 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); font-size: .8rem; color: var(--text-muted); }
+.hm-week-sum strong { color: var(--text-main); }
+
+/* Phones: launcher becomes an icon grid (icon over label), courses stack. */
+@media (max-width: 600px) {
+    .hm-quick { gap: 6px; }
+    .hm-qa { flex-direction: column; gap: 6px; padding: 10px 4px; text-align: center; }
+    .hm-qa-text { align-items: center; width: 100%; }
+    .hm-qa-text strong { font-size: .74rem; font-weight: 700; }
+    .hm-qa-text span { display: none; }
+    .hm-courses { grid-template-columns: 1fr; gap: 8px; }
+    .hm-course { gap: 10px; padding: 12px; }
+}
+/* The 1200px rail layout leaves the main column ~700px: 4 tiles fit; between 600–900 use 2×2. */
+@media (min-width: 601px) and (max-width: 900px) {
+    .hm-quick { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Dark mode */
+:root[data-theme="dark"] .hm-day-dot:not(:has(i)) { background: rgba(255, 255, 255, .08); }
+:root[data-theme="dark"] .hm-bar { background: rgba(255, 255, 255, .10); }
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .hm-day-dot:not(:has(i)) { background: rgba(255, 255, 255, .08); }
+    :root:not([data-theme="light"]) .hm-bar { background: rgba(255, 255, 255, .10); }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────────────────
+   UX pass 3 (2026-11-08)
+   ───────────────────────────────────────────────────────────────────────────────────────── */
+/* Flashcards catalog: every card said "Flashcards" on a page titled Flashcards, and that tag
+   pushed the topic count off the card's edge (chip rows never wrap). Cards/topics are the info. */
+.of-list--compact .of-card-badges > :is(.fc-tag, .qz-tag-quiz) { display: none !important; }
+
+/* AI interviews: a returning learner (has history) gets a compact heading — the three-line pitch
+   pushed the setup form below the fold on every visit. */
+html[data-theme][data-theme] body:not(.admin-body) .iv-hero--compact { padding-top: 28px; padding-bottom: 4px; }
+.iv-hero--compact .pr-sub { display: none; }
+.iv-hero--compact .pr-title { margin-bottom: 0; }
+/* Sections on the interviews page sat ~120px apart; one rhythm instead. */
+.iv-page .iv-history, .iv-page .iv-packs { margin-top: 40px; padding-top: 0; }
+
+/* Contest cards: a quiet tonal button where there is nothing to do now (past / already joined). */
+.ct-btn--quiet { background: rgba(124, 58, 237, .1); color: #6d28d9; box-shadow: none; }
+.ct-card:hover .ct-btn--quiet { background: rgba(124, 58, 237, .16); color: #5b21b6; }
+:root[data-theme="dark"] .ct-btn--quiet { background: rgba(167, 139, 250, .14); color: #c4b5fd; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .ct-btn--quiet { background: rgba(167, 139, 250, .14); color: #c4b5fd; } }
+
+/* My Courses: the rows were cards inside a card (double border + gradient strip). The tab panel is
+   now just the list; rows centre their chevron and lift on hover like every other list row. */
+html[data-theme][data-theme] body:not(.admin-body) :is(#mycPanelFlashcards, #mycPanelQuiz).admin-card {
+    background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 0 !important;
+}
+:is(#mycPanelFlashcards, #mycPanelQuiz).admin-card::before,
+:is(#mycPanelFlashcards, #mycPanelQuiz).admin-card::after { display: none !important; }
+html[data-theme][data-theme] body:not(.admin-body) :is(#mycPanelFlashcards, #mycPanelQuiz) > .admin-card-body { padding: 0 !important; }
+:is(#mycPanelFlashcards, #mycPanelQuiz) .asn-qbank-item { align-items: center; background: var(--white); }
+:is(#mycPanelFlashcards, #mycPanelQuiz) .asn-qbank-item:hover { border-color: rgba(255, 106, 0, .35); }
+
+/* Assignments: "Awaiting results" is a state, not an action — a quiet label, not a button. */
+html[data-theme][data-theme] body:not(.admin-body) .asn-btn--pending {
+    background: transparent; border: 0; box-shadow: none; color: var(--text-muted); font-weight: 600; padding-inline: 8px;
+}
+html[data-theme][data-theme] body:not(.admin-body) .asn-btn--pending:hover { color: var(--text-main); background: transparent; }
+
+/* Leaderboard: 50 separate 70px cards made a 5,000px page with "How to earn points" lost at the
+   bottom. Now one grouped table-like card with 52px rows and hairline dividers (Strava/Duolingo
+   leagues); the top three keep their tint, "you" keeps its highlight. */
+html[data-theme][data-theme] body:not(.admin-body) .lbrd-list {
+    gap: 0; background: var(--white); border: 1px solid var(--border-color);
+    border-radius: var(--as-radius); overflow: hidden;
+}
+html[data-theme][data-theme] body:not(.admin-body) .lbrd-list > .lbrd-item {
+    border: 0; border-radius: 0; box-shadow: none; padding: 8px 16px; gap: 12px; min-height: 52px;
+}
+html[data-theme][data-theme] body:not(.admin-body) .lbrd-list > .lbrd-item + .lbrd-item { border-top: 1px solid var(--as-hair); }
+html[data-theme][data-theme] body:not(.admin-body) .lbrd-list > .lbrd-item--me {
+    box-shadow: inset 3px 0 0 var(--primary-orange, #ff6a00); background: rgba(255, 106, 0, .06);
+}
+.lbrd-list .lbrd-rank { width: 32px; height: 32px; font-size: .85rem; }
+.lbrd-list .lbrd-name { font-size: .92rem; }
+.lbrd-list .lbrd-meta { font-size: .76rem; margin-top: 0; }
+.lbrd-list .lbrd-points { font-size: 1rem; display: flex; align-items: baseline; gap: 4px; }
+.lbrd-list .lbrd-points span { display: inline; font-size: .68rem; }
+
+/* Account hub on tablets/desktop: Sign Out is a slim full-width row under the grid instead of a
+   card as big as Profile or Plans. The "My account" eyebrow repeated the page's purpose. */
+@media (min-width: 768px) {
+    html[data-theme][data-theme] body:not(.admin-body) .ac-hub-grid > .ac-hub-danger {
+        grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: center;
+        gap: 10px; min-height: 0; padding: 12px 16px; box-shadow: none; background: transparent;
+    }
+    html[data-theme][data-theme] body:not(.admin-body) .ac-hub-danger .ac-hub-icon { width: 28px; height: 28px; margin: 0; box-shadow: none; }
+    html[data-theme][data-theme] body:not(.admin-body) .ac-hub-danger .ac-hub-body { flex: 0 0 auto; }
+    html[data-theme][data-theme] body:not(.admin-body) .ac-hub-danger .ac-hub-title { margin: 0; color: #dc2626; }
+    html[data-theme][data-theme] body:not(.admin-body) .ac-hub-danger :is(.ac-hub-desc, .ac-hub-foot) { display: none; }
+}
+html[data-auth] .account-kicker { display: none; }
+
+/* Achievements: four badges a row on desktop (three in a narrow column left the grid 3+ screens
+   tall), compact page heading; locked badges recede so the earned ones read first. */
+@media (min-width: 1024px) {
+    html[data-auth] .ach-wrap { max-width: 1100px; }
+    html[data-auth] .ach-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+}
+html[data-auth] .ach-hero { padding-top: 24px; margin-bottom: 20px; }
+html[data-auth] .ach-card:not(.ach-card--earned) { opacity: .72; }
+html[data-auth] .ach-card:not(.ach-card--earned):hover { opacity: 1; }
+
+/* Empty states end in one clear next step (a button), not only an inline link in the sentence. */
+.cert-empty-cta {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; padding: 10px 18px;
+    border-radius: 999px; background: rgba(255, 106, 0, .1); color: #c2410c; font-weight: 700;
+    font-size: .88rem; text-decoration: none;
+}
+.cert-empty-cta:hover { background: rgba(255, 106, 0, .16); color: #9a3412; text-decoration: none; }
+:root[data-theme="dark"] .cert-empty-cta { color: #fdba74; }
+
+/* Recent games / interview history: one grouped card with hairline dividers (was separate boxes). */
+html[data-theme][data-theme] body:not(.admin-body) :is(.game-recent-list, .iv-hist-list) {
+    display: flex; flex-direction: column; gap: 0 !important; list-style: none; padding: 0;
+    background: var(--white); border: 1px solid var(--border-color); border-radius: var(--as-radius); overflow: hidden;
+}
+html[data-theme][data-theme] body:not(.admin-body) :is(.game-recent-list, .iv-hist-list) > li { margin: 0; }
+html[data-theme][data-theme] body:not(.admin-body) :is(.game-recent-list, .iv-hist-list) > li + li { border-top: 1px solid var(--as-hair); }
+html[data-theme][data-theme] body:not(.admin-body) :is(.game-recent-list, .iv-hist-list) .game-recent-row {
+    border: 0 !important; border-radius: 0 !important; box-shadow: none !important; background: transparent; margin: 0;
+}
+html[data-theme][data-theme] body:not(.admin-body) :is(.game-recent-list, .iv-hist-list) .game-recent-row:hover { background: var(--surface-subtle, #f8fafc); transform: none; }
+.game-code-input::placeholder { color: var(--text-muted); opacity: .45; }
+
+/* One page-title scale for every signed-in page. Titles ranged from 30px to 48px (My Assignments
+   was the biggest thing on its page), some with an accent bar, and pages started 40–110px below
+   the navbar. Now: 26–32px, 900 weight, no bar, the same gap under the navbar everywhere. */
+html[data-auth] body:not(.admin-body) :is(.dash-title, .quiz-page-hdr h1, .lbrd-hdr h1, .ach-title, .cert-title,
+    .game-title, .fc-list-hero-title, .qz-list-hero-title, .refer-title) {
+    font-size: clamp(1.6rem, 2.4vw, 2rem) !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+}
+html[data-auth] body:not(.admin-body) :is(.dash-title, .admin-title)::after { display: none !important; }
+@media (min-width: 992px) {
+    html[data-auth] body:not(.admin-body) :is(.ach-page, .cert-page) { padding-top: 76px; }
+}
+
+/* Search results: each group is one list card (hairline dividers), with a result count. */
+.search-section-count {
+    display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 20px; padding: 0 6px;
+    margin-left: 4px; border-radius: 999px; background: var(--surface-subtle, #f1f5f9); color: var(--text-muted);
+    font-size: .72rem; font-weight: 700;
+}
+html[data-theme][data-theme] body:not(.admin-body) .search-results-list {
+    display: flex; flex-direction: column; gap: 0 !important; background: var(--white);
+    border: 1px solid var(--border-color); border-radius: var(--as-radius); overflow: hidden;
+}
+html[data-theme][data-theme] body:not(.admin-body) .search-results-list > .search-result-item {
+    border: 0 !important; border-radius: 0 !important; box-shadow: none !important; margin: 0 !important;
+}
+html[data-theme][data-theme] body:not(.admin-body) .search-results-list > .search-result-item + .search-result-item { border-top: 1px solid var(--as-hair) !important; }
+html[data-theme][data-theme] body:not(.admin-body) .search-results-list > .search-result-item:hover { background: var(--surface-subtle, #f8fafc); transform: none; }
+
+/* Progress › Learning heatmap: grid + legend on the left, the three numbers it adds up to on the right. */
+.an-heat-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 24px 48px; }
+.an-heat-legend { display: flex; align-items: center; gap: 4px; margin-top: 6px; font-size: .72rem; color: var(--text-muted); }
+.an-heat-legend .an-heat-cell { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+.an-heat-legend .an-heat-cell:first-of-type { margin-left: 4px; }
+.an-heat-legend .an-heat-cell:last-of-type { margin-right: 4px; }
+.an-heat-stats { display: flex; flex-wrap: wrap; gap: 12px 36px; margin: 0; }
+.an-heat-stats dt { font-size: .74rem; font-weight: 600; color: var(--text-muted); }
+.an-heat-stats dd { margin: 2px 0 0; font-size: 1.6rem; font-weight: 900; line-height: 1.1; color: var(--text-main); }
+.an-heat-stats dd small { font-size: .78rem; font-weight: 600; color: var(--text-muted); }
+
+/* Refer: "0 friends joined" was a 130px card of its own; now a slim one-line stat. */
+html[data-auth] .refer-stat-card { display: flex; align-items: baseline; justify-content: center; gap: 10px; padding: 14px 18px; }
+html[data-auth] .refer-stat-card .refer-stat-num { font-size: 1.6rem; line-height: 1; }
+html[data-auth] .refer-stat-card .refer-stat-label { margin: 0; }
+@media (min-width: 992px) { html[data-auth] .refer-page { padding-top: 76px; } }
+
+/* Pricing: 72px top + 72px bottom on every section put ~150px of blank page between plans,
+   AI credits, the comparison table and the FAQ. One 64px rhythm instead. */
+html[data-theme][data-theme] body:not(.admin-body) main > section:is(.pr-plans, .pr-packs, .pr-compare, .pr-business, .pr-faq) {
+    padding-top: 32px; padding-bottom: 32px;
+}
+
+/* List search (layout/list-controls.ftl searchBox) on learner pages: field + a compact icon
+   button on one row. On phones the gradient "Search" button wrapped to a full-width bar under
+   the field — the loudest thing on My Courses / Recent Activity. Enter still submits. */
+html[data-auth] body:not(.admin-body) .dash-main .admin-search-form { display: flex; flex-wrap: nowrap; align-items: stretch; gap: 8px; }
+html[data-auth] body:not(.admin-body) .dash-main .admin-search-form .admin-search-input { flex: 1 1 auto; min-width: 0; }
+html[data-auth] body:not(.admin-body) .dash-main .admin-search-form button[type="submit"] {
+    flex: 0 0 44px; width: 44px; min-height: 44px; padding: 0; font-size: 0; justify-content: center;
+    background: rgba(255, 106, 0, .1) !important; color: #c2410c !important; box-shadow: none !important; border: 0;
+    border-radius: 12px;
+}
+html[data-auth] body:not(.admin-body) .dash-main .admin-search-form button[type="submit"] i { font-size: 1rem; margin: 0; }
+html[data-auth] body:not(.admin-body) .dash-main .admin-search-form .admin-search-clear { flex: 0 0 auto; }
+/* My Courses: the tab panel clipped its rows' right edge (overflow hidden). */
+html[data-theme][data-theme] body:not(.admin-body) :is(#mycPanelFlashcards, #mycPanelQuiz).admin-card { overflow: visible !important; }
+
+/* Phones: someone who has played before doesn't need the 3-step explainer (~250px) above the
+   Create/Join forms every time. */
+@media (max-width: 767px) { .game-how--returning { display: none !important; } }
+
+/* Activity timeline on phones: the date under the text had an extra 12px row gap per item. */
+@media (max-width: 480px) {
+    .an-timeline-item { row-gap: 0; }
+    .an-timeline-when { padding-left: 42px; margin-top: 1px; }
+}
+
+/* Achievements / Certificates / Refer started ~90px lower than every other signed-in page on
+   phones (their own 96px top padding on top of the shell's). */
+@media (max-width: 991px) {
+    html[data-auth] body:not(.admin-body) :is(.ach-page, .cert-page, .refer-page) { padding-top: 28px; }
+}
+
+/* Pricing on phones: the "Best value" plan leads the stack (it was third, two screens down). */
+@media (max-width: 767px) {
+    .pr-plans > .pr-card--best { order: -1; margin-top: 12px; }
+}
+
+/* Business dashboard: a card that only holds an empty state ("No practice session data yet.")
+   no longer stretches to its neighbour's chart height — two-thirds of the card was blank white. */
+.an-root--biz .an-grid { align-items: start; }
+.an-root--biz .an-grid > .an-card { min-height: 0; }
+
+/* Business › Quiz / Flashcard courses: once there are courses, the list (what you came for) comes
+   first and the "New Course" form follows it; with none yet, the form stays on top. */
+:has(> #ccFormCard):has(> #ccListCard .asn-qbank-item) { display: flex; flex-direction: column; }
+:has(> #ccFormCard):has(> #ccListCard .asn-qbank-item) > #ccFormCard { order: 1; margin-top: 28px; margin-bottom: 0 !important; }
+
+/* Quiz mode on phones: the exam's "50 questions · 30 min" was hidden but its box and "Exam at a
+   glance" label stayed — an empty grey box. The two numbers show on one compact row instead. */
+@media (max-width: 576px) {
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-card .qmode-exam-kpis { display: flex !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-exam-kpi-box .qmode-count-label { display: none; }
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-exam-kpi-box { padding: 8px 12px; }
+}
+
+/* Pro paywall: the "Best value" ribbon sat in the plan card's grid flow, so the selected plan's
+   name column was squeezed and its text no longer lined up with the 1-month card. */
+.qsub-plan { position: relative; }
+.qsub-plan > .qsub-plan-popular { position: absolute !important; top: -11px; left: 50%; transform: translateX(-50%); margin: 0 !important; white-space: nowrap; }
+.qsub-plan > .iq-save-badge { grid-column: 2 / -1; justify-self: start; }
+
+/* Resume builder: "Save" is the secondary action next to "Save & Preview" — outlined, not a
+   second gradient button (same as the app). */
+html[data-theme][data-theme] body:not(.admin-body) .rb-btn-save.rb-btn-save-only {
+    background: var(--white) !important; color: #c2410c !important; border: 1.5px solid rgba(255, 106, 0, .45) !important; box-shadow: none !important;
+}
+:root[data-theme="dark"] .rb-btn-save.rb-btn-save-only { background: transparent !important; color: #fdba74 !important; }
+
+/* Phones: a page-header back link ("← My Account", "← Dashboard") stretched into a full-width
+   white bar that looked like a primary button. It is a small text link now. */
+@media (max-width: 767px) {
+    html[data-auth] body:not(.admin-body) .dash-header-actions > a.dash-nav-link {
+        width: auto !important; flex: 0 0 auto; align-self: flex-start; background: transparent !important;
+        border: 0 !important; box-shadow: none !important; padding: 4px 0 !important; min-height: 0; color: var(--text-muted) !important; font-weight: 600;
+    }
+}
+@media (max-width: 767px) {
+    html[data-auth] body:not(.admin-body) .dash-header-actions:has(> a.dash-nav-link) { justify-content: flex-start; text-align: left; width: 100%; }
+}
+
+/* Course leaderboard: "← Back to java" is navigation, not the page's primary action. */
+html[data-theme][data-theme] body:not(.admin-body) a.qlb-back {
+    background: transparent !important; color: var(--text-muted) !important; box-shadow: none !important;
+    border: 0 !important; padding: 4px 0 !important; min-height: 0; font-weight: 600;
+}
+html[data-theme][data-theme] body:not(.admin-body) a.qlb-back:hover { color: var(--text-main) !important; }
+
+/* Phones: page-header actions (Question Bank · New AI Interview · New Assignment) were each a
+   full-width 46px row — 150px of buttons before the content. A compact wrapping row instead. */
+@media (max-width: 767px) {
+    html[data-auth] body:not(.admin-body) .dash-header-actions { display: flex !important; flex-wrap: wrap; gap: 8px; width: 100%; }
+    html[data-auth] body:not(.admin-body) .dash-header-actions > :is(a, button) {
+        width: auto !important; flex: 0 1 auto; min-height: 38px !important; padding: 0 14px; justify-content: center;
+    }
+}
+
+/* Home section links ("My courses", "View all") were 21px tall — a 40px tap area without moving the text. */
+.hm-list-link { display: inline-flex; align-items: center; min-height: 40px; padding: 0 4px; margin: -10px -4px; }
+
+/* Business dashboard KPI tiles on phones (3 a row): long labels ("Assignments", "Completion
+   Rate", "Certificates Issued") ran out of the tile. The decorative icon beside the number is dropped on phones so the label gets the tile width. */
+@media (max-width: 576px) {
+    html[data-theme][data-theme] body:not(.admin-body) .an-root--biz .an-kpi-grid .an-kpi-icon { display: none; }
+    html[data-theme][data-theme] body:not(.admin-body) .an-root--biz .an-kpi-grid .an-kpi-card { min-width: 0; display: block; }
+}
+
+/* Interview report on phones: the three delivery numbers (words/min · filler words · words per
+   answer) stacked into ~250px of boxes. They stay three across, compact. */
+@media (max-width: 420px) {
+    .iv-delivery-stats { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 6px !important; }
+    .iv-delivery-stats .iv-stat { padding: 10px 8px; min-width: 0; }
+    .iv-delivery-stats .iv-stat-val { font-size: 1.3rem; }
+    .iv-delivery-stats .iv-stat-label { font-size: .7rem; line-height: 1.3; }
+}

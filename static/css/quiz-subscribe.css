@@ -147,7 +147,7 @@
     top: -12px;
     left: 50%;
     transform: translateX(-50%);
-    background: #ff6a00;
+    background: #cc4a00;
     color: #fff;
     font-size: 0.72rem;
     font-weight: 800;
@@ -245,7 +245,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    background: var(--primary-gradient, linear-gradient(135deg, #ff6a00, #ff8c3a));
+    background: var(--primary-gradient, linear-gradient(135deg, #cc4a00, #cc4a00));
     color: #fff;
     font-size: 1rem;
     font-weight: 800;
@@ -338,7 +338,7 @@
 }
 
 .qsub-coupon-btn:hover:not(:disabled) {
-    background: #ff6a00;
+    background: #cc4a00;
     color: #fff;
 }
 

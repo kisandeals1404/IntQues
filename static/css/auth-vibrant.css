@@ -18,13 +18,13 @@ html[data-auth] {
     --vb-orange: #ff6a00;
     --vb-pink: #ff3d81;
     --vb-violet: #7c3aed;
-    --vb-grad: linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%);
+    --vb-grad: linear-gradient(120deg, #cc4a00 0%, #e11d6b 100%); /* AA with white text (was #ff6a00 → #ff3d81) */
     --vb-grad-3: linear-gradient(90deg, #ff6a00 0%, #ff3d81 55%, #7c3aed 100%);
 
     /* Re-pointing the brand tokens recolours every button / progress fill / icon chip that already
        uses them (assignments, certificates, share, game, quiz, resume, admin-btn-primary, …) in
        one move, instead of chasing each stylesheet's own copy. */
-    --primary-gradient: linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%);
+    --primary-gradient: var(--vb-grad);
     --shadow-orange-sm: 0 6px 18px rgba(255, 61, 129, 0.20), 0 4px 10px rgba(255, 106, 0, 0.18);
     --shadow-orange-md: 0 12px 30px rgba(255, 61, 129, 0.26), 0 6px 16px rgba(255, 106, 0, 0.22);
     --shadow-orange-lg: 0 18px 44px rgba(255, 61, 129, 0.30), 0 8px 22px rgba(255, 106, 0, 0.26);
@@ -223,7 +223,7 @@ html[data-auth] body:not(.admin-body) .an-next {
     background:
         linear-gradient(rgba(15, 23, 42, 0.10), rgba(15, 23, 42, 0.10)),
         radial-gradient(ellipse 60% 120% at 100% 0%, rgba(124, 58, 237, 0.55) 0%, transparent 60%),
-        linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%);
+        linear-gradient(120deg, #cc4a00 0%, #e11d6b 100%);
     border-color: transparent;
     box-shadow: 0 18px 44px rgba(255, 61, 129, 0.28), 0 8px 20px rgba(255, 106, 0, 0.22);
 }
@@ -337,8 +337,8 @@ html :is(.of-list-hero-title, .qz-list-hero-title, .fc-list-hero-title) {
     -webkit-text-fill-color: transparent;
 }
 html :is(.of-list-hero-sub, .qz-list-hero-sub, .fc-list-hero-sub) { color: #64748b; }
-html :is(.of-list-hero-icon, .qz-list-hero-icon, .fc-list-hero-icon) { background: linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%); box-shadow: 0 8px 22px rgba(255, 61, 129, 0.32); }
-html :is(.of-list-hero-badge, .qz-list-hero-badge, .fc-list-hero-badge) { background: linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%); box-shadow: 0 6px 16px rgba(255, 61, 129, 0.28); }
+html :is(.of-list-hero-icon, .qz-list-hero-icon, .fc-list-hero-icon) { background: linear-gradient(120deg, #cc4a00 0%, #e11d6b 100%); box-shadow: 0 8px 22px rgba(255, 61, 129, 0.32); }
+html :is(.of-list-hero-badge, .qz-list-hero-badge, .fc-list-hero-badge) { background: linear-gradient(120deg, #cc4a00 0%, #e11d6b 100%); box-shadow: 0 6px 16px rgba(255, 61, 129, 0.28); }
 html :is(.of-list-hero-orb, .qz-hero-orb, .fc-hero-orb) { background: rgba(124, 58, 237, 0.08); }
 html :is(.of-list-hero-orb--1, .qz-hero-orb--1, .fc-hero-orb--1) { background: rgba(255, 106, 0, 0.10); }
 

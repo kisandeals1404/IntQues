@@ -82,7 +82,7 @@
     border: none;
     cursor: pointer;
 }
-.cert-btn--primary { background: var(--primary-gradient); color: var(--white); }
+.cert-btn--primary { background: var(--primary-gradient); color: #fff; }
 .cert-btn--outline { background: var(--white); border: 1px solid var(--border-color); color: var(--text-body); }
 
 .cert-share-row { justify-content: center; margin-top: 12px; }

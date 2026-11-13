@@ -1,0 +1,146 @@
+/* Flashcard notes (Kindle-style): the note button + sheet on the study page, the note shown on a
+   card, and the /flashcards/notes notebook. Notes read as a sticky note: a warm amber tint. */
+
+:root {
+    --fcn-bg: #fffbeb;
+    --fcn-border: #fde68a;
+    --fcn-accent: #d97706;
+    --fcn-label: #92400e;
+    --fcn-text: #1f2937;
+}
+html[data-theme="dark"] {
+    --fcn-bg: rgba(251, 191, 36, 0.10);
+    --fcn-border: rgba(251, 191, 36, 0.28);
+    --fcn-accent: #fbbf24;
+    --fcn-label: #fcd34d;
+    --fcn-text: #f1f5f9;
+}
+
+/* ── Study page ─────────────────────────────────────────── */
+/* "Add note" rides on the card's ANSWER label (the label is a flex row). */
+.fc-note-add {
+    margin-left: auto; display: inline-flex; align-items: center; gap: 6px;
+    min-height: 32px; padding: 0 12px; border-radius: 999px;
+    border: 1px solid var(--fcn-border); background: var(--fcn-bg); color: var(--fcn-label);
+    font: inherit; font-size: 0.78rem; font-weight: 700; letter-spacing: 0; text-transform: none; cursor: pointer;
+    position: relative;
+}
+.fc-note-add::after { content: ""; position: absolute; inset: -6px -2px; } /* 44px tap target */
+.fc-note-add[hidden] { display: none; }
+.fc-note-add:hover { border-color: var(--fcn-accent); }
+.fc-note-add:focus-visible { outline: 2px solid var(--fcn-accent); outline-offset: 2px; }
+.fc-note-add--list { margin: 12px 0 0; }
+
+.fc-note-view, .fc-note-inline {
+    display: flex; flex-direction: column; gap: 4px; width: 100%;
+    margin-top: 14px; padding: 10px 14px;
+    background: var(--fcn-bg); border: 1px solid var(--fcn-border); border-left: 4px solid var(--fcn-accent);
+    border-radius: 12px; text-align: left; font: inherit; color: var(--fcn-text); cursor: pointer;
+}
+.fc-note-view[hidden] { display: none; }
+.fc-note-view:focus-visible, .fc-note-inline:focus-visible { outline: 2px solid var(--fcn-accent); outline-offset: 2px; }
+.fc-note-label {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.72rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fcn-label);
+}
+.fc-note-text { font-size: 0.95rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* Note sheet */
+.fc-note-quote {
+    margin: 4px 0 12px; padding-left: 12px; border-left: 3px solid #e2e8f0;
+    color: #64748b; font-size: 0.9rem; line-height: 1.45;
+    display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+html[data-theme="dark"] .fc-note-quote { border-left-color: rgba(255, 255, 255, 0.14); color: #94a3b8; }
+.fc-note-input {
+    width: 100%; min-height: 120px; resize: vertical;
+    padding: 12px 14px; border-radius: 12px; border: 1px solid #cbd5e1;
+    background: #fff; color: #0f172a; font: inherit; font-size: 1rem; line-height: 1.5;
+}
+.fc-note-input:focus { outline: none; border-color: var(--fcn-accent); box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.18); }
+html[data-theme="dark"] .fc-note-input { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.16); color: #f1f5f9; }
+.fc-note-foot { display: flex; justify-content: space-between; gap: 12px; min-height: 20px; margin-top: 6px; font-size: 0.8rem; }
+.fc-note-count { margin-left: auto; color: #64748b; }
+.fc-note-error { color: #dc2626; font-weight: 600; }
+html[data-theme="dark"] .fc-note-error { color: #f87171; }
+.fc-note-actions { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+.fc-note-all { color: #64748b; font-size: 0.88rem; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+html[data-theme="dark"] .fc-note-all, html[data-theme="dark"] .fc-note-count { color: #94a3b8; }
+.fc-note-delete {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 4px;
+    border: 0; background: transparent; color: #dc2626; font: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+}
+html[data-theme="dark"] .fc-note-delete { color: #f87171; }
+.fc-note-save {
+    margin-left: auto; min-height: 44px; padding: 0 22px; border: 0; border-radius: 999px;
+    background: #cc4a00; color: #fff; font: inherit; font-weight: 700; cursor: pointer;
+}
+.fc-note-save:hover { background: #b34100; }
+.fc-note-save:disabled, .fc-note-delete:disabled { opacity: 0.6; cursor: default; }
+
+/* ── /flashcards/notes ──────────────────────────────────── */
+.fcn-tools { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.fcn-search {
+    flex: 1; display: flex; align-items: center; gap: 10px;
+    min-height: 44px; padding: 0 14px; border-radius: 12px;
+    border: 1px solid var(--border-color, #e2e8f0); background: var(--white, #fff); color: var(--text-muted);
+}
+.fcn-search input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; color: var(--text-main); font: inherit; }
+.fcn-search:focus-within { border-color: var(--fcn-accent); }
+.fcn-count { font-size: 0.85rem; color: var(--text-muted); white-space: nowrap; }
+
+.fcn-list { display: flex; flex-direction: column; gap: 12px; }
+.fcn-item {
+    padding: 16px 18px; border-radius: 16px;
+    background: var(--white, #fff); border: 1px solid var(--border-color, #e2e8f0);
+}
+.fcn-item[hidden] { display: none; }
+.fcn-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 0.75rem; color: var(--text-subtle, #64748b); }
+.fcn-course { font-weight: 700; color: var(--text-muted); letter-spacing: 0.03em; }
+.fcn-topic { margin-top: 2px; font-size: 0.8rem; color: var(--text-subtle, #64748b); overflow-wrap: anywhere; }
+.fcn-date::before { content: "·"; margin-right: 10px; }
+.fcn-card {
+    margin: 10px 0 0; padding-left: 12px; border-left: 3px solid var(--border-color, #e2e8f0);
+    color: var(--text-muted); font-size: 0.92rem; line-height: 1.5; overflow-wrap: anywhere;
+}
+.fcn-answer {
+    margin-top: 8px; padding: 10px 12px; border-radius: 10px;
+    background: rgba(5, 150, 105, 0.08); color: var(--text-body); font-size: 0.92rem; line-height: 1.5;
+    white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.fcn-answer[hidden] { display: none; }
+.fcn-text {
+    margin: 12px 0 0; padding: 10px 14px; border-radius: 12px;
+    background: var(--fcn-bg); border-left: 4px solid var(--fcn-accent); color: var(--fcn-text);
+    font-size: 1rem; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.fcn-text[hidden], .fcn-edit[hidden], .fcn-actions[hidden] { display: none; }
+.fcn-edit { margin-top: 12px; }
+.fcn-edit-actions { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.fcn-edit-actions .fc-note-error { margin-right: auto; font-size: 0.85rem; }
+.fcn-cancel {
+    margin-left: auto; min-height: 44px; padding: 0 14px; border: 0; background: transparent;
+    color: var(--text-muted); font: inherit; font-weight: 600; cursor: pointer;
+}
+.fcn-edit-actions .fc-note-save { margin-left: 0; }
+.fcn-actions { flex-wrap: wrap; }
+.fcn-btn {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 10px;
+    border: 0; background: transparent; color: var(--text-muted);
+    font: inherit; font-size: 0.85rem; font-weight: 600; text-decoration: none; cursor: pointer;
+}
+.fcn-btn:hover { color: var(--text-main); }
+.fcn-none { text-align: center; color: var(--text-muted); padding: 24px 0; }
+.fcn-undo {
+    margin-left: 12px; padding: 0; border: 0; background: transparent;
+    color: #fdba74; font: inherit; font-weight: 800; text-decoration: underline; cursor: pointer;
+}
+html[data-theme="dark"] .fcn-undo { color: #c2410c; }
+
+@media (max-width: 575.98px) {
+    .fcn-item { padding: 14px; }
+    /* One row on phones: Edit / Open / Delete become icon buttons (labels stay for screen readers). */
+    .fcn-actions { flex-wrap: nowrap; gap: 4px; }
+    .fcn-actions .fcn-lbl { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .fcn-actions .fcn-btn, .fcn-actions .qsaved-remove { min-width: 44px; min-height: 44px; justify-content: center; padding: 0; font-size: 1rem; }
+}

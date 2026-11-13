@@ -3,7 +3,7 @@
    Bold purple→orange gradients, big type; both themes; phone-first.
    ========================================================================================= */
 :root {
-    --ct-grad: linear-gradient(135deg, #7c3aed 0%, #db2777 55%, #ff6a00 100%);
+    --ct-grad: linear-gradient(135deg, #7c3aed 0%, #db2777 55%, #cc4a00 100%);
     --ct-ink: #0f172a;
     --ct-body: #475569;
     --ct-muted: #64748b;
@@ -207,4 +207,39 @@ body.ct-playing { padding-bottom: 0 !important; }
 @media (prefers-reduced-motion: reduce) {
     .ct-live-dot { animation: none; }
     .ct-card, .ct-btn { transition: none; }
+}
+
+/* ── Play: simple & spacious (2026-11-04) ──
+   Same pattern as quiz play: a quiet sticky bar (count · timer · Submit) with progress as a thin
+   line under it, the question directly on the page, and Previous/Next in a thumb-reach bottom bar
+   on phones. The gradient is kept for the one primary action only. */
+body.ct-playing .ct-play-bar {
+    border-radius: 0;
+    margin: 0 -16px;
+    padding: 10px 16px;
+    background: var(--ct-card);
+    color: var(--ct-ink);
+    border-bottom: 1px solid var(--ct-line);
+    box-shadow: none;
+}
+body.ct-playing .ct-play-bar b { font-size: 0.92rem; font-weight: 800; }
+body.ct-playing .ct-timer { background: rgba(124, 58, 237, 0.08); color: var(--ct-ink); font-size: 1.1rem; }
+body.ct-playing .ct-timer.is-low { background: #dc2626; color: #fff; }
+.ct-submit-top { min-height: 36px; padding: 0 14px; background: transparent; color: #be185d; border: 1.5px solid rgba(219, 39, 119, 0.35); }
+body.ct-playing .ct-progress { height: 3px; border-radius: 0; margin: 0 -16px 16px; }
+body.ct-playing .ct-q-num { font-size: 0.72rem; }
+body.ct-playing .ct-opt { align-items: center; }
+@media (max-width: 640px) {
+    body.ct-playing .ct-q { padding: 0; border: 0; background: transparent; border-radius: 0; }
+    body.ct-playing .ct-q-text { font-size: 1.1rem; margin-bottom: 14px; }
+    body.ct-playing .ct-opt { padding: 12px 14px; }
+    body.ct-playing #ctExam { padding-bottom: 84px; }
+    body.ct-playing .ct-nav {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; margin: 0;
+        padding: 10px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+        background: var(--ct-card); border-top: 1px solid var(--ct-line);
+    }
+    body.ct-playing .ct-nav #ctPrev { flex: 0 0 52px; padding: 0; font-size: 0; }
+    body.ct-playing .ct-nav #ctPrev i { font-size: 1rem; }
+    body.ct-playing .ct-nav .ct-btn { min-height: 50px; }
 }

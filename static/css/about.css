@@ -99,7 +99,7 @@
     align-items: center;
     gap: 8px;
     padding: 14px 28px;
-    background: var(--primary-gradient, linear-gradient(135deg, #ff6a00, #ff8c3a));
+    background: var(--primary-gradient, linear-gradient(135deg, #cc4a00, #ff8c3a));
     color: #fff;
     border-radius: var(--radius-card);
     font-weight: 800;
@@ -306,7 +306,7 @@
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #ff6a00, #ff8c3a);
+    background: linear-gradient(135deg, #cc4a00, #cc4a00);
     color: #fff;
     font-size: 1rem;
     font-weight: 900;

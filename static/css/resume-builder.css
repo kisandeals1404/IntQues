@@ -116,7 +116,7 @@
 
 .rb-btn-save {
     display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-    background: var(--primary-gradient, linear-gradient(135deg, #ff6a00, #ff8c3a)); color: #fff;
+    background: var(--primary-gradient, linear-gradient(135deg, #cc4a00, #ff8c3a)); color: #fff;
     border: none; border-radius: 10px;
     padding: 9px 20px; min-height: 44px; font-size: 0.88rem; font-weight: 700;
     cursor: pointer; transition: box-shadow 180ms ease, transform 120ms ease;

@@ -98,7 +98,7 @@
     align-items: center;
     justify-content: center;
     background: var(--primary-gradient);
-    color: var(--white);
+    color: #fff;
     font-size: 2.4rem;
     font-weight: 800;
     /* White ring to lift avatar off the cover band */
@@ -353,7 +353,7 @@
     font-weight: 700;
     font-size: 0.92rem;
     color: #ffffff;
-    background: var(--primary-gradient, linear-gradient(135deg, #ff6a00, #ff8c3a));
+    background: var(--primary-gradient, linear-gradient(135deg, #cc4a00, #ff8c3a));
     box-shadow: var(--shadow-orange-sm, 0 6px 18px rgba(255, 106, 0, 0.18));
     text-decoration: none;
     min-height: 44px;
@@ -941,7 +941,7 @@
 }
 
 .ac-sub-btn-primary {
-    background: var(--primary-gradient, linear-gradient(135deg, #ff6a00, #ff8c3a));
+    background: var(--primary-gradient, linear-gradient(135deg, #cc4a00, #ff8c3a));
     color: #fff;
     box-shadow: var(--shadow-orange-sm, 0 6px 18px rgba(255,106,0,0.18));
 }
@@ -1071,7 +1071,7 @@
 .pw-card-top > div { flex: 1; min-width: 0; }
 .pw-icon { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 14px; color: #fff; font-size: 1.1rem; }
 .pw-icon--pro { background: linear-gradient(135deg, #7c3aed, #c026d3); }
-.pw-icon--credits { background: linear-gradient(135deg, #ff6a00, #ff3d81); }
+.pw-icon--credits { background: linear-gradient(135deg, #cc4a00, #e11d6b); }
 .pw-card-title { margin: 0; font-size: 1.15rem; font-weight: 900; color: #0f172a; }
 .pw-card-kicker { margin: 2px 0 0; color: #64748b; font-size: 0.82rem; line-height: 1.4; }
 .pw-big { margin: 6px 0 0; font-size: 1.35rem; font-weight: 800; color: #0f172a; }

@@ -141,7 +141,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%);
+    background: linear-gradient(120deg, #cc4a00 0%, #e11d6b 100%);
     border: none;
     color: #ffffff;
     box-shadow: 0 8px 22px rgba(255, 61, 129, 0.28);
@@ -216,7 +216,7 @@
     /* Matches the homepage hero's CTA gradient (.hero-v3-btn-primary) rather than the
        milder site-wide --primary-gradient — this is the page's one conversion moment,
        same "confident, colorful" treatment as home's. */
-    background: linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%);
+    background: linear-gradient(120deg, #cc4a00 0%, #e11d6b 100%);
     color: #fff;
     box-shadow: 0 10px 28px rgba(255, 61, 129, 0.26), 0 6px 16px rgba(255, 106, 0, 0.22);
     border: none;
@@ -427,7 +427,7 @@
     height: 42px;
     margin: 0 auto 16px;
     border-radius: 50%;
-    background: var(--primary-gradient, linear-gradient(135deg, #ff6a00, #ff8c3a));
+    background: var(--primary-gradient, linear-gradient(135deg, #cc4a00, #cc4a00));
     color: #fff;
     font-weight: 900;
     font-size: 1.1rem;
@@ -595,7 +595,7 @@
     top: -13px;
     left: 50%;
     transform: translateX(-50%);
-    background: #ff6a00;
+    background: #cc4a00;
     color: #fff;
     font-size: 0.7rem;
     font-weight: 800;
@@ -685,7 +685,7 @@
 }
 
 .bz-plan-btn--primary {
-    background: var(--primary-gradient, linear-gradient(135deg, #ff6a00, #ff8c3a));
+    background: var(--primary-gradient, linear-gradient(135deg, #cc4a00, #ff8c3a));
     color: #fff;
     box-shadow: 0 6px 20px rgba(255,106,0,0.28);
 }
@@ -801,7 +801,7 @@
 }
 
 .bz-coupon-btn:hover:not(:disabled) {
-    background: #ff6a00;
+    background: #cc4a00;
     color: #fff;
 }
 
@@ -876,7 +876,7 @@
    ========================================================================================= */
 
 :root {
-    --bz-grad: linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%);
+    --bz-grad: linear-gradient(120deg, #cc4a00 0%, #e11d6b 100%);
     --bz-grad-3: linear-gradient(90deg, #ff6a00 0%, #ff3d81 55%, #7c3aed 100%);
     --bz-card-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 14px 32px rgba(124, 58, 237, 0.07), 0 6px 14px rgba(255, 106, 0, 0.05);
     --bz-card-shadow-hover: 0 2px 4px rgba(15, 23, 42, 0.05), 0 24px 48px rgba(255, 61, 129, 0.14), 0 10px 22px rgba(124, 58, 237, 0.10);

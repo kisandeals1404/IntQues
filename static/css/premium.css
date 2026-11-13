@@ -27,7 +27,7 @@
     --pm-orange: #ff6a00;
     --pm-pink: #ff3d81;
     --pm-violet: #7c3aed;
-    --pm-grad: linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%);
+    --pm-grad: linear-gradient(120deg, #cc4a00 0%, #e11d6b 100%); /* AA with white text (was #ff6a00 → #ff3d81) */
     --pm-grad-3: linear-gradient(100deg, #ff6a00 0%, #ff3d81 52%, #7c3aed 100%);
     --pm-grad-soft: linear-gradient(135deg, rgba(255, 106, 0, 0.10) 0%, rgba(255, 61, 129, 0.07) 50%, rgba(124, 58, 237, 0.08) 100%);
 
@@ -141,7 +141,7 @@ html[data-theme][data-theme] body:not(.admin-body) :where(
     .admin-card, .dash-card, .an-card, .qprof-card, .rb-section, .auth-shell, .otp-card,
     .account-shell .card, .account-page-main .card, .ac-sub-card, .account-hero,
     .qresult-hero, .qmode-card, .gresult-hero, .game-lobby-code-card, .refer-code-card,
-    .qsub-coupon-wrap, .verify-card, .qplay-qcard, .share-wrap:not(.verify-card) > .share-card
+    .verify-card, .qplay-qcard, .share-wrap:not(.verify-card) > .share-card
 ) {
     border: 1px solid var(--pm-line);
     box-shadow: var(--pm-shadow);
@@ -728,7 +728,7 @@ html[data-theme][data-theme] body:not(.admin-body) .fc-card {
 html[data-theme][data-theme] body:not(.admin-body) .fc-card-top {
     background:
         radial-gradient(ellipse 60% 140% at 100% 0%, rgba(255, 255, 255, 0.24) 0%, transparent 60%),
-        linear-gradient(118deg, #ff6a00 0%, #ff3d81 62%, #a83bea 100%);
+        linear-gradient(118deg, #cc4a00 0%, #e11d6b 62%, #a83bea 100%);
 }
 
 /* Read / Swipe / Listen: one glass track with the active mode as a gradient pill */
@@ -750,14 +750,14 @@ html[data-theme][data-theme] body:not(.admin-body) .fc-mode-toggle .fc-mode-btn:
     border-color: transparent;
     box-shadow: none;
 }
-html[data-theme][data-theme] body:not(.admin-body) :where(.fc-mode-btn.is-active, .fc-nav-next, .fcr-reveal-btn:not([style*="transparent"])) {
+html[data-theme][data-theme] body:not(.admin-body) :where(.fc-mode-btn.is-active, .fc-nav-next) {
     background: var(--pm-grad);
     border-color: transparent;
     color: #fff;
     box-shadow: var(--pm-glow-btn), inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 @media (hover: hover) {
-    html[data-theme][data-theme] body:not(.admin-body) :where(.fc-nav-next, .fcr-reveal-btn:not([style*="transparent"])):hover {
+    html[data-theme][data-theme] body:not(.admin-body) :where(.fc-nav-next):hover {
         opacity: 1;
         filter: saturate(1.1);
         transform: translateY(-2px);
@@ -818,32 +818,7 @@ html[data-theme][data-theme] body:not(.admin-body) .fc-read-card.is-current {
     box-shadow: var(--pm-shadow-hover);
 }
 
-/* Smart Review: floating glass card with a gradient top edge */
-html[data-theme][data-theme] body:not(.admin-body) .fcr-card {
-    background: var(--pm-grad-3) top / 100% 4px no-repeat, var(--pm-glass-strong);
-    border: 1px solid var(--pm-line);
-    border-radius: var(--pm-r-xl);
-    box-shadow: var(--pm-shadow);
-}
-html[data-theme][data-theme] body:not(.admin-body) .fcr-q-text { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.015em; }
-html[data-theme][data-theme] body:not(.admin-body) .fcr-divider { background: linear-gradient(90deg, rgba(255, 106, 0, 0.35), rgba(124, 58, 237, 0.25), transparent); }
-html[data-theme][data-theme] body:not(.admin-body) :where(.fcr-reveal-btn, .fcr-rate-btn) { border-radius: var(--pm-r-md); }
-html[data-theme][data-theme] body:not(.admin-body) .fcr-rate-btn { box-shadow: var(--pm-shadow-sm); transition: transform 180ms ease, box-shadow 200ms ease; }
-@media (hover: hover) {
-    html[data-theme][data-theme] body:not(.admin-body) .fcr-rate-btn:hover { transform: translateY(-2px); box-shadow: var(--pm-shadow-hover); }
-}
-/* Review finished panel sits on glass instead of floating text */
-html[data-theme][data-theme] body:not(.admin-body) .fcr-done-inner {
-    background: var(--pm-glass);
-    border: 1px solid var(--pm-line);
-    border-radius: var(--pm-r-xl);
-    box-shadow: var(--pm-shadow);
-}
-
 /* Dark: the study cards were hard-coded white with dark ink */
-html[data-theme="dark"][data-theme] body:not(.admin-body) .fcr-q-text { color: #f1f5f9; }
-html[data-theme="dark"][data-theme] body:not(.admin-body) .fcr-a-text { color: #cbd5e1; }
-html[data-theme="dark"][data-theme] body:not(.admin-body) :where(.fcr-q-label, .fcr-a-label) { color: #94a3b8; }
 /* Study header title: its dark-brown gradient text vanished on the dark header */
 html[data-theme="dark"][data-theme] body:not(.admin-body) .fc-study-topic-label {
     background: linear-gradient(120deg, #f8fafc 0%, #fdba74 100%);
@@ -854,8 +829,6 @@ html[data-theme="dark"][data-theme] body:not(.admin-body) .fc-study-topic-label 
 html[data-theme="dark"][data-theme] body:not(.admin-body) .fc-study-back { color: #e2e8f0; }
 html[data-theme="dark"][data-theme] body:not(.admin-body) .fc-read-q { color: #f1f5f9; }
 html[data-theme="dark"][data-theme] body:not(.admin-body) .fc-read-a { color: #cbd5e1; }
-html[data-theme="dark"][data-theme] body:not(.admin-body) .fcr-rate-btn--again { background: rgba(251, 146, 60, 0.12); border-color: rgba(251, 146, 60, 0.35); color: #fdba74; }
-html[data-theme="dark"][data-theme] body:not(.admin-body) .fcr-rate-btn--good { background: rgba(34, 197, 94, 0.12); border-color: rgba(34, 197, 94, 0.35); color: #86efac; }
 
 /* ─────────────────────────────────────────────────────────────────────────────────────────
    15. CATALOGUE CARD ART — the per-technology gradient bands (offerings.css) were flat washes
@@ -1051,7 +1024,7 @@ html[data-theme]:not([data-theme="dark"]) body:not(.admin-body) :is(.fc-answer-l
 
 /* White text on flat #ff6a00 is 2.9:1 — small badges and the active pager get the deeper brand gradient */
 html[data-theme][data-theme] body:not(.admin-body) :is(.qsub-plan-popular, .bz-plan-popular-tag, .admin-pager-num--active) {
-    background: linear-gradient(120deg, #ea580c 0%, #db2777 100%);
+    background: linear-gradient(120deg, #cc4a00 0%, #e11d6b 100%);
     border-color: transparent;
 }
 /* Selected question count: white on #22c55e was 2.3:1 */
@@ -1180,7 +1153,7 @@ html[data-theme="dark"][data-theme] body:not(.admin-body) .hero-v3-desc { color:
         margin-top: 4px;
         padding: 11px 16px;
         border-radius: 999px;
-        background: linear-gradient(120deg, #ff6a00 0%, #ff3d81 100%);
+        background: linear-gradient(120deg, #cc4a00 0%, #e11d6b 100%);
         color: #fff;
     }
 }
@@ -1635,7 +1608,7 @@ html[data-theme][data-theme] body:not(.admin-body) :is(.qresult-actions, .gresul
     .nav-mega-promo {
         grid-row: span 1; align-self: stretch; display: flex; flex-direction: column; gap: 10px;
         padding: 22px 20px; border-radius: 16px; text-decoration: none; color: #fff;
-        background: radial-gradient(120% 90% at 0% 0%, #ff6a00 0%, transparent 55%), radial-gradient(120% 90% at 100% 100%, #7c3aed 0%, transparent 60%), #1e1b4b;
+        background: radial-gradient(120% 90% at 0% 0%, #cc4a00 0%, transparent 55%), radial-gradient(120% 90% at 100% 100%, #7c3aed 0%, transparent 60%), #1e1b4b;
     }
     .nav-mega-promo:hover { color: #fff; filter: brightness(1.06); }
     .nav-mega-promo-eyebrow { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.9; }
@@ -1675,3 +1648,85 @@ html[data-theme][data-theme] body:not(.admin-body) :is(.qresult-actions, .gresul
     }
 }
 .nav-mega-label i { color: #ff6a00; margin-right: 4px; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PHONE TRIM (2026-11-04) — every phone screen does one job, and the first screen shows it.
+   Desktop-sized heroes, kickers, sub-titles and marketing copy collapse; content moves up.
+   Loaded last (premium.css), selectors carry the doubled [data-theme] used throughout.
+═══════════════════════════════════════════════════════════════════════ */
+
+/* Study: the "+1 point" badge sat on the header, over the counter and Options button.
+   It now pops briefly just above the bottom bar, out of the way of everything. */
+body.fc-study-active .fc-points-toast {
+    top: auto; right: auto; left: 50%;
+    bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+    transform: translate(-50%, 8px);
+}
+body.fc-study-active .fc-points-toast--show { transform: translate(-50%, 0); }
+
+@media (max-width: 640px) {
+    /* Study header: room on the right for counter + Options so the title never runs under them */
+    html body .container.fc-study-hero-inner { padding-right: 112px !important; padding-left: 64px !important; }
+
+    /* Course lists (Flashcards / Quizzes): one compact title row, no tagline/badge, no "Showing N of N" */
+    html[data-theme][data-theme] body:not(.admin-body) :is(.fc-list-hero, .qz-list-hero) { padding-top: 12px !important; padding-bottom: 6px !important; min-height: 0 !important; background: none !important; border: 0 !important; }
+    html[data-theme][data-theme] body:not(.admin-body) :is(.fc-list-hero-icon, .qz-list-hero-icon) { width: 36px !important; height: 36px !important; min-width: 36px; font-size: 1rem !important; border-radius: 10px !important; }
+    html[data-theme][data-theme] body:not(.admin-body) :is(.fc-list-hero-title, .qz-list-hero-title) { font-size: 1.55rem !important; line-height: 1.2; margin: 0 !important; }
+    html[data-theme][data-theme] body:not(.admin-body) :is(.fc-list-hero-sub, .qz-list-hero-sub, .fc-list-hero-badge, .qz-list-hero-badge) { display: none !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-bar-row { display: none !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-request-course-cta { padding: 9px 12px; font-size: 0.8rem; line-height: 1.35; border-radius: 12px; }
+    .of-list--compact .of-card-footer { display: flex; flex-direction: column; align-items: stretch; }
+    .of-list--compact .of-card-footer::before, .of-list--compact .of-card-footer::after { display: none !important; }
+
+    /* Course page: tighter vertical rhythm between choice, PDF row and topics */
+    html[data-theme][data-theme] body:not(.admin-body) .fc-topics-section { padding-top: 12px; padding-bottom: 24px; }
+    html[data-theme][data-theme] body:not(.admin-body) .fc-pick-section + .fc-topics-section,
+    html[data-theme][data-theme] body:not(.admin-body) .fc-pdf-quiet + .fc-topics-section,
+    html[data-theme][data-theme] body:not(.admin-body) .fc-topics-section + .fc-topics-section { padding-top: 4px; }
+
+    /* Home: greeting is one line; the tagline under it said nothing */
+    html[data-theme][data-theme] body:not(.admin-body) .admin-hub-title { font-size: 1.45rem !important; margin-bottom: 4px !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .admin-hub-subtitle,
+    html[data-theme][data-theme] body:not(.admin-body) .admin-hub-title + .vb-underline,
+    html[data-theme][data-theme] body:not(.admin-body) .admin-hub-header .vb-underline { display: none !important; }
+
+    /* Account: a compact profile row instead of a banner + big avatar + kicker + tagline */
+    html[data-theme][data-theme] body:not(.admin-body) .account-hero-cover { height: 44px !important; min-height: 0 !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .account-avatar { width: 64px !important; height: 64px !important; font-size: 1.4rem !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .account-avatar-wrap { margin-top: -32px !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .account-kicker,
+    html[data-theme][data-theme] body:not(.admin-body) .account-hero-copy p { display: none !important; }
+
+    /* Contests: headline + the three steps as one compact row; the paragraph goes */
+    html[data-theme][data-theme] body:not(.admin-body) .ct-hero { padding: 18px 16px !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .ct-hero h1 { font-size: 1.5rem !important; margin: 8px 0 10px !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .ct-hero > p { display: none !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .ct-steps { display: flex !important; gap: 6px !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .ct-step { flex: 1; padding: 8px !important; gap: 6px !important; flex-direction: column; align-items: flex-start; }
+    html[data-theme][data-theme] body:not(.admin-body) .ct-step > i { width: 28px !important; height: 28px !important; font-size: 0.8rem !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .ct-step > div { font-size: 0 !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .ct-step > div b { font-size: 0.78rem !important; display: block; }
+
+    /* Quiz mode: two choices visible at once — no big icon tiles, feature lists or long blurbs */
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-card-icon,
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-card-features { display: none !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-card-desc { font-size: 0.84rem !important; margin: 4px 0 12px !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-card-title { font-size: 1.2rem !important; margin: 0 !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-card-badge { position: static !important; display: inline-block; margin-bottom: 6px; font-size: 0.62rem !important; padding: 3px 8px !important; }
+}
+/* Phone trim, round 2 (from the re-check screenshots) */
+body.fc-study-active .fc-points-toast { bottom: calc(150px + env(safe-area-inset-bottom, 0px)); }
+@media (max-width: 640px) {
+    html[data-theme][data-theme] body:not(.admin-body) .of-list--compact .of-btn-enroll { align-self: stretch !important; width: 100% !important; justify-content: center; }
+    html[data-theme][data-theme] body:not(.admin-body) .of-search-wrap input { height: 48px !important; padding-top: 0 !important; padding-bottom: 0 !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-card-badge { align-self: flex-start !important; width: auto !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-card-desc { display: none !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-count-box { padding: 10px !important; margin: 10px 0 12px !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-count-label { font-size: 0.68rem !important; margin-bottom: 6px !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .qmode-count-pill { min-height: 40px !important; padding: 6px !important; }
+}
+@media (max-width: 640px) {
+    /* Home greeting: left-aligned single line, no decorative underline, tight to the content */
+    html[data-theme][data-theme] body:not(.admin-body) .admin-hub-heading { text-align: left !important; margin: 4px 0 10px !important; padding: 0 !important; }
+    html[data-theme][data-theme] body:not(.admin-body) .admin-hub-title::after { display: none !important; }
+}

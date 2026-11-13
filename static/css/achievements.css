@@ -41,7 +41,7 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 1.6rem;
 }
-.ach-card--earned .ach-card-icon { background: var(--primary-gradient); color: var(--white); }
+.ach-card--earned .ach-card-icon { background: var(--primary-gradient); color: #fff; }
 
 .ach-card-title { font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
 .ach-card-desc { font-size: var(--text-sm); color: var(--text-muted); margin-bottom: 12px; min-height: 36px; }
@@ -67,7 +67,7 @@
     width: 52px; height: 52px;
     border-radius: 50%;
     background: #f59e0b;
-    color: var(--white);
+    color: #fff;
     display: flex; align-items: center; justify-content: center;
     font-size: 1.4rem;
     flex-shrink: 0;
@@ -80,7 +80,17 @@
 /* Points-earned variant — same layout, orange brand accent instead of badge-gold, so it reads as
    a distinct "points" moment rather than another achievement banner. */
 .points-earn-banner { background: linear-gradient(135deg, #ffe8d6, #ffd0a8); }
-.points-earn-icon { background: var(--primary-orange); }
+.points-earn-icon { background: var(--primary-orange-solid); }
 .points-earn-banner .ach-earn-label,
-.points-earn-banner .ach-earn-link { color: var(--primary-orange-dark); }
+.points-earn-banner .ach-earn-link { color: #9a3412; } /* AA on the peach banner (orange-dark was ~2.6:1) */
 .points-earn-banner .ach-earn-title { color: #7c2d12; }
+
+/* Dark theme: the warm banners were light patches on a dark page — keep the warmth as a deep tint. */
+html[data-theme="dark"] .ach-earn-banner { background: linear-gradient(135deg, #3a2a08, #422006); border-color: rgba(251, 191, 36, 0.25); }
+html[data-theme="dark"] .ach-earn-label,
+html[data-theme="dark"] .ach-earn-link { color: #fcd34d; }
+html[data-theme="dark"] .ach-earn-title { color: #fef3c7; }
+html[data-theme="dark"] .points-earn-banner { background: linear-gradient(135deg, #2b1d12, #3b2210); border-color: rgba(251, 146, 60, 0.25); }
+html[data-theme="dark"] .points-earn-banner .ach-earn-label,
+html[data-theme="dark"] .points-earn-banner .ach-earn-link { color: #fdba74; }
+html[data-theme="dark"] .points-earn-banner .ach-earn-title { color: #ffedd5; }

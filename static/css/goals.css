@@ -1,0 +1,142 @@
+/* /goals — one weekly goal: status at a glance, a bar per target, recent weeks, and the form. */
+
+:root {
+    --gl-done: #15803d;   --gl-done-bg: #dcfce7;
+    --gl-on: #0369a1;     --gl-on-bg: #e0f2fe;
+    --gl-behind: #b45309; --gl-behind-bg: #fef3c7;
+    --gl-missed: #b91c1c; --gl-missed-bg: #fee2e2;
+    --gl-track: #e2e8f0;
+}
+html[data-theme="dark"] {
+    --gl-done: #4ade80;   --gl-done-bg: rgba(74, 222, 128, 0.14);
+    --gl-on: #38bdf8;     --gl-on-bg: rgba(56, 189, 248, 0.14);
+    --gl-behind: #fbbf24; --gl-behind-bg: rgba(251, 191, 36, 0.14);
+    --gl-missed: #f87171; --gl-missed-bg: rgba(248, 113, 113, 0.14);
+    --gl-track: rgba(255, 255, 255, 0.1);
+}
+
+.gl-page { padding: 28px 0 48px; }
+.gl-hdr h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 800; margin: 0 0 6px; color: var(--text-main); }
+.gl-hdr p { color: var(--text-muted); margin: 0 0 20px; max-width: 56ch; }
+
+.gl-card {
+    background: var(--white, #fff); border: 1px solid var(--border-color, #e2e8f0); border-radius: 18px;
+    padding: 18px; margin-bottom: 16px;
+}
+.gl-sub { font-size: 1rem; font-weight: 800; margin: 0 0 12px; color: var(--text-main); }
+
+/* Status */
+.gl-status { border-top: 4px solid var(--gl-on); }
+.gl-status--done { border-top-color: var(--gl-done); }
+.gl-status--behind { border-top-color: var(--gl-behind); }
+.gl-status--missed { border-top-color: var(--gl-missed); }
+.gl-status-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.gl-pill {
+    display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px;
+    font-size: 0.8rem; font-weight: 800;
+}
+.gl-pill--done { color: var(--gl-done); background: var(--gl-done-bg); }
+.gl-pill--on_track { color: var(--gl-on); background: var(--gl-on-bg); }
+.gl-pill--behind { color: var(--gl-behind); background: var(--gl-behind-bg); }
+.gl-pill--missed { color: var(--gl-missed); background: var(--gl-missed-bg); }
+.gl-week { font-size: 0.82rem; color: var(--text-muted); }
+.gl-headline { font-size: 1.12rem; font-weight: 700; line-height: 1.45; margin: 12px 0 0; color: var(--text-main); }
+.gl-focus { display: flex; align-items: flex-start; gap: 8px; margin: 10px 0 0; color: var(--text-body); font-size: 0.92rem; }
+.gl-focus i { color: #cc4a00; margin-top: 3px; }
+html[data-theme="dark"] .gl-focus i { color: #fb923c; }
+
+.gl-metrics { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-direction: column; gap: 14px; }
+.gl-metric-top { display: flex; justify-content: space-between; gap: 12px; font-size: 0.9rem; margin-bottom: 6px; }
+.gl-metric-label { font-weight: 700; color: var(--text-main); }
+.gl-metric-num { color: var(--text-muted); white-space: nowrap; }
+.gl-metric-num strong { color: var(--text-main); }
+.gl-bar { display: block; height: 10px; border-radius: 999px; background: var(--gl-track); overflow: hidden; }
+.gl-bar > span { display: block; height: 100%; border-radius: inherit; background: var(--gl-on); transition: width 0.4s ease; }
+.gl-metric--done .gl-bar > span { background: var(--gl-done); }
+.gl-metric--behind .gl-bar > span { background: var(--gl-behind); }
+.gl-metric--missed .gl-bar > span { background: var(--gl-missed); }
+@media (prefers-reduced-motion: reduce) { .gl-bar > span { transition: none; } }
+
+.gl-cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.gl-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px;
+    border-radius: 999px; border: 1px solid var(--border-color, #e2e8f0); background: transparent;
+    color: var(--text-main); font: inherit; font-weight: 700; text-decoration: none; cursor: pointer;
+}
+.gl-btn:hover { text-decoration: none; border-color: #cc4a00; color: var(--text-main); }
+.gl-btn--primary { background: #cc4a00; border-color: #cc4a00; color: #fff; }
+.gl-btn--primary:hover { background: #b34100; color: #fff; }
+.gl-btn:disabled { opacity: 0.6; cursor: default; }
+
+/* History */
+.gl-history { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.gl-hweek { display: grid; grid-template-columns: 28px 1fr; column-gap: 10px; align-items: center; font-size: 0.9rem; }
+.gl-hweek > i {
+    grid-row: span 2; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--gl-track); color: var(--text-muted); font-size: 0.8rem;
+}
+.gl-hweek.is-met > i { background: var(--gl-done-bg); color: var(--gl-done); }
+.gl-hweek-label { font-weight: 700; color: var(--text-main); }
+.gl-hweek-sum { font-size: 0.8rem; color: var(--text-muted); }
+
+/* Form */
+.gl-edit-toggle {
+    width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px;
+    padding: 0; border: 0; background: transparent; color: var(--text-main); font: inherit; font-weight: 800; cursor: pointer;
+}
+.gl-edit-toggle > span { display: inline-flex; align-items: center; gap: 8px; }
+.gl-chev { transition: transform 0.2s; color: var(--text-muted); }
+.gl-edit-toggle[aria-expanded="true"] .gl-chev { transform: rotate(180deg); }
+.gl-form[hidden] { display: none; }
+.gl-edit-toggle + .gl-form { margin-top: 14px; }
+
+.gl-presets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+.gl-preset {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 10px 12px; min-height: 44px;
+    border-radius: 12px; border: 1px solid var(--border-color, #e2e8f0); background: transparent; color: var(--text-main);
+    font: inherit; text-align: left; cursor: pointer;
+}
+.gl-preset span { font-size: 0.75rem; color: var(--text-muted); }
+.gl-preset.is-active, .gl-preset:hover { border-color: #cc4a00; }
+.gl-preset.is-active { box-shadow: 0 0 0 1px #cc4a00 inset; }
+
+.gl-fields { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.gl-field { display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin: 0; }
+.gl-field em { font-style: normal; font-weight: 500; color: var(--text-muted); }
+.gl-field input {
+    min-height: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--border-color, #cbd5e1);
+    background: var(--white, #fff); color: var(--text-main); font: inherit; font-weight: 500; width: 100%;
+}
+.gl-field input:focus { outline: none; border-color: #cc4a00; box-shadow: 0 0 0 3px rgba(204, 74, 0, 0.15); }
+html[data-theme="dark"] .gl-field input { color-scheme: dark; }
+.gl-field--wide { margin-top: 14px; }
+.gl-field--date { margin-top: 12px; max-width: 220px; }
+.gl-hint { font-size: 0.8rem; color: var(--text-muted); margin: 8px 0 0; }
+
+.gl-toggles { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.gl-toggle { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; margin: 0; }
+.gl-toggle input { width: 20px; height: 20px; margin-top: 2px; accent-color: #cc4a00; flex-shrink: 0; }
+.gl-toggle span { display: flex; flex-direction: column; gap: 2px; font-size: 0.9rem; color: var(--text-main); }
+.gl-toggle small { color: var(--text-muted); font-size: 0.8rem; }
+.gl-toggle input:disabled + span { opacity: 0.55; }
+
+.gl-error { color: #dc2626; font-weight: 600; font-size: 0.9rem; margin: 12px 0 0; }
+html[data-theme="dark"] .gl-error { color: #f87171; }
+.gl-form-actions { display: flex; align-items: center; gap: 12px; margin-top: 18px; }
+.gl-save { margin-left: auto; }
+.gl-remove {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0;
+    border: 0; background: transparent; color: var(--text-muted); font: inherit; font-weight: 600; cursor: pointer;
+}
+.gl-remove:hover { color: #dc2626; }
+
+@media (max-width: 575.98px) {
+    .gl-card { padding: 16px; }
+    .gl-presets { grid-template-columns: 1fr; }
+    .gl-preset { flex-direction: row; align-items: baseline; gap: 8px; }
+    .gl-fields { grid-template-columns: 1fr; gap: 10px; }
+    .gl-field--date { max-width: none; }
+    .gl-cta .gl-btn { flex: 1 1 100%; }
+}
+
+/* Home "Your progress" goal row (home-individual.ftl) lives in ux-overrides.css with the other hm-* rules. */

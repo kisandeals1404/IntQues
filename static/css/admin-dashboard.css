@@ -340,7 +340,7 @@
 .dash-badge--ws       { background: rgba(255,106,0,0.10); color: #c2410c; border: 1px solid rgba(255,106,0,0.18); }
 .dash-badge--lc       { background: rgba(139,92,246,0.10); color: #7c3aed; border: 1px solid rgba(139,92,246,0.18); }
 .dash-badge--premium  {
-    background: linear-gradient(135deg, #ff6a00, #ff2fa0);
+    background: linear-gradient(135deg, #cc4a00, #ff2fa0);
     color: #fff;
     border: 1px solid transparent;
     gap: 4px;
@@ -1143,7 +1143,7 @@
         place-items: center;
         font-size: 30px;
         color: #fff;
-        background: linear-gradient(135deg, #ff6a00, #ee0979);
+        background: linear-gradient(135deg, #cc4a00, #ee0979);
         box-shadow: 0 10px 24px rgba(238, 9, 121, 0.28);
     }
     .admin-desktop-gate h1 {
@@ -1175,7 +1175,7 @@
     .admin-desktop-gate-copy {
         border: 0;
         color: #fff;
-        background: linear-gradient(135deg, #ff6a00, #ee0979);
+        background: linear-gradient(135deg, #cc4a00, #ee0979);
         margin-bottom: 10px;
         word-break: break-all;
     }
