@@ -392,6 +392,16 @@ a.cmp-name:hover { text-decoration: underline; }
     .cmp-legend { margin-left: 0; }
 }
 @media print { .cmp-tools, .dash-header-actions, .nav, .site-footer { display: none !important; } }
+/* Class report (business-assignment-detail "Print / PDF report"): page chrome and controls stay off paper. */
+.asn-print-only { display: none; }
+@media print {
+    .navbar, .footer-section, .mobile-tab-bar, .nav-drawer, .nav-drawer-overlay, .whatsapp-float, .admin-alert,
+    .dash-header-actions, form, button, .admin-btn, .asn-no-print { display: none !important; }
+    .asn-print-only { display: block; font-size: 0.8rem; color: #475569; margin: 0 0 12px; }
+    body, .dash-main { background: #fff !important; padding-top: 0 !important; }
+    .dash-card, .asn-card { box-shadow: none !important; break-inside: avoid; }
+    a { color: inherit !important; text-decoration: none !important; }
+}
 
 .asn-attempts-table { width: 100%; border-collapse: collapse; }
 .asn-attempts-table th, .asn-attempts-table td {

@@ -575,17 +575,6 @@ a.hero-aiv-badge i { font-size: 0.75em; }
 :is(html, html[data-theme]) .fcta-section .fcta-panel .fcta-actions a.fcta-btn.fcta-btn--ghost { background: transparent; color: #fff; border: 2px solid rgba(255, 255, 255, 0.7); box-shadow: none; }
 :is(html, html[data-theme]) .fcta-section .fcta-panel .fcta-actions a.fcta-btn.fcta-btn--ghost i { color: #fff; }
 :is(html, html[data-theme]) .fcta-section .fcta-panel .fcta-actions a.fcta-btn.fcta-btn--ghost:hover { color: #fff; background: rgba(255, 255, 255, 0.12); box-shadow: none; }
-.fo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 8px; }
-@media (max-width: 991.98px) { .fo-grid { grid-template-columns: 1fr; } }
-.fo-card { padding: 24px; border-radius: 20px; background: #fff; border: 1px solid rgba(15, 23, 42, 0.08); box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06); }
-.fo-card h3 { font-size: 1.1rem; font-weight: 800; margin: 14px 0 6px; color: #0f172a; }
-.fo-card p { margin: 0; color: #475569; line-height: 1.55; }
-.fo-icon { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, #cc4a00, #ec4899); color: #fff; font-size: 1.05rem; }
-.fo-cta { margin-top: 28px; text-align: center; }
-.fo-cta .hero-v3-btn-primary { display: inline-flex; }
-:root[data-theme="dark"] .fo-card { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.1); box-shadow: none; }
-:root[data-theme="dark"] .fo-card h3 { color: #fff; }
-:root[data-theme="dark"] .fo-card p { color: #cbd5e1; }
 
 /* ── Camera + microphone check (device-check.js): before an AI interview or a proctored assignment ── */
 body.dc-open { overflow: hidden; }
@@ -948,3 +937,44 @@ button.ivz-ctl:hover { background: rgba(255, 255, 255, 0.08); }
 :root[data-theme="dark"] .iv-role-only .iv-role-label { color: #f1f5f9; }
 :root[data-theme="dark"] .iv-role-only input { background: rgba(255, 255, 255, 0.04); color: #f1f5f9; border-color: rgba(255, 255, 255, 0.14); }
 :root[data-theme="dark"] .iv-role-only .iv-role-hint { color: #94a3b8; }
+
+
+/* ── Homepage: problems we solve (sections/problems-solved.ftl) ── */
+.ps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 8px; }
+@media (max-width: 991.98px) { .ps-grid { grid-template-columns: 1fr; max-width: 640px; margin-left: auto; margin-right: auto; } }
+.ps-card { --ps-accent: #cc4a00; --ps-tint: rgba(204, 74, 0, 0.08); display: flex; flex-direction: column; padding: 26px 24px; border-radius: 20px;
+  background: var(--white); border: 1px solid var(--border-subtle); border-top: 4px solid var(--ps-accent); box-shadow: var(--shadow-card); }
+.ps-card--learner { --ps-accent: #cc4a00; --ps-tint: rgba(204, 74, 0, 0.08); }
+.ps-card--recruiter { --ps-accent: #2563eb; --ps-tint: rgba(37, 99, 235, 0.08); }
+.ps-card--teacher { --ps-accent: #7c3aed; --ps-tint: rgba(124, 58, 237, 0.08); }
+.ps-top { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.ps-icon { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 14px; background: var(--ps-tint); color: var(--ps-accent); font-size: 1.1rem; flex: none; }
+.ps-who { font-size: 1.08rem; font-weight: 800; color: var(--text-main); }
+.ps-label { display: block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 6px; }
+.ps-label--fix { color: var(--ps-accent); margin-top: 4px; }
+.ps-problem { margin: 0 0 16px; padding: 14px 16px; border-radius: 14px; background: var(--surface-subtle); color: var(--text-body); line-height: 1.55; font-size: 0.95rem; }
+.ps-list { list-style: none; padding: 0; margin: 0 0 16px; display: grid; gap: 10px; }
+.ps-list li { display: flex; gap: 10px; align-items: flex-start; color: var(--text-body); line-height: 1.5; font-size: 0.95rem; }
+.ps-list li i { color: var(--ps-accent); margin-top: 4px; flex: none; }
+.ps-list strong { color: var(--text-main); }
+.ps-result { margin: auto 0 16px; padding-top: 14px; border-top: 1px dashed var(--border-color); font-weight: 700; color: var(--text-main); line-height: 1.45; }
+.ps-result i { color: var(--ps-accent); margin-right: 6px; }
+.ps-ctas { display: flex; flex-wrap: wrap; gap: 8px; }
+.ps-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 0 16px; border-radius: 12px; font-weight: 700; font-size: 0.92rem;
+  text-decoration: none; color: var(--ps-accent); background: var(--ps-tint); border: 1px solid transparent; }
+.ps-btn:hover { filter: brightness(0.96); color: var(--ps-accent); }
+.ps-btn--primary { background: var(--ps-accent); color: #fff; }
+.ps-btn--primary:hover { color: #fff; }
+:root[data-theme="dark"] .ps-card--recruiter, :root[data-theme="dark"] .ps-card--teacher, :root[data-theme="dark"] .ps-card--learner { box-shadow: none; }
+:root[data-theme="dark"] .ps-card--recruiter { --ps-accent: #60a5fa; --ps-tint: rgba(96, 165, 250, 0.14); }
+:root[data-theme="dark"] .ps-card--teacher { --ps-accent: #a78bfa; --ps-tint: rgba(167, 139, 250, 0.14); }
+:root[data-theme="dark"] .ps-card--learner { --ps-accent: #fb923c; --ps-tint: rgba(251, 146, 60, 0.14); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ps-card { box-shadow: none; }
+  :root:not([data-theme="light"]) .ps-card--recruiter { --ps-accent: #60a5fa; --ps-tint: rgba(96, 165, 250, 0.14); }
+  :root:not([data-theme="light"]) .ps-card--teacher { --ps-accent: #a78bfa; --ps-tint: rgba(167, 139, 250, 0.14); }
+  :root:not([data-theme="light"]) .ps-card--learner { --ps-accent: #fb923c; --ps-tint: rgba(251, 146, 60, 0.14); }
+}
+/* Light accents in dark mode need dark text on the filled button. */
+:root[data-theme="dark"] .ps-btn--primary, :root[data-theme="dark"] .ps-btn--primary:hover { color: #0f172a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .ps-btn--primary, :root:not([data-theme="light"]) .ps-btn--primary:hover { color: #0f172a; } }

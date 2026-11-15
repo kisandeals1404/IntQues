@@ -999,3 +999,158 @@ body.nav-drawer-open {
     .nav-account-guest { display: none; }
 }
 html[data-theme="dark"] .nav-login-link { color: #e2e8f0; }
+
+/* =========================================
+   NAV DRAWER v2 (2026-11-13) — Flipkart / Swiggy style
+   Greeting header, then short titled groups of plain icon + label rows. One accent colour
+   (orange) for the current page only; icons are monochrome so the list scans as text.
+========================================= */
+.nav-drawer { width: min(304px, 86vw); border-radius: 0 20px 20px 0; }
+
+.nd-head {
+    position: relative;
+    flex-shrink: 0;
+    padding: calc(18px + env(safe-area-inset-top, 0px)) 16px 16px;
+    background: linear-gradient(135deg, #fff4ec 0%, #ffeef4 60%, #f3eeff 100%);
+    border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+.nd-head .nav-drawer-close {
+    position: absolute;
+    top: calc(10px + env(safe-area-inset-top, 0px));
+    right: 8px;
+    width: 40px; height: 40px;
+    border: 0; border-radius: 999px;
+    background: transparent;
+    color: #475569;
+    font-size: 18px;
+}
+.nd-head .nav-drawer-close:hover { background: rgba(15, 23, 42, 0.06); color: #0f172a; }
+
+.nd-user { display: flex; align-items: center; gap: 12px; padding-right: 40px; min-width: 0; }
+.nd-avatar {
+    flex: none;
+    width: 48px; height: 48px; border-radius: 999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #ff6a00, #ff3d81);
+    color: #fff; font-size: 1.25rem; font-weight: 800;
+    box-shadow: 0 6px 14px -6px rgba(255, 61, 129, 0.6);
+}
+.nd-user-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.nd-hello {
+    font-size: 1.12rem; font-weight: 800; color: #0f172a; letter-spacing: -0.02em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.nd-plan {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 0.8rem; font-weight: 600; color: #64748b; text-decoration: none;
+}
+a.nd-plan:hover { color: #c2410c; }
+.nd-plan strong { color: #c2410c; font-weight: 800; }
+.nd-plan .fa-chevron-right { font-size: 0.62rem; color: #c2410c; }
+.nd-plan--pro { color: #6d28d9; font-weight: 800; }
+.nd-plan--pro i { color: #7c3aed; }
+
+.nd-auth { display: flex; gap: 8px; margin-top: 14px; }
+.nd-auth-btn {
+    flex: 1; display: inline-flex; align-items: center; justify-content: center;
+    min-height: 42px; border-radius: 12px;
+    font-size: 0.92rem; font-weight: 800; text-decoration: none;
+    color: #0f172a; background: #fff; border: 1px solid rgba(15, 23, 42, 0.12);
+}
+.nd-auth-btn--primary { color: #fff; background: #cc4a00; border-color: #cc4a00; }
+.nd-auth-btn--primary:hover { color: #fff; background: #b34000; }
+
+.nav-drawer .nav-drawer-nav { padding: 6px 0 calc(16px + env(safe-area-inset-bottom, 0px)); }
+.nd-group { padding: 6px 0; }
+.nd-group + .nd-group { border-top: 1px solid rgba(15, 23, 42, 0.06); }
+.nd-title {
+    margin: 0; padding: 8px 20px 4px;
+    font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+    color: #94a3b8;
+}
+.nd-list { list-style: none; margin: 0; padding: 0 8px; }
+.nd-row {
+    position: relative;
+    display: flex; align-items: center; gap: 14px;
+    min-height: 46px; padding: 0 12px;
+    border-radius: 12px;
+    color: #1e293b; font-size: 0.95rem; font-weight: 600; text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 140ms ease, color 140ms ease;
+}
+.nd-ico { width: 20px; flex: none; text-align: center; font-size: 1rem; color: #64748b; }
+.nd-label { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nd-row:hover, .nd-row:focus-visible { background: rgba(15, 23, 42, 0.04); color: #0f172a; }
+.nd-row:active { background: rgba(15, 23, 42, 0.07); }
+.nd-row.active { background: rgba(255, 106, 0, 0.09); color: #c2410c; font-weight: 800; }
+.nd-row.active .nd-ico { color: #ea580c; }
+.nd-row.active::before {
+    content: ""; position: absolute; left: -8px; top: 10px; bottom: 10px; width: 3px;
+    border-radius: 0 3px 3px 0; background: #ff6a00;
+}
+.nd-pro {
+    flex: none; padding: 2px 7px; border-radius: 999px;
+    font-size: 0.64rem; font-weight: 800; letter-spacing: 0.04em;
+    color: #6d28d9; background: rgba(124, 58, 237, 0.10);
+}
+
+:root[data-theme="dark"] .nd-head {
+    background: linear-gradient(135deg, rgba(255, 106, 0, 0.14) 0%, rgba(255, 61, 129, 0.10) 60%, rgba(124, 58, 237, 0.14) 100%);
+    border-bottom-color: rgba(255, 255, 255, 0.07);
+}
+:root[data-theme="dark"] .nd-head .nav-drawer-close { color: #cbd5e1; background: transparent; }
+:root[data-theme="dark"] .nd-head .nav-drawer-close:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+:root[data-theme="dark"] .nd-hello { color: #f1f5f9; }
+:root[data-theme="dark"] .nd-plan { color: #94a3b8; }
+:root[data-theme="dark"] .nd-plan strong,
+:root[data-theme="dark"] .nd-plan .fa-chevron-right { color: #fdba74; }
+:root[data-theme="dark"] .nd-plan--pro, :root[data-theme="dark"] .nd-plan--pro i { color: #c4b5fd; }
+:root[data-theme="dark"] .nd-auth-btn { color: #f1f5f9; background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.14); }
+:root[data-theme="dark"] .nd-auth-btn--primary { color: #fff; background: #cc4a00; border-color: #cc4a00; }
+:root[data-theme="dark"] .nd-group + .nd-group { border-top-color: rgba(255, 255, 255, 0.07); }
+:root[data-theme="dark"] .nd-title { color: #64748b; }
+:root[data-theme="dark"] .nd-row { color: #e2e8f0; }
+:root[data-theme="dark"] .nd-ico { color: #94a3b8; }
+:root[data-theme="dark"] .nd-row:hover, :root[data-theme="dark"] .nd-row:focus-visible { background: rgba(255, 255, 255, 0.05); color: #fff; }
+:root[data-theme="dark"] .nd-row.active { background: rgba(255, 138, 61, 0.12); color: #fdba74; }
+:root[data-theme="dark"] .nd-row.active .nd-ico { color: #fdba74; }
+:root[data-theme="dark"] .nd-pro { color: #c4b5fd; background: rgba(167, 139, 250, 0.16); }
+
+/* =========================================
+   PHONE HEADER ⋮ MENU — Dark mode, Help & Support, FAQ
+========================================= */
+.nav-mobile-more { display: flex; align-items: center; flex-shrink: 0; }
+.nav-mobile-more-toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 44px; padding: 0; margin-right: -6px;
+    border: 0; border-radius: 10px; background: transparent;
+    color: #475569; font-size: 1.15rem;
+    -webkit-tap-highlight-color: transparent;
+}
+.nav-mobile-more-toggle:hover,
+.nav-mobile-more-toggle[aria-expanded="true"] { color: #ff6a00; background: rgba(255, 106, 0, 0.06); }
+.nav-mobile-more-toggle:focus:not(:focus-visible) { outline: none; }
+.nav-more-menu {
+    min-width: 214px;
+    padding: 6px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 18px 40px -12px rgba(15, 23, 42, 0.28), 0 2px 6px rgba(15, 23, 42, 0.06);
+}
+.nav-more-menu.show { position: absolute; top: calc(100% + 6px); right: 0; left: auto; }
+.nav-more-item {
+    display: flex; align-items: center; gap: 12px; width: 100%;
+    min-height: 44px; padding: 0 12px;
+    border: 0; border-radius: 10px; background: transparent;
+    color: #1e293b; font: inherit; font-size: 0.93rem; font-weight: 600; text-align: left; text-decoration: none;
+    cursor: pointer;
+}
+.nav-more-item i { width: 18px; text-align: center; color: #64748b; font-size: 0.98rem; }
+.nav-more-item:hover, .nav-more-item:focus-visible { background: rgba(15, 23, 42, 0.05); color: #0f172a; }
+.nav-more-item:hover i { color: #ea580c; }
+:root[data-theme="dark"] .nav-mobile-more-toggle { color: #cbd5e1; }
+:root[data-theme="dark"] .nav-more-menu { background: #111a2e; border-color: rgba(255, 255, 255, 0.10); box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.7); }
+:root[data-theme="dark"] .nav-more-item { color: #e2e8f0; }
+:root[data-theme="dark"] .nav-more-item i { color: #94a3b8; }
+:root[data-theme="dark"] .nav-more-item:hover { background: rgba(255, 255, 255, 0.06); color: #fff; }

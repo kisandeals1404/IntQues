@@ -10,6 +10,7 @@
         emailVerified: false,
         completing: false,
         accountType: 'INDIVIDUAL',
+        orgType: '',
     };
 
     var FREE_EMAIL_DOMAINS = [
@@ -59,6 +60,7 @@
         emailOtpCard:     el('emailOtpCard'),
         verifyEmailBtn:   el('verifySignupEmailBtn'),
         resendEmailBtn:   el('resendSignupEmailBtn'),
+        website:          el('signupWebsite'),
         emailOtpLoader:   el('emailOtpLoader'),
         resendEmailLoader:  el('resendEmailLoader'),
         goToLoginBtn:     el('goToLoginBtn'),
@@ -83,6 +85,8 @@
             els.acctTypeBusiness.setAttribute('aria-checked', String(isBusiness));
         }
         if (els.companyNameField) els.companyNameField.hidden = !isBusiness;
+        var orgField = document.getElementById('orgTypeField');
+        if (orgField) orgField.hidden = !isBusiness;
         // The work-email note only matters to someone choosing Business.
         var bizHint = document.getElementById('acctTypeBusinessHint');
         if (bizHint) bizHint.hidden = !isBusiness;
@@ -94,6 +98,29 @@
     if (els.acctTypeBusiness) {
         els.acctTypeBusiness.addEventListener('click', function () { setAccountType('BUSINESS'); });
     }
+
+    // ── Business: hiring vs teaching ──
+    function setOrgType(type) {
+        state.orgType = type;
+        ['orgTypeRecruiter', 'orgTypeEducator'].forEach(function (id) {
+            var b = document.getElementById(id);
+            if (!b) return;
+            var on = b.getAttribute('data-org-type') === type;
+            b.classList.toggle('is-active', on);
+            b.setAttribute('aria-checked', String(on));
+        });
+        var label = document.getElementById('companyNameLabel');
+        if (label) label.textContent = type === 'EDUCATOR' ? 'College or institution name' : 'Company name';
+        if (els.companyName) els.companyName.placeholder = type === 'EDUCATOR' ? 'e.g. ABC Engineering College' : 'Acme Corp';
+        var f = document.getElementById('orgTypeField');
+        if (f) f.classList.remove('is-invalid');
+    }
+    ['orgTypeRecruiter', 'orgTypeEducator'].forEach(function (id) {
+        var b = document.getElementById(id);
+        if (b) b.addEventListener('click', function () { setOrgType(b.getAttribute('data-org-type')); });
+    });
+    var orgParam = (new URLSearchParams(window.location.search).get('org') || '').toUpperCase();
+    if (orgParam === 'RECRUITER' || orgParam === 'EDUCATOR') setOrgType(orgParam);
 
     // Pre-select Business when arriving from a business-focused link (e.g. /business "Start Free").
     if ((new URLSearchParams(window.location.search).get('type') || '').toUpperCase() === 'BUSINESS') {
@@ -215,6 +242,11 @@
         msgEl.classList.remove('error', 'success', 'info');
         msgEl.classList.add(type || 'info', 'is-visible');
         toastTimer = setTimeout(function () { msgEl.classList.remove('is-visible'); }, 5000);
+    }
+
+    // ── Human check ─────────────────────────────────────────────
+    function captchaToken(containerId) {
+        return window.IqCaptcha ? window.IqCaptcha.getToken(containerId) : Promise.resolve('');
     }
 
     // ── HTTP ─────────────────────────────────────────────────────
@@ -357,7 +389,11 @@
         var firstBad = null;
         function fail(field, msg) { markInvalid(field, true, msg); errors.push(msg); if (!firstBad) firstBad = field; }
 
-        if (state.accountType === 'BUSINESS' && !companyName) fail(els.companyName, 'Enter your company name.');
+        if (state.accountType === 'BUSINESS' && !state.orgType) {
+            var orgToggle = document.querySelector('#orgTypeField .account-type-toggle');
+            fail(orgToggle, 'Choose hiring or teaching.');
+        }
+        if (state.accountType === 'BUSINESS' && !companyName) fail(els.companyName, state.orgType === 'EDUCATOR' ? 'Enter your college or institution name.' : 'Enter your company name.');
         if (!firstName) fail(els.firstName, 'Enter your first name.');
         if (!lastName)  fail(els.lastName, 'Enter your last name.');
         if (!email) fail(els.email, 'Enter your email address.');
@@ -375,10 +411,17 @@
         els.startBtn.disabled = true;
         if (els.step1Loader) els.step1Loader.hidden = false;
 
-        postJson('/api/auth/signup/start', {
-            firstName: firstName, lastName: lastName, email: email,
-            accountType: state.accountType, companyName: companyName
-        })
+        // Human check first (Cloudflare Turnstile — usually invisible), then the code is emailed.
+        captchaToken('signupCaptcha')
+            .then(function (token) {
+                return postJson('/api/auth/signup/start', {
+                    firstName: firstName, lastName: lastName, email: email,
+                    accountType: state.accountType, companyName: companyName,
+                    orgType: state.accountType === 'BUSINESS' ? state.orgType : '',
+                    captchaToken: token,
+                    website: els.website ? els.website.value : ''
+                });
+            })
             .then(function (res) {
                 state.userId       = res.userId;
                 state.emailVerified  = false;

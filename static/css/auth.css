@@ -887,3 +887,24 @@
 }
 
 .otp-loader[hidden] { display: none !important; }
+/* Sign-up honeypot (signup.ftl): off-screen, not display:none — some bots skip hidden fields. */
+.iq-hp { position: absolute !important; left: -10000px !important; top: auto; width: 1px; height: 1px; overflow: hidden; }
+
+/* Cloudflare Turnstile box (captcha.js) — takes no space until Cloudflare asks for a click. */
+.iq-captcha:empty { display: none; }
+.iq-captcha { display: flex; justify-content: center; margin: 4px 0 12px; }
+.iq-captcha iframe { max-width: 100%; }
+
+/* Business sign-up: hiring vs teaching — two-line buttons. */
+.account-type-btn .account-type-sub {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 500;
+    opacity: 0.75;
+    margin-top: 2px;
+}
+.account-type-toggle.is-invalid {
+    outline: 2px solid var(--danger, #dc2626);
+    outline-offset: 2px;
+    border-radius: 12px;
+}

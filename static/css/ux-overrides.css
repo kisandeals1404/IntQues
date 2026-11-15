@@ -4558,3 +4558,14 @@ html[data-theme][data-theme] body:not(.admin-body) .bz-compare-col--old .bz-comp
 :root[data-theme="dark"] .review-due { background: rgba(37, 99, 235, .14); border-color: rgba(96, 165, 250, .35); }
 :root[data-theme="dark"] .review-due-title { color: #bfdbfe; }
 :root[data-theme="dark"] .review-due-sub { color: #94a3b8; }
+
+/* The promo pages' pricing and "usual way vs IntQues" sections follow the site theme (they go dark in dark
+   mode), so their headings must not take the fixed-light rule above. */
+html[data-theme="dark"] .bz-pricing .bz-section-header h2,
+html[data-theme="dark"] .bz-vs .bz-section-header h2 { color: #f1f5f9 !important; }
+@media (prefers-color-scheme: dark) {
+    html:not([data-theme="light"]) .bz-pricing .bz-section-header h2,
+    html:not([data-theme="light"]) .bz-vs .bz-section-header h2 { color: #f1f5f9 !important; }
+}
+/* The "Book a demo" band stays light in both themes, so its heading stays dark. */
+.bz-demo-copy h2 { color: #0f172a !important; }

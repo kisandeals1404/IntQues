@@ -14,14 +14,14 @@
 .bz-section-header h2 {
     font-size: clamp(1.6rem, 3.4vw, 2.2rem);
     font-weight: 900;
-    color: #0f172a;
+    color: var(--text-main);
     letter-spacing: -0.03em;
     margin: 0 0 10px;
 }
 
 .bz-section-header p {
     font-size: 1rem;
-    color: #64748b;
+    color: var(--text-muted);
     margin: 0;
     line-height: 1.6;
 }
@@ -1250,3 +1250,26 @@
 .bz-plans-hub-link i { color: #ff6a00; margin-right: 6px; }
 .bz-plans-hub-link a { font-weight: 700; }
 :root[data-theme="dark"] .bz-plans-hub-link { background: rgba(255, 106, 0, 0.12); border-color: rgba(255, 138, 61, 0.3); color: #cbd5e1; }
+
+/* ── Promo pages: the old way vs with IntQues ── */
+.bz-vs { padding: 56px 0 24px; }
+.bz-vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 980px; margin: 0 auto; }
+@media (max-width: 767.98px) { .bz-vs-grid { grid-template-columns: 1fr; } }
+.bz-vs-col { padding: 24px; border-radius: 20px; border: 1px solid var(--border-subtle); background: var(--white); }
+.bz-vs-col h3 { font-size: 1.05rem; font-weight: 800; margin: 0 0 14px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+.bz-vs-col ol { margin: 0; padding-left: 0; list-style: none; display: grid; gap: 10px; }
+.bz-vs-col li { display: flex; gap: 10px; align-items: flex-start; line-height: 1.5; color: var(--text-body); }
+.bz-vs-col li i { margin-top: 4px; flex: none; }
+.bz-vs-col--old { background: var(--surface-subtle); }
+.bz-vs-col--old h3 i, .bz-vs-col--old li i { color: #dc2626; }
+.bz-vs-col--new { border: 2px solid #16a34a; box-shadow: var(--shadow-card); }
+.bz-vs-col--new h3 i, .bz-vs-col--new li i { color: #16a34a; }
+.bz-vs-foot { text-align: center; margin: 18px auto 0; max-width: 720px; font-weight: 700; color: var(--text-main); }
+:root[data-theme="dark"] .bz-vs-col--new { border-color: #4ade80; box-shadow: none; }
+:root[data-theme="dark"] .bz-vs-col--new h3 i, :root[data-theme="dark"] .bz-vs-col--new li i { color: #4ade80; }
+:root[data-theme="dark"] .bz-vs-col--old h3 i, :root[data-theme="dark"] .bz-vs-col--old li i { color: #f87171; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .bz-vs-col--new { border-color: #4ade80; box-shadow: none; }
+  :root:not([data-theme="light"]) .bz-vs-col--new h3 i, :root:not([data-theme="light"]) .bz-vs-col--new li i { color: #4ade80; }
+  :root:not([data-theme="light"]) .bz-vs-col--old h3 i, :root:not([data-theme="light"]) .bz-vs-col--old li i { color: #f87171; }
+}

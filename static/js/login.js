@@ -244,9 +244,17 @@
         }
     }
 
+    // Human check (Cloudflare Turnstile — usually invisible) before every code we email.
+    function startLogin() {
+        var getToken = window.IqCaptcha ? window.IqCaptcha.getToken('loginCaptcha') : Promise.resolve('');
+        return getToken.then(function (token) {
+            return postJson('/api/auth/login/start', { email: state.email, captchaToken: token });
+        });
+    }
+
     function sendLoginOtp() {
         setLoading(els.sendOtpBtn, els.sendOtpLoader, true);
-        return postJson('/api/auth/login/start', { email: state.email })
+        return startLogin()
             .then(function (res) {
                 state.userId  = res.userId;
                 state.otpSent = true;
@@ -366,7 +374,7 @@
     if (els.resendOtpBtn) {
         els.resendOtpBtn.addEventListener('click', function () {
             els.resendOtpBtn.disabled = true;
-            postJson('/api/auth/login/start', { email: state.email })
+            startLogin()
                 .then(function (res) {
                     state.userId = res.userId;
                     if (loginOtpBoxes) loginOtpBoxes.reset();

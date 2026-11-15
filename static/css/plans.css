@@ -1,0 +1,88 @@
+/* /plans — a day-by-day study plan: today's checklist first, then every day, then the plans on offer. */
+
+:root {
+    --sp-accent: #4f46e5; --sp-accent-bg: #eef2ff;
+    --sp-done: #15803d;   --sp-done-bg: #dcfce7;
+    --sp-track: #e2e8f0;
+}
+html[data-theme="dark"] {
+    --sp-accent: #a5b4fc; --sp-accent-bg: rgba(165, 180, 252, 0.12);
+    --sp-done: #4ade80;   --sp-done-bg: rgba(74, 222, 128, 0.14);
+    --sp-track: rgba(255, 255, 255, 0.1);
+}
+
+.sp-wrap { max-width: 860px; margin: 0 auto; padding: 28px 16px 48px; }
+.sp-hero { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.sp-hero > div { flex: 1; min-width: 240px; }
+.sp-hero h1 { font-size: clamp(1.6rem, 4vw, 2.1rem); font-weight: 800; margin: 0 0 6px; color: var(--text-main); }
+.sp-eyebrow { text-transform: uppercase; letter-spacing: .06em; font-size: .78rem; font-weight: 800; color: var(--sp-accent); margin: 0 0 6px; }
+.sp-sub { color: var(--text-muted); margin: 0 0 12px; max-width: 60ch; }
+.sp-bar { height: 10px; border-radius: 999px; background: var(--sp-track); overflow: hidden; max-width: 420px; }
+.sp-bar span { display: block; height: 100%; background: var(--sp-done); border-radius: 999px; }
+
+.sp-card { background: var(--white, #fff); border: 1px solid var(--border-color, #e2e8f0); border-radius: 18px; padding: 18px; margin-bottom: 16px; }
+.sp-card h2 { font-size: 1.05rem; font-weight: 800; margin: 0 0 12px; color: var(--text-main); }
+.sp-section { font-size: 1.1rem; font-weight: 800; margin: 26px 0 12px; color: var(--text-main); }
+.sp-today { border-top: 4px solid var(--sp-accent); }
+
+.sp-tasks { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 8px; }
+.sp-tasks a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: var(--sp-accent-bg); color: var(--text-main); text-decoration: none; font-weight: 600; }
+.sp-tasks a:hover, .sp-tasks a:focus-visible { outline: 2px solid var(--sp-accent); outline-offset: 1px; }
+.sp-tasks i { color: var(--sp-accent); width: 18px; text-align: center; }
+.sp-go { margin-left: auto; }
+.sp-tasks--small { margin: 6px 0 0; gap: 4px; }
+.sp-tasks--small a { background: none; padding: 4px 0; font-weight: 500; font-size: .9rem; }
+
+.sp-days { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+.sp-day { border: 1px solid var(--border-color, #e2e8f0); border-radius: 14px; padding: 10px 12px; }
+.sp-day.is-today { border-color: var(--sp-accent); box-shadow: 0 0 0 1px var(--sp-accent); }
+.sp-day.is-done { background: var(--sp-done-bg); }
+.sp-day.is-later { opacity: .75; }
+.sp-day-head { display: flex; justify-content: space-between; align-items: center; color: var(--text-main); }
+.sp-day-head form { margin: 0; }
+.sp-tick { background: none; border: 0; font-size: 1.25rem; color: var(--sp-done); cursor: pointer; padding: 2px; }
+
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin-bottom: 16px; }
+.sp-offer { display: flex; flex-direction: column; gap: 6px; margin: 0; }
+.sp-offer h3 { font-size: 1.05rem; font-weight: 800; margin: 4px 0 0; color: var(--text-main); }
+.sp-offer p { color: var(--text-muted); margin: 0 0 8px; flex: 1; font-size: .92rem; }
+.sp-chip { align-self: flex-start; font-size: .75rem; font-weight: 800; padding: 3px 10px; border-radius: 999px; background: var(--sp-accent-bg); color: var(--sp-accent); }
+
+.sp-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; border-radius: 12px; font-weight: 700; border: 1px solid transparent; cursor: pointer; text-decoration: none; font-size: .95rem; }
+.sp-btn--primary { background: var(--sp-accent); color: #fff; }
+html[data-theme="dark"] .sp-btn--primary { color: #111827; }
+.sp-btn--ghost { background: none; border-color: var(--border-color, #e2e8f0); color: var(--text-main); }
+
+.sp-custom { display: grid; grid-template-columns: 1fr 140px auto; gap: 8px 10px; align-items: end; }
+.sp-custom label { font-size: .85rem; font-weight: 700; color: var(--text-muted); grid-row: 1; }
+.sp-custom .sp-input, .sp-custom button { grid-row: 2; }
+.sp-input { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border-color, #e2e8f0); background: var(--white, #fff); color: var(--text-main); font-size: .95rem; min-width: 0; }
+@media (max-width: 560px) {
+    .sp-custom { grid-template-columns: 1fr; }
+    .sp-custom label, .sp-custom .sp-input, .sp-custom button { grid-row: auto; }
+}
+
+.sp-alert { padding: 12px 14px; border-radius: 12px; margin-bottom: 14px; font-weight: 600; }
+.sp-alert--ok { background: var(--sp-done-bg); color: var(--sp-done); }
+.sp-alert--err { background: #fee2e2; color: #b91c1c; }
+html[data-theme="dark"] .sp-alert--err { background: rgba(248, 113, 113, 0.14); color: #f87171; }
+
+/* Skill profile (/u/{handle}) and its settings (/my-account/skill-profile). */
+.pf-skills { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.pf-skill-head { display: flex; justify-content: space-between; gap: 10px; color: var(--text-main); margin-bottom: 4px; }
+.pf-skill-head span { font-weight: 800; color: var(--sp-done); }
+.pf-skills .sp-bar { max-width: none; height: 8px; }
+.pf-meta { font-size: .85rem; color: var(--text-muted); margin: 4px 0 0; }
+.pf-big { font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin: 0; }
+.pf-big small { font-size: 1rem; color: var(--text-muted); font-weight: 700; }
+.pf-certs { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.pf-certs li { display: flex; flex-direction: column; }
+.pf-certs a { color: var(--text-main); font-weight: 700; text-decoration: none; }
+.pf-certs a i { color: var(--sp-accent); }
+.pf-form fieldset { border: 0; margin: 12px 0; padding: 0; display: grid; gap: 8px; }
+.pf-form legend { font-size: .85rem; font-weight: 800; color: var(--text-muted); margin-bottom: 6px; }
+.pf-check { display: flex; gap: 10px; align-items: center; color: var(--text-main); cursor: pointer; }
+.pf-check input { width: 18px; height: 18px; accent-color: var(--sp-accent); }
+.pf-form .sp-btn { margin-top: 12px; }
+.pf-link { display: flex; gap: 8px; flex-wrap: wrap; }
+.pf-link .sp-input { flex: 1; min-width: 200px; }
