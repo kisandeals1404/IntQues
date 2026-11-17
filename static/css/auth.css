@@ -136,7 +136,7 @@
     pointer-events: none;
 }
 .auth-brand-glow--a { width: 260px; height: 260px; top: -100px; right: -80px; background: rgba(255,106,0,0.35); }
-.auth-brand-glow--b { width: 220px; height: 220px; bottom: -110px; left: -70px; background: rgba(99,102,241,0.25); }
+.auth-brand-glow--b { width: 220px; height: 220px; bottom: -110px; left: -70px; background: rgba(225,29,107,0.22); }
 
 .auth-brand-badge {
     position: relative;

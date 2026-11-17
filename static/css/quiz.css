@@ -3406,8 +3406,8 @@ html[data-theme="dark"] .qsaved-reveal { color: #fdba74; background: rgba(255, 1
 .qsaved-empty .qresult-btn { display: inline-flex; margin-top: 16px; }
 
 /* quiz-result.ftl: Pro offer after an exam with wrong answers. */
-.qresult-upsell { display: flex; align-items: center; gap: 14px; margin-top: 18px; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(79,70,229,.25); background: rgba(79,70,229,.06); text-align: left; }
-.qresult-upsell > i { font-size: 1.4rem; color: #4f46e5; }
+.qresult-upsell { display: flex; align-items: center; gap: 14px; margin-top: 18px; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(204,74,0,.25); background: rgba(204,74,0,.06); text-align: left; }
+.qresult-upsell > i { font-size: 1.4rem; color: var(--primary-orange-solid, #cc4a00); }
 .qresult-upsell p { margin: 4px 0 0; font-size: .9rem; opacity: .85; }
 .qresult-upsell > div { flex: 1; }
 @media (max-width: 560px) { .qresult-upsell { flex-wrap: wrap; } .qresult-upsell .qresult-btn { width: 100%; justify-content: center; } }

@@ -730,7 +730,7 @@ body.iv-room-page .navbar, body.iv-room-page .footer-section { visibility: hidde
 .ivz-top-btn:hover { background: rgba(255, 255, 255, 0.16); }
 .ivz-close:hover { background: #dc2626; color: #fff; }
 .ivz-top-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.ivz-top-btn:focus-visible, .ivz-ctl:focus-visible, .ivz-leave:focus-visible, .ivz-send:focus-visible { outline: 3px solid #60a5fa; outline-offset: 2px; }
+.ivz-top-btn:focus-visible, .ivz-ctl:focus-visible, .ivz-leave:focus-visible, .ivz-send:focus-visible { outline: 3px solid #fb923c; outline-offset: 2px; }
 
 .ivz-body { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 12px; padding: 12px; }
 .ivz-stage { min-height: 0; display: flex; flex-direction: column; gap: 12px; }
@@ -945,7 +945,7 @@ button.ivz-ctl:hover { background: rgba(255, 255, 255, 0.08); }
 .ps-card { --ps-accent: #cc4a00; --ps-tint: rgba(204, 74, 0, 0.08); display: flex; flex-direction: column; padding: 26px 24px; border-radius: 20px;
   background: var(--white); border: 1px solid var(--border-subtle); border-top: 4px solid var(--ps-accent); box-shadow: var(--shadow-card); }
 .ps-card--learner { --ps-accent: #cc4a00; --ps-tint: rgba(204, 74, 0, 0.08); }
-.ps-card--recruiter { --ps-accent: #2563eb; --ps-tint: rgba(37, 99, 235, 0.08); }
+.ps-card--recruiter { --ps-accent: #be185d; --ps-tint: rgba(190, 24, 93, 0.08); }
 .ps-card--teacher { --ps-accent: #7c3aed; --ps-tint: rgba(124, 58, 237, 0.08); }
 .ps-top { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
 .ps-icon { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 14px; background: var(--ps-tint); color: var(--ps-accent); font-size: 1.1rem; flex: none; }
@@ -966,12 +966,12 @@ button.ivz-ctl:hover { background: rgba(255, 255, 255, 0.08); }
 .ps-btn--primary { background: var(--ps-accent); color: #fff; }
 .ps-btn--primary:hover { color: #fff; }
 :root[data-theme="dark"] .ps-card--recruiter, :root[data-theme="dark"] .ps-card--teacher, :root[data-theme="dark"] .ps-card--learner { box-shadow: none; }
-:root[data-theme="dark"] .ps-card--recruiter { --ps-accent: #60a5fa; --ps-tint: rgba(96, 165, 250, 0.14); }
+:root[data-theme="dark"] .ps-card--recruiter { --ps-accent: #f472b6; --ps-tint: rgba(244, 114, 182, 0.14); }
 :root[data-theme="dark"] .ps-card--teacher { --ps-accent: #a78bfa; --ps-tint: rgba(167, 139, 250, 0.14); }
 :root[data-theme="dark"] .ps-card--learner { --ps-accent: #fb923c; --ps-tint: rgba(251, 146, 60, 0.14); }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .ps-card { box-shadow: none; }
-  :root:not([data-theme="light"]) .ps-card--recruiter { --ps-accent: #60a5fa; --ps-tint: rgba(96, 165, 250, 0.14); }
+  :root:not([data-theme="light"]) .ps-card--recruiter { --ps-accent: #f472b6; --ps-tint: rgba(244, 114, 182, 0.14); }
   :root:not([data-theme="light"]) .ps-card--teacher { --ps-accent: #a78bfa; --ps-tint: rgba(167, 139, 250, 0.14); }
   :root:not([data-theme="light"]) .ps-card--learner { --ps-accent: #fb923c; --ps-tint: rgba(251, 146, 60, 0.14); }
 }

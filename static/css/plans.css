@@ -1,12 +1,12 @@
 /* /plans — a day-by-day study plan: today's checklist first, then every day, then the plans on offer. */
 
 :root {
-    --sp-accent: #4f46e5; --sp-accent-bg: #eef2ff;
+    --sp-accent: #cc4a00; --sp-accent-bg: rgba(204, 74, 0, 0.08); --sp-fill: #cc4a00;
     --sp-done: #15803d;   --sp-done-bg: #dcfce7;
     --sp-track: #e2e8f0;
 }
 html[data-theme="dark"] {
-    --sp-accent: #a5b4fc; --sp-accent-bg: rgba(165, 180, 252, 0.12);
+    --sp-accent: #fb923c; --sp-accent-bg: rgba(251, 146, 60, 0.14); --sp-fill: #cc4a00;
     --sp-done: #4ade80;   --sp-done-bg: rgba(74, 222, 128, 0.14);
     --sp-track: rgba(255, 255, 255, 0.1);
 }
@@ -49,8 +49,7 @@ html[data-theme="dark"] {
 .sp-chip { align-self: flex-start; font-size: .75rem; font-weight: 800; padding: 3px 10px; border-radius: 999px; background: var(--sp-accent-bg); color: var(--sp-accent); }
 
 .sp-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; border-radius: 12px; font-weight: 700; border: 1px solid transparent; cursor: pointer; text-decoration: none; font-size: .95rem; }
-.sp-btn--primary { background: var(--sp-accent); color: #fff; }
-html[data-theme="dark"] .sp-btn--primary { color: #111827; }
+.sp-btn--primary { background: var(--sp-fill); color: #fff; }
 .sp-btn--ghost { background: none; border-color: var(--border-color, #e2e8f0); color: var(--text-main); }
 
 .sp-custom { display: grid; grid-template-columns: 1fr 140px auto; gap: 8px 10px; align-items: end; }

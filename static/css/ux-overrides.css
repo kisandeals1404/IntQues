@@ -2326,6 +2326,7 @@ footer::before {
     }
     .rb-btn-preview { color: var(--text-main); }
     .rb-btn-sample { color: var(--text-body); }
+    .rb-btn-import { color: #fb923c; }
 
     /* ── Account hub page ── */
     .account-page-main { background: var(--light-bg); }
@@ -4546,17 +4547,17 @@ html[data-theme][data-theme] body:not(.admin-body) .bz-compare-col--old .bz-comp
 
 /* Home: review card (sections/review-due.ftl). */
 .review-due { display: flex; align-items: center; gap: 12px; margin: 0 0 16px; padding: 14px 16px; border-radius: 18px; text-decoration: none; color: inherit;
-    background: #eff6ff; border: 1px solid #bfdbfe; }
-.review-due:hover { text-decoration: none; border-color: #93c5fd; }
-.review-due:focus-visible { outline: 3px solid rgba(37, 99, 235, .45); outline-offset: 2px; }
-.review-due-icon { flex: 0 0 auto; width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: #2563eb; color: #fff; font-size: 1.1rem; }
+    background: #fff7ed; border: 1px solid #fed7aa; }
+.review-due:hover { text-decoration: none; border-color: #fdba74; }
+.review-due:focus-visible { outline: 3px solid rgba(204, 74, 0, .45); outline-offset: 2px; }
+.review-due-icon { flex: 0 0 auto; width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: #cc4a00; color: #fff; font-size: 1.1rem; }
 .review-due-body { flex: 1; min-width: 0; display: grid; gap: 2px; }
-.review-due-title { font-weight: 800; color: #1e3a8a; }
+.review-due-title { font-weight: 800; color: #9a3412; }
 .review-due-sub { font-size: .8rem; color: #475569; }
-.review-due-go { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; background: #2563eb; color: #fff; font-weight: 800; font-size: .88rem; }
+.review-due-go { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; background: #cc4a00; color: #fff; font-weight: 800; font-size: .88rem; }
 @media (max-width: 420px) { .review-due-go { padding: 8px 10px; } .review-due-sub { display: none; } }
-:root[data-theme="dark"] .review-due { background: rgba(37, 99, 235, .14); border-color: rgba(96, 165, 250, .35); }
-:root[data-theme="dark"] .review-due-title { color: #bfdbfe; }
+:root[data-theme="dark"] .review-due { background: rgba(251, 146, 60, .12); border-color: rgba(251, 146, 60, .35); }
+:root[data-theme="dark"] .review-due-title { color: #fed7aa; }
 :root[data-theme="dark"] .review-due-sub { color: #94a3b8; }
 
 /* The promo pages' pricing and "usual way vs IntQues" sections follow the site theme (they go dark in dark

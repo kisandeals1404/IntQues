@@ -247,8 +247,8 @@
 .jb-funnel em { font-style: normal; font-size: 0.74rem; color: var(--text-muted); display: block; }
 
 /* ── Badges, notices, report ── */
-.jb-verified { display: inline-flex; align-items: center; gap: 5px; font-size: 0.78rem; font-weight: 700; color: #1d4ed8; }
-:root[data-theme="dark"] .jb-verified { color: #93c5fd; }
+.jb-verified { display: inline-flex; align-items: center; gap: 5px; font-size: 0.78rem; font-weight: 700; color: #15803d; }
+:root[data-theme="dark"] .jb-verified { color: #4ade80; }
 .jb-featured { color: #a16207; border-color: rgba(202, 138, 4, 0.4); background: rgba(250, 204, 21, 0.12); }
 :root[data-theme="dark"] .jb-featured { color: #fde047; }
 .jb-safety { display: flex; gap: 10px; align-items: flex-start; font-size: 0.86rem; color: var(--text-body); }
@@ -286,7 +286,7 @@
 a.jb-chip { text-decoration: none; color: inherit; }
 
 /* What to practise after an application stops (job-applications.ftl). */
-.jb-feedback { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: rgba(99,102,241,.07); border: 1px solid rgba(99,102,241,.2); }
+.jb-feedback { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: rgba(204,74,0,.06); border: 1px solid rgba(204,74,0,.2); }
 .jb-feedback p { margin: 0 0 6px; }
 .jb-feedback-label { font-size: .85rem; font-weight: 700; opacity: .8; margin-top: 8px !important; }
 .jb-feedback-skills { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -301,4 +301,4 @@ a.jb-chip { text-decoration: none; color: inherit; }
 .jb-sched-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .jb-slots { display: grid; gap: 6px; margin: 8px 0; }
 .jb-slot { display: flex; gap: 8px; align-items: center; padding: 8px 10px; border: 1px solid var(--border-color, #e2e8f0); border-radius: 10px; cursor: pointer; }
-.jb-slot input { accent-color: #4f46e5; }
+.jb-slot input { accent-color: #cc4a00; }
